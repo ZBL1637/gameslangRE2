@@ -1,0 +1,73 @@
+@import '../../TranslationTower.scss';
+
+.notification-overlay-container {
+  position: fixed;
+  top: 100px; /* 避开 HUD */
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none; /* 允许点击穿透 */
+}
+
+.notification-toast {
+  background: rgba($background-medium, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  padding: 12px 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  min-width: 200px;
+  max-width: 300px;
+  pointer-events: auto;
+  
+  &.rune {
+    border-left: 4px solid $secondary-color;
+    .toast-icon { color: $secondary-color; }
+  }
+
+  &.ticket {
+    border-left: 4px solid $accent-color;
+    .toast-icon { color: $accent-color; }
+  }
+
+  &.phrase {
+    border-left: 4px solid $primary-color;
+    .toast-icon { color: $primary-color; }
+  }
+
+  &.info {
+    border-left: 4px solid $text-secondary;
+  }
+
+  .toast-icon {
+    font-size: 1.5rem;
+  }
+
+  .toast-content {
+    .toast-message {
+      color: $text-primary;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slideInRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}

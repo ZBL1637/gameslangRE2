@@ -1,0 +1,277 @@
+// 探索区域弹窗 - 像素艺术风格（集成原有图表）
+.exploration-zone-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 31, 10, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.exploration-zone-modal {
+  width: 95%;
+  max-width: 1200px;
+  max-height: 90vh;
+  background: linear-gradient(180deg, rgba(26, 58, 26, 0.98) 0%, rgba(13, 45, 13, 0.99) 100%);
+  border: 4px solid #64ff64;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 50px rgba(100, 255, 100, 0.3);
+
+  // 头部
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background: rgba(13, 45, 13, 0.8);
+    border-bottom: 3px solid rgba(100, 255, 100, 0.4);
+
+    .zone-title {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .zone-icon {
+        font-size: 2rem;
+      }
+
+      h2 {
+        font-family: 'Press Start 2P', monospace;
+        font-size: 1.25rem;
+        color: #64ff64;
+        margin: 0;
+        text-shadow: 0 0 15px rgba(100, 255, 100, 0.5);
+      }
+    }
+
+    .close-button {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 100, 100, 0.2);
+      border: 2px solid rgba(255, 100, 100, 0.5);
+      color: #ff6464;
+      font-size: 1.25rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: rgba(255, 100, 100, 0.4);
+        border-color: #ff6464;
+      }
+    }
+  }
+
+  // 挑战说明
+  .challenge-info {
+    padding: 1rem 1.5rem;
+    background: rgba(100, 255, 100, 0.05);
+    border-bottom: 2px solid rgba(100, 255, 100, 0.2);
+
+    h3 {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.875rem;
+      color: #64ff64;
+      margin: 0 0 0.5rem 0;
+    }
+
+    p {
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: 0.9rem;
+      color: rgba(200, 255, 200, 0.9);
+      margin: 0 0 0.5rem 0;
+      line-height: 1.5;
+    }
+
+    .instructions {
+      font-size: 0.8rem;
+      color: rgba(100, 255, 100, 0.7);
+      padding: 0.5rem;
+      background: rgba(100, 255, 100, 0.1);
+      border-left: 3px solid #64ff64;
+    }
+  }
+
+  // 进度
+  .selection-progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: rgba(13, 45, 13, 0.6);
+
+    span {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.625rem;
+      color: #64ff64;
+    }
+
+    .progress-dots {
+      display: flex;
+      gap: 0.5rem;
+
+      .dot {
+        width: 16px;
+        height: 16px;
+        border: 2px solid #64ff64;
+        background: transparent;
+        transition: all 0.3s ease;
+
+        &.filled {
+          background: #64ff64;
+          box-shadow: 0 0 10px rgba(100, 255, 100, 0.5);
+        }
+      }
+    }
+  }
+
+  // 选中信息显示
+  .selected-info {
+    padding: 0.75rem 1.5rem;
+    background: rgba(100, 255, 100, 0.1);
+    border-bottom: 1px solid rgba(100, 255, 100, 0.2);
+
+    .selected-term {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+
+      .label {
+        font-family: 'Press Start 2P', monospace;
+        font-size: 0.5rem;
+        color: rgba(100, 255, 100, 0.7);
+      }
+
+      .term {
+        font-family: 'Noto Sans SC', sans-serif;
+        font-size: 1rem;
+        color: #ffd700;
+        font-weight: bold;
+      }
+    }
+
+    .selected-detail {
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: 0.85rem;
+      color: #c0ffc0;
+    }
+  }
+
+  // 挑战内容 - 图表容器
+  .challenge-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 1.5rem;
+
+    .chart-wrapper {
+      background: rgba(0, 0, 0, 0.3);
+      border: 2px solid rgba(100, 255, 100, 0.2);
+      padding: 1rem;
+      min-height: 560px;
+
+      // 覆盖图表组件的一些样式以适配森林主题
+      > div {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// 完成弹窗
+.completion-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 31, 10, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.completion-modal {
+  text-align: center;
+  padding: 2rem 3rem;
+  background: linear-gradient(180deg, rgba(26, 58, 26, 0.98) 0%, rgba(13, 45, 13, 0.99) 100%);
+  border: 4px solid #64ff64;
+  animation: scaleIn 0.3s ease-out;
+
+  .completion-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: bounce 1s ease-in-out infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  h3 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 1.25rem;
+    color: #64ff64;
+    margin: 0 0 0.5rem 0;
+  }
+
+  p {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 1rem;
+    color: #c0ffc0;
+    margin: 0 0 1rem 0;
+  }
+
+  .fragment-keywords {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+
+    .keyword-tag {
+      padding: 0.25rem 0.75rem;
+      background: rgba(100, 255, 100, 0.2);
+      border: 1px solid rgba(100, 255, 100, 0.5);
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: 0.8rem;
+      color: #64ff64;
+    }
+  }
+
+  .confirm-button {
+    padding: 1rem 2rem;
+    background: linear-gradient(180deg, #2d5a2d, #1a3a1a);
+    border: 3px solid #64ff64;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.75rem;
+    color: #64ff64;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: linear-gradient(180deg, #3d7a3d, #2d5a2d);
+      box-shadow: 0 0 25px rgba(100, 255, 100, 0.5);
+      transform: scale(1.05);
+    }
+  }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

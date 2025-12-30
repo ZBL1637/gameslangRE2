@@ -1,0 +1,252 @@
+// IntroSection 样式 - 像素艺术风格
+$pixel-primary: #D946EF;
+$pixel-secondary: #A855F7;
+$pixel-accent-cyan: #00d4ff;
+$pixel-accent-pink: #ff00ff;
+$pixel-bg-dark: #0a0a1a;
+$pixel-bg-panel: #1a1a2e;
+$pixel-border: #6b5b95;
+
+@keyframes pixelFadeIn {
+  from { 
+    opacity: 0;
+    filter: brightness(2);
+  }
+  to { 
+    opacity: 1;
+    filter: brightness(1);
+  }
+}
+
+@keyframes pixelScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+    filter: brightness(2);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+@keyframes pixelTextGlow {
+  0%, 100% { text-shadow: 0 0 10px rgba($pixel-accent-cyan, 0.5); }
+  50% { text-shadow: 0 0 20px rgba($pixel-accent-cyan, 0.8), 0 0 5px $pixel-accent-pink; }
+}
+
+@keyframes pixelTitleGlow {
+  0%, 100% { 
+    text-shadow: 
+      0 0 20px rgba($pixel-primary, 0.8),
+      0 0 40px rgba($pixel-accent-pink, 0.5),
+      2px 2px 0 rgba($pixel-primary, 0.5);
+  }
+  50% { 
+    text-shadow: 
+      0 0 30px rgba($pixel-primary, 1),
+      0 0 60px rgba($pixel-accent-pink, 0.8),
+      4px 4px 0 rgba($pixel-primary, 0.5);
+  }
+}
+
+.intro-section.data-metropolis-intro {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  z-index: 100;
+  overflow: hidden;
+  transition: opacity 0.5s ease;
+  background: $pixel-bg-dark;
+  border: none !important;
+  box-shadow: none !important;
+
+  &.fade-out {
+    opacity: 0;
+    filter: brightness(2);
+  }
+
+  .intro-frame {
+    position: absolute;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    aspect-ratio: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: none !important;
+  }
+
+
+  .intro-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 0.5s ease-in;
+    filter: contrast(1.1) saturate(1.1); // 增强一点对比度适应数据风格
+
+    &.loaded {
+      opacity: 1;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba($pixel-bg-dark, 0.6); // 遮罩层
+      background-image: 
+        radial-gradient(circle at center, transparent 0%, rgba($pixel-bg-dark, 0.8) 100%),
+        linear-gradient(rgba($pixel-accent-cyan, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba($pixel-accent-cyan, 0.05) 1px, transparent 1px);
+      background-size: 100% 100%, 20px 20px, 20px 20px; // 网格效果
+    }
+  }
+
+  // 入场屏幕
+  .entrance-screen {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+
+    .entrance-text {
+      p {
+        font-family: 'Courier New', monospace; // 数据风格字体
+        font-size: 24px;
+        color: rgba($pixel-accent-cyan, 0.8);
+        margin: 8px 0;
+        letter-spacing: 8px;
+        text-transform: uppercase;
+        animation: pixelTextGlow 2s ease-in-out infinite;
+
+        &:first-child {
+          font-size: 18px;
+          letter-spacing: 12px;
+          color: rgba($pixel-accent-pink, 0.8);
+        }
+      }
+    }
+  }
+
+  // 标题屏幕
+  .title-screen {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+
+    .title-content {
+      .chapter-index {
+        display: block;
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+        color: $pixel-accent-cyan;
+        letter-spacing: 6px;
+        margin-bottom: 16px;
+        text-shadow: 0 0 15px rgba($pixel-accent-cyan, 0.8);
+      }
+
+      h1 {
+        font-family: 'Courier New', monospace;
+        font-size: 48px;
+        font-weight: 700;
+        color: #ffffff;
+        margin: 0 0 16px;
+        animation: pixelTitleGlow 3s ease-in-out infinite;
+      }
+
+      .subtitle {
+        font-family: 'Courier New', monospace;
+        font-size: 20px;
+        color: rgba($pixel-accent-cyan, 0.7);
+        letter-spacing: 4px;
+        text-shadow: 0 0 10px rgba($pixel-accent-cyan, 0.5);
+      }
+    }
+  }
+
+  // 动画类
+  .animate-fade-in {
+    animation: pixelFadeIn 0.5s ease-out forwards;
+  }
+  
+  .animate-scale-in {
+    animation: pixelScaleIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  // 对话层
+  .dialog-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 2rem;
+    
+    // NPC容器
+    .npc-container {
+      position: absolute;
+      bottom: 0;
+      left: 5%;
+      width: auto;
+      height: 75vh;
+      max-height: 700px;
+      z-index: 5;
+      pointer-events: none;
+
+      .npc-avatar {
+        display: block;
+        width: auto;
+        height: 100%;
+        object-fit: contain;
+        filter: drop-shadow(0 0 20px rgba(0, 243, 255, 0.3));
+        image-rendering: pixelated;
+      }
+    }
+  }
+  
+  // 动画类
+  .animate-slide-in-right {
+    animation: pixelSlideInRight 0.5s ease-out forwards;
+  }
+  
+  .animate-slide-in-left {
+    animation: pixelSlideInLeft 0.5s ease-out forwards;
+  }
+}
+
+@keyframes pixelSlideInRight {
+  from {
+    transform: translateX(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pixelSlideInLeft {
+  from {
+    transform: translateX(-100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

@@ -1,0 +1,122 @@
+@import '../../../../styles/variables';
+
+// 适配第五章主题色
+$ch5-primary: #8b5cf6; // Violet
+$ch5-secondary: #06b6d4; // Cyan
+
+.pixel-dialog-box {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 800px;
+  z-index: 100;
+  font-family: 'Microsoft YaHei', sans-serif; // 保持原有字体偏好，或改为像素字体
+  cursor: pointer;
+  user-select: none;
+
+  .pixel-dialog-border {
+    background: rgba(15, 23, 42, 0.95); // Darker background for Ch5
+    border: 2px solid $ch5-secondary; // Cyan border
+    box-shadow: 0 0 10px rgba($ch5-secondary, 0.5),
+                inset 0 0 20px rgba($ch5-secondary, 0.2);
+    padding: 4px;
+    position: relative;
+    
+    // 装饰性角落
+    &::before {
+      content: '';
+      position: absolute;
+      top: -2px; left: -2px;
+      width: 10px; height: 10px;
+      border-top: 2px solid $ch5-primary; // Violet corner
+      border-left: 2px solid $ch5-primary;
+    }
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; right: -2px;
+      width: 10px; height: 10px;
+      border-bottom: 2px solid $ch5-primary;
+      border-right: 2px solid $ch5-primary;
+    }
+  }
+
+  .pixel-dialog-content {
+    padding: 1.5rem;
+    min-height: 120px;
+    color: #fff;
+    position: relative;
+    background: 
+      linear-gradient(rgba(15, 23, 42, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+      linear-gradient(90deg, rgba(139, 92, 246, 0.06), rgba(6, 182, 212, 0.02), rgba(139, 92, 246, 0.06));
+    background-size: 100% 2px, 3px 100%; // 扫描线效果
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+
+  .pixel-dialog-body {
+    flex-grow: 1;
+    position: relative;
+  }
+
+  .pixel-dialog-speaker {
+    position: absolute;
+    top: -2.7rem;
+    left: 0;
+    background: #0f172a;
+    padding: 0 0.5rem;
+    color: $ch5-primary; // Violet speaker name
+    font-weight: bold;
+    font-size: 1.1rem;
+    text-shadow: 0 0 5px rgba($ch5-primary, 0.8);
+    border: 1px solid $ch5-primary;
+    
+    .speaker-bracket {
+      color: #64748b;
+      margin: 0 4px;
+    }
+  }
+
+  .pixel-dialog-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #f1f5f9;
+    text-shadow: 0 0 2px rgba($ch5-secondary, 0.3);
+
+    .cursor-block {
+      display: inline-block;
+      width: 0.6em;
+      background: $ch5-secondary;
+      color: #000;
+      text-align: center;
+      margin-left: 2px;
+      opacity: 1;
+      
+      &.blink {
+        animation: blink 1s step-end infinite;
+      }
+    }
+  }
+
+  .pixel-dialog-arrow {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    color: $ch5-secondary;
+    animation: bounce 1s infinite;
+    font-size: 0.8rem;
+  }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}

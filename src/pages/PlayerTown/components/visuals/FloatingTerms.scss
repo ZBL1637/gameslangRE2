@@ -1,0 +1,405 @@
+// FloatingTerms 样式
+
+$primary-color: #7F0056;
+$secondary-color: #D946EF;
+$text-primary: #E9EDF7;
+$text-secondary: rgba(233, 237, 247, 0.72);
+$glass-bg: rgba(11, 15, 26, 0.86);
+$metal-border: #2A2F45;
+
+@keyframes termOrbit {
+  0%, 100% {
+    transform: translate(-50%, -50%) translateX(calc(var(--term-dir, 1) * -4px)) translateY(-2px);
+  }
+  50% {
+    transform: translate(-50%, -50%) translateX(calc(var(--term-dir, 1) * 4px)) translateY(2px);
+  }
+}
+
+@keyframes termPulse {
+  0%, 100% {
+    filter: saturate(0.95) brightness(0.98);
+  }
+  50% {
+    filter: saturate(1.05) brightness(1.04);
+  }
+}
+
+@keyframes runeRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.floating-terms-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 30;
+  overflow: hidden;
+  background: transparent;
+
+  &.has-detail {
+    z-index: 60;
+  }
+
+  .floating-term {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    --cut: 10px;
+    --tone: #B56CFF;
+    --tone-rgb: 181, 108, 255;
+    background: $glass-bg;
+    backdrop-filter: blur(8px);
+    border: 2px solid $metal-border;
+    clip-path: polygon(
+      var(--cut) 0%,
+      calc(100% - var(--cut)) 0%,
+      100% var(--cut),
+      100% calc(100% - var(--cut)),
+      calc(100% - var(--cut)) 100%,
+      var(--cut) 100%,
+      0% calc(100% - var(--cut)),
+      0% var(--cut)
+    );
+    padding: 0.5rem 0.75rem 0.5rem 0.625rem;
+    cursor: pointer;
+    pointer-events: auto;
+    z-index: 1001;
+    transform: translate(-50%, -50%);
+    transform-origin: center;
+    animation: termOrbit var(--term-duration, 10s) ease-in-out infinite,
+      termPulse 4.8s ease-in-out infinite;
+    animation-delay: var(--term-delay, 0s);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease, opacity 0.18s ease;
+    box-shadow:
+      0 0 0 1px rgba(var(--tone-rgb), 0.14) inset,
+      0 0 16px rgba(var(--tone-rgb), 0.10);
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      clip-path: polygon(
+        calc(var(--cut) - 2px) 0%,
+        calc(100% - (var(--cut) - 2px)) 0%,
+        100% calc(var(--cut) - 2px),
+        100% calc(100% - (var(--cut) - 2px)),
+        calc(100% - (var(--cut) - 2px)) 100%,
+        calc(var(--cut) - 2px) 100%,
+        0% calc(100% - (var(--cut) - 2px)),
+        0% calc(var(--cut) - 2px)
+      );
+      border: 1px solid rgba(var(--tone-rgb), 0.22);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35) inset;
+      pointer-events: none;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      clip-path: inherit;
+      background-image:
+        radial-gradient(circle at 20% 10%, rgba(var(--tone-rgb), 0.10), transparent 45%),
+        radial-gradient(circle at 80% 90%, rgba(var(--tone-rgb), 0.08), transparent 52%),
+        repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.045) 0px, rgba(255, 255, 255, 0.045) 1px, transparent 1px, transparent 6px);
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
+    &:hover {
+      transform: translate(-50%, -50%) translateY(-2px) scale(1.03) !important;
+      border-color: rgba(var(--tone-rgb), 0.55);
+      box-shadow:
+        0 0 0 1px rgba(var(--tone-rgb), 0.22) inset,
+        0 0 26px rgba(var(--tone-rgb), 0.28);
+      filter: saturate(1.08) brightness(1.06);
+      z-index: 1010;
+
+      .term-arrow {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0);
+      }
+    }
+
+    &.explored {
+      .explored-mark {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        width: 18px;
+        height: 18px;
+        background: rgba(34, 197, 94, 0.92);
+        border: 1px solid rgba(0, 0, 0, 0.6);
+        clip-path: polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.625rem;
+        color: #0b0f1a;
+        z-index: 2;
+      }
+    }
+
+    &.locked {
+      opacity: 0.88;
+      filter: saturate(0.55) brightness(0.94);
+
+      &:hover {
+        opacity: 0.95;
+        filter: saturate(0.82) brightness(1.02);
+      }
+    }
+
+    &.active {
+      z-index: 1110;
+
+      &::after {
+        inset: -12px;
+        clip-path: none;
+        border-radius: 999px;
+        background: conic-gradient(
+          from 0deg,
+          rgba(var(--tone-rgb), 0.55),
+          rgba(var(--tone-rgb), 0.10),
+          rgba(var(--tone-rgb), 0.55)
+        );
+        opacity: 0.9;
+        animation: runeRotate 2.6s linear infinite;
+        -webkit-mask: radial-gradient(circle, transparent 62%, #000 64%);
+        mask: radial-gradient(circle, transparent 62%, #000 64%);
+      }
+    }
+
+    &.tone-cyan { --tone: #42E5FF; --tone-rgb: 66, 229, 255; }
+    &.tone-purple { --tone: #B56CFF; --tone-rgb: 181, 108, 255; }
+    &.tone-pink { --tone: #FF5FD7; --tone-rgb: 255, 95, 215; }
+    &.tone-gold { --tone: #FFC44D; --tone-rgb: 255, 196, 77; }
+
+    .term-icon {
+      width: 10px;
+      height: 10px;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 0.5rem;
+      background: linear-gradient(180deg, rgba(var(--tone-rgb), 0.95), rgba(var(--tone-rgb), 0.18));
+      clip-path: polygon(2px 0, calc(100% - 2px) 0, 100% 2px, 100% calc(100% - 2px), calc(100% - 2px) 100%, 2px 100%, 0 calc(100% - 2px), 0 2px);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.72) inset,
+        0 0 14px rgba(var(--tone-rgb), 0.35);
+      position: relative;
+      z-index: 2;
+      flex: none;
+    }
+
+    .term-text {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: $text-primary;
+      white-space: nowrap;
+      letter-spacing: 0.02em;
+      position: relative;
+      z-index: 2;
+    }
+
+    .term-lock {
+      position: absolute;
+      top: -7px;
+      right: -7px;
+      width: 18px;
+      height: 18px;
+      background: rgba(11, 15, 26, 0.92);
+      border: 1px solid rgba(var(--tone-rgb), 0.45);
+      clip-path: polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.55) inset,
+        0 0 14px rgba(var(--tone-rgb), 0.18);
+      z-index: 2;
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 5px;
+        top: 4px;
+        width: 8px;
+        height: 5px;
+        border: 2px solid rgba(var(--tone-rgb), 0.75);
+        border-bottom: 0;
+        border-radius: 6px 6px 0 0;
+        opacity: 0.9;
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 6px;
+        top: 8px;
+        width: 6px;
+        height: 6px;
+        background: rgba(var(--tone-rgb), 0.7);
+        clip-path: polygon(1px 0, calc(100% - 1px) 0, 100% 1px, 100% calc(100% - 1px), calc(100% - 1px) 100%, 1px 100%, 0 calc(100% - 1px), 0 1px);
+      }
+    }
+
+    .term-arrow {
+      position: absolute;
+      top: 50%;
+      right: -10px;
+      width: 0;
+      height: 0;
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+      border-left: 8px solid rgba(var(--tone-rgb), 0.9);
+      transform: translateY(-50%) translateX(-4px);
+      opacity: 0;
+      transition: transform 0.18s ease, opacity 0.18s ease;
+      filter: drop-shadow(0 0 10px rgba(var(--tone-rgb), 0.25));
+      pointer-events: none;
+      z-index: 2;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .floating-term {
+      animation: none;
+    }
+  }
+
+  // 词汇详情弹窗
+  .term-detail-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    pointer-events: auto;
+    padding: 2rem;
+
+    .term-detail-card {
+      width: 100%;
+      max-width: 400px;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      position: relative;
+      animation: scaleIn 0.3s ease-out;
+
+      @keyframes scaleIn {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: $text-secondary;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.2);
+          color: $text-primary;
+        }
+      }
+
+      .term-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+
+        .term-name {
+          font-size: 1.75rem;
+          font-weight: 700;
+          color: $text-primary;
+        }
+
+        .term-category {
+          font-size: 0.75rem;
+          color: $text-secondary;
+          padding: 0.25rem 0.75rem;
+          border: 1px solid;
+          border-radius: 1rem;
+        }
+      }
+
+      .term-content {
+        .info-row {
+          margin-bottom: 1rem;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+
+          &.inline {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+          }
+
+          .label {
+            display: block;
+            font-size: 0.75rem;
+            color: $secondary-color;
+            margin-bottom: 0.375rem;
+          }
+
+          p {
+            font-size: 0.9375rem;
+            color: $text-primary;
+            line-height: 1.6;
+
+            &.example {
+              font-style: italic;
+              color: $text-secondary;
+            }
+          }
+
+          .emotion-tag {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+          }
+        }
+      }
+
+      .confirm-btn {
+        width: 100%;
+        background: linear-gradient(135deg, $primary-color, $secondary-color);
+        border: none;
+        color: $text-primary;
+        padding: 0.875rem;
+        border-radius: 0.75rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 1.5rem;
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 5px 20px rgba(127, 0, 86, 0.4);
+        }
+      }
+    }
+  }
+}

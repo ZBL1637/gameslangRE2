@@ -1,0 +1,313 @@
+// BazaarHub.scss
+@import '../../TranslationTower.scss';
+
+.bazaar-hub-section {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  padding-top: 80px; // Space for HUD
+  gap: 20px;
+  padding: 100px 40px 40px 40px;
+  box-sizing: border-box;
+
+  // Left Nav
+  .nav-column {
+    width: 250px;
+    background: rgba(15, 23, 42, 0.8);
+    border: 2px solid $pixel-border;
+    display: flex;
+    flex-direction: column;
+
+    .nav-header {
+      padding: 15px;
+      border-bottom: 2px solid $pixel-border;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      h2 { margin: 0; font-size: 16px; color: $primary-color; }
+    }
+
+    .nav-menu {
+      flex: 1;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .menu-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+
+        &:hover:not(.locked) {
+          background: rgba($primary-color, 0.2);
+          border-color: $primary-color;
+        }
+
+        &.active {
+          background: rgba($primary-color, 0.4);
+          border-color: $accent-color;
+        }
+
+        &.locked {
+          opacity: 0.5;
+          cursor: not-allowed;
+          filter: grayscale(1);
+        }
+
+        .item-icon-box {
+          font-size: 20px;
+          margin-right: 10px;
+        }
+
+        .item-text {
+          display: flex;
+          flex-direction: column;
+
+          .item-title { font-size: 14px; color: $text-primary; }
+          .item-status { font-size: 10px; color: $text-secondary; margin-top: 2px; }
+        }
+
+        .active-indicator {
+          position: absolute;
+          right: 10px;
+          color: $accent-color;
+          animation: pulse 1s infinite;
+        }
+      }
+    }
+  }
+
+  // Center Main
+  .main-column {
+    flex: 1;
+    background: rgba(15, 23, 42, 0.8);
+    border: 2px solid $pixel-border;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; // Allow main column to scroll
+
+    .panel-header {
+      padding: 20px;
+      border-bottom: 2px solid $pixel-border;
+      
+      h3 { margin: 0; color: $accent-color; font-size: 18px; }
+      .subtitle { color: $text-secondary; font-size: 12px; }
+    }
+
+    .requests-list {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+
+      .request-card {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid $pixel-border;
+        transition: all 0.3s;
+
+        &.solved {
+          opacity: 0.6;
+          border-color: $secondary-color;
+        }
+
+        &.active {
+          border-color: $accent-color;
+          background: rgba(0, 0, 0, 0.5);
+        }
+
+        .card-header {
+          padding: 15px;
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          
+          .status-icon { margin-right: 10px; font-size: 18px; }
+          .card-title { flex: 1; font-weight: bold; }
+          .expand-hint { font-size: 12px; color: $accent-color; }
+        }
+
+        .card-body {
+          padding: 0 15px 15px;
+          border-top: 1px dashed $pixel-border;
+
+          .request-text {
+            font-style: italic;
+            color: $text-secondary;
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 3px solid $accent-color;
+          }
+
+          .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+
+            .option-item {
+              padding: 10px;
+              background: rgba(255, 255, 255, 0.1);
+              cursor: pointer;
+              transition: background 0.2s;
+
+              &:hover {
+                background: rgba($primary-color, 0.3);
+              }
+
+              .option-text { font-size: 14px; }
+            }
+          }
+        }
+        
+        .card-solved-msg {
+          padding: 5px 15px;
+          font-size: 12px;
+          color: $secondary-color;
+          text-align: right;
+        }
+      }
+    }
+    .chat-container {
+      margin: 0 20px 20px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid $pixel-border;
+      border-radius: 8px;
+      padding: 15px;
+
+      .chat-message {
+        display: flex;
+        margin-bottom: 12px;
+        font-size: 14px;
+        
+        &:last-child { margin-bottom: 0; }
+
+        .chat-user {
+          color: $secondary-color;
+          font-weight: bold;
+          margin-right: 10px;
+          white-space: nowrap;
+        }
+
+        .chat-content {
+          color: $text-primary;
+          line-height: 1.5;
+
+          .slang-highlight {
+            color: $accent-color;
+            cursor: pointer;
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            transition: all 0.2s;
+            padding: 0 2px;
+
+            &:hover {
+              color: $primary-color;
+              background: rgba($primary-color, 0.1);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Right Side
+  .side-column {
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .ali-status-card {
+      background: rgba(15, 23, 42, 0.8);
+      border: 2px solid $pixel-border;
+      padding: 20px;
+      text-align: center;
+
+      .avatar-box {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 15px;
+        background: #334155;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid $accent-color;
+        
+        .avatar-emoji { font-size: 40px; }
+      }
+
+      .ali-dialog {
+        background: white;
+        color: black;
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 12px;
+        position: relative;
+        
+        &::before {
+          content: '';
+          position: absolute;
+          top: -6px;
+          left: 50%;
+          transform: translateX(-50%);
+          border-left: 6px solid transparent;
+          border-right: 6px solid transparent;
+          border-bottom: 6px solid white;
+        }
+      }
+    }
+
+    .phrasebook-preview {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.8);
+      border: 2px solid $pixel-border;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+
+      h4 { margin: 0 0 10px; color: $secondary-color; font-size: 14px; }
+
+      .phrase-list {
+        flex: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        gap: 8px;
+
+        .phrase-tag {
+          padding: 4px 8px;
+          background: rgba($secondary-color, 0.2);
+          border: 1px solid $secondary-color;
+          border-radius: 4px;
+          font-size: 12px;
+        }
+        
+        .empty-hint {
+          width: 100%;
+          text-align: center;
+          color: $text-secondary;
+          margin-top: 20px;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}
+
+.animate-slide-down {
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

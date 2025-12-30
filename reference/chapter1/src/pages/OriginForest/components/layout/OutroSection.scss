@@ -1,0 +1,210 @@
+// 结尾章节 - 像素艺术风格
+.outro-section {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+
+  // 背景效果
+  .outro-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, rgba(26, 58, 26, 0.8) 0%, rgba(10, 31, 10, 0.95) 100%);
+
+    .light-rays {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 200%;
+      height: 200%;
+      transform: translate(-50%, -50%);
+      background: conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        rgba(100, 255, 100, 0.1) 10deg,
+        transparent 20deg,
+        transparent 40deg,
+        rgba(100, 255, 100, 0.1) 50deg,
+        transparent 60deg,
+        transparent 80deg,
+        rgba(100, 255, 100, 0.1) 90deg,
+        transparent 100deg
+      );
+      animation: rotateRays 30s linear infinite;
+    }
+  }
+
+  @keyframes rotateRays {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+
+  // 旁白容器
+  .narration-container {
+    position: relative;
+    max-width: 800px;
+    padding: 3rem;
+    text-align: center;
+    z-index: 10;
+
+    .narration-text {
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: 1.5rem;
+      line-height: 2;
+      color: #e0ffe0;
+      margin: 0;
+      text-shadow: 0 0 20px rgba(100, 255, 100, 0.4);
+
+      .cursor {
+        animation: blink 0.8s infinite;
+        color: #64ff64;
+      }
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    .continue-hint {
+      margin-top: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.625rem;
+      color: rgba(100, 255, 100, 0.6);
+      animation: hintPulse 1.5s ease-in-out infinite;
+
+      .arrow {
+        animation: arrowBounce 1s ease-in-out infinite;
+      }
+    }
+
+    @keyframes hintPulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes arrowBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(3px); }
+    }
+  }
+
+  // 成就容器
+  .achievement-container {
+    position: relative;
+    z-index: 10;
+    animation: scaleIn 0.5s ease-out;
+  }
+
+  @keyframes scaleIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .achievement-card {
+    background: linear-gradient(180deg, rgba(26, 58, 26, 0.98) 0%, rgba(13, 45, 13, 0.99) 100%);
+    border: 4px solid #ffd700;
+    padding: 2rem 3rem;
+    text-align: center;
+    box-shadow: 
+      0 0 50px rgba(255, 215, 0, 0.3),
+      inset 0 0 30px rgba(255, 215, 0, 0.1);
+
+    .achievement-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+
+      .achievement-icon {
+        font-size: 3rem;
+        animation: bounce 1s ease-in-out infinite;
+      }
+
+      @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+      }
+
+      h2 {
+        font-family: 'Press Start 2P', monospace;
+        font-size: 1.25rem;
+        color: #ffd700;
+        margin: 0;
+        text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+      }
+    }
+
+    .achievement-content {
+      margin-bottom: 1.5rem;
+
+      h3 {
+        font-family: 'Press Start 2P', monospace;
+        font-size: 1rem;
+        color: #64ff64;
+        margin: 0 0 1rem 0;
+      }
+
+      p {
+        font-family: 'Noto Sans SC', sans-serif;
+        font-size: 1rem;
+        color: #c0ffc0;
+        margin: 0 0 1rem 0;
+        line-height: 1.6;
+      }
+
+      .reward-info {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        background: rgba(100, 255, 100, 0.1);
+        border: 2px solid rgba(100, 255, 100, 0.3);
+
+        .reward-label {
+          font-family: 'Press Start 2P', monospace;
+          font-size: 0.625rem;
+          color: rgba(100, 255, 100, 0.7);
+        }
+
+        .reward-value {
+          font-family: 'Noto Sans SC', sans-serif;
+          font-size: 0.9rem;
+          color: #ffd700;
+        }
+      }
+    }
+
+    .complete-button {
+      padding: 1rem 2rem;
+      background: linear-gradient(180deg, #5a5a2d, #3a3a1a);
+      border: 3px solid #ffd700;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.75rem;
+      color: #ffd700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: linear-gradient(180deg, #7a7a3d, #5a5a2d);
+        box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+        transform: scale(1.05);
+      }
+    }
+  }
+}

@@ -1,0 +1,1682 @@
+{
+  "version": "1.0.0",
+  "locale": "zh-CN",
+  "quiz": {
+    "id": "slang_dna_quiz_v1",
+    "title": "黑话 DNA 测试",
+    "subtitle": "身份认证中心",
+    "estimatedTimeSec": 30,
+    "questionDraw": {
+      "mode": "stratified_random",
+      "drawCount": 8,
+      "seedStrategy": "user_session",
+      "strata": [
+        { "key": "genre", "pick": 1, "from": ["q01", "q08", "q11", "q16"] },
+        { "key": "slang", "pick": 2, "from": ["q02", "q12", "q13", "q21", "q23"] },
+        { "key": "teamplay", "pick": 2, "from": ["q03", "q04", "q09", "q18", "q24"] },
+        { "key": "fun_moment", "pick": 1, "from": ["q05", "q22", "q20"] },
+        { "key": "aesthetic", "pick": 1, "from": ["q06", "q15"] },
+        { "key": "economy_grind", "pick": 1, "from": ["q10", "q14", "q17", "q19"] }
+      ],
+      "fallback": {
+        "mode": "random",
+        "fromAll": true
+      }
+    },
+    "uiHints": {
+      "progressStyle": "dna_segments",
+      "showKeyHints": true,
+      "nextButtonDisabledText": "请选择 1 项",
+      "multiSelectCounter": true
+    }
+  },
+  "scoring": {
+    "axes": [
+      { "key": "casual", "label": "休闲" },
+      { "key": "racing", "label": "竞速" },
+      { "key": "gacha", "label": "二次元" },
+      { "key": "moba", "label": "MOBA" },
+      { "key": "fps", "label": "FPS" },
+      { "key": "sandbox", "label": "沙盒" }
+    ],
+    "traits": [
+      { "key": "calm", "label": "佛系玩家" },
+      { "key": "social", "label": "社交达人" },
+      { "key": "fun", "label": "快乐至上" },
+      { "key": "speed", "label": "速度感" },
+      { "key": "control", "label": "操控欲" },
+      { "key": "competitiveMind", "label": "竞技心" }
+    ],
+    "questionWeights": {
+      "q01": 1.2,
+      "q02": 1.1,
+      "q03": 1.1,
+      "q04": 1.0,
+      "q05": 1.0,
+      "q06": 0.9,
+      "q07": 0.8,
+      "q08": 1.0,
+      "q09": 0.9,
+      "q10": 0.9,
+      "q11": 1.1,
+      "q12": 1.0,
+      "q13": 1.0,
+      "q14": 0.9,
+      "q15": 0.7,
+      "q16": 1.0,
+      "q17": 0.8,
+      "q18": 0.8,
+      "q19": 0.9,
+      "q20": 0.9,
+      "q21": 1.0,
+      "q22": 0.9,
+      "q23": 0.8,
+      "q24": 0.9
+    },
+    "compute": {
+      "axisAggregation": "sum_weighted",
+      "traitAggregation": "sum_weighted",
+      "normalizeAxisToPercent": true,
+      "percentRounding": "round",
+      "topAxisTieBreak": ["q01", "q11", "q16"],
+      "traitPick": { "topN": 6, "minScore": 1 }
+    }
+  },
+  "results": {
+    "axisProfiles": {
+      "casual": {
+        "title": "休闲系 · 酒馆气氛组",
+        "oneLiner": "开黑主打一个轻松：输赢随缘，氛围要紧。",
+        "cta": { "primary": "继续探索", "secondary": "分享结果" }
+      },
+      "racing": {
+        "title": "竞速系 · 速度信徒",
+        "oneLiner": "你追的是极限：每一条弯都有最佳路线。",
+        "cta": { "primary": "继续探索", "secondary": "分享结果" }
+      },
+      "gacha": {
+        "title": "二次元系 · 抽卡先知",
+        "oneLiner": "你信的是概率：出金一刻，世界都在发光。",
+        "cta": { "primary": "继续探索", "secondary": "分享结果" }
+      },
+      "moba": {
+        "title": "MOBA系 · 排位指挥官",
+        "oneLiner": "你打的是运营：节奏、视野、开团，一样不能少。",
+        "cta": { "primary": "继续探索", "secondary": "分享结果" }
+      },
+      "fps": {
+        "title": "FPS系 · 枪线猎手",
+        "oneLiner": "你靠的是准度：听声辨位，卡点拿下。",
+        "cta": { "primary": "继续探索", "secondary": "分享结果" }
+      },
+      "sandbox": {
+        "title": "沙盒系 · 工坊建造师",
+        "oneLiner": "你享受的是创造：先搭家，再去冒险。",
+        "cta": { "primary": "继续探索", "secondary": "分享结果" }
+      }
+    },
+    "shareTemplates": [
+      "我的黑话 DNA：{topAxisLabel}{topAxisPercent}%！标签：{trait1} / {trait2} / {trait3}",
+      "测出来了：{profileTitle} —— {oneLiner}（{topAxisLabel}{topAxisPercent}%）",
+      "开黑起手：{sampleLine}｜我的黑话 DNA 报告：{topAxisLabel}{topAxisPercent}%"
+    ],
+    "randomSampleLines": [
+      "开黑起起，轻松躺赢：别急，稳住{hl1}，快乐才是永恒。",
+      "这波{hl2}到位：听枪声、卡视野，打的就是信息差。",
+      "先把家搭好再探险：资源要管，路线要规划。",
+      "今晚一定出金：再来一发{hl3}，我就信玄学。"
+    ],
+    "randomSampleHighlights": {
+      "hl1": {
+        "term": "节奏",
+        "tooltip": "指团队推进/团战的时机与速度控制。"
+      },
+      "hl2": {
+        "term": "操作",
+        "tooltip": "指微操、走位、技能释放等执行能力。"
+      },
+      "hl3": {
+        "term": "垫刀",
+        "tooltip": "抽卡前先做“铺垫”的玄学操作，图个心理安慰。"
+      }
+    }
+  },
+  "questions": [
+    {
+      "id": "q01",
+      "group": "genre",
+      "type": "single",
+      "prompt": "你最喜欢哪种游戏类型？",
+      "options": [
+        {
+          "id": "q01_a_moba",
+          "text": "MOBA 团队竞技（爱开团）",
+          "highlights": [
+            { "term": "开团", "glossaryKey": "开团", "tooltip": "主动发起团战/先手进攻的行为。" }
+          ],
+          "score": {
+            "axes": { "moba": 3, "fps": 0, "sandbox": 0, "gacha": 0, "racing": 0, "casual": 0 },
+            "traits": { "competitiveMind": 2, "control": 1, "social": 1, "fun": 0, "speed": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q01_a_gacha",
+          "text": "二次元抽卡养成（等出金）",
+          "highlights": [
+            { "term": "出金", "glossaryKey": "出金", "tooltip": "抽到高稀有/金色品质角色或道具。" }
+          ],
+          "score": {
+            "axes": { "gacha": 3, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0, "casual": 1 },
+            "traits": { "fun": 1, "calm": 1, "social": 0, "control": 0, "speed": 0, "competitiveMind": 0 }
+          }
+        },
+        {
+          "id": "q01_a_sandbox",
+          "text": "沙盒创造/生存（先搭家）",
+          "highlights": [
+            { "term": "搭家", "glossaryKey": "搭家", "tooltip": "在沙盒/生存游戏里建造基地、房子与功能区。" }
+          ],
+          "score": {
+            "axes": { "sandbox": 3, "casual": 1, "moba": 0, "fps": 0, "gacha": 0, "racing": 0 },
+            "traits": { "control": 2, "calm": 1, "fun": 1, "social": 0, "speed": 0, "competitiveMind": 0 }
+          }
+        },
+        {
+          "id": "q01_a_fps",
+          "text": "FPS 射击对战（听声辨位）",
+          "highlights": [
+            { "term": "听声辨位", "glossaryKey": "听声辨位", "tooltip": "通过脚步/枪声判断敌人位置。" }
+          ],
+          "score": {
+            "axes": { "fps": 3, "moba": 0, "sandbox": 0, "gacha": 0, "racing": 0, "casual": 0 },
+            "traits": { "control": 2, "competitiveMind": 2, "speed": 1, "social": 0, "fun": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q01_a_racing",
+          "text": "竞速/赛车（走线漂移）",
+          "highlights": [
+            { "term": "走线", "glossaryKey": "走线", "tooltip": "选择最佳行车路线与入弯/出弯轨迹。" },
+            { "term": "漂移", "glossaryKey": "漂移", "tooltip": "过弯时用打滑控制车头方向以保持速度。" }
+          ],
+          "score": {
+            "axes": { "racing": 3, "fps": 0, "moba": 0, "sandbox": 0, "gacha": 0, "casual": 0 },
+            "traits": { "speed": 3, "control": 2, "competitiveMind": 1, "fun": 0, "social": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q01_a_casual",
+          "text": "派对/休闲（快乐就完事）",
+          "highlights": [
+            { "term": "快乐", "glossaryKey": "快乐", "tooltip": "不纠结输赢，追求轻松体验与情绪价值。" }
+          ],
+          "score": {
+            "axes": { "casual": 3, "gacha": 0, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "fun": 3, "social": 2, "calm": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "q02",
+      "group": "slang",
+      "type": "single",
+      "prompt": "开黑时你最常说的一句？",
+      "options": [
+        {
+          "id": "q02_a1",
+          "text": "别送！稳住节奏",
+          "highlights": [
+            { "term": "送", "glossaryKey": "送", "tooltip": "失误导致被击杀/白给，把优势“送”给对面。" },
+            { "term": "节奏", "glossaryKey": "节奏", "tooltip": "推进/团战的时机与速度控制。" }
+          ],
+          "score": {
+            "axes": { "moba": 2, "fps": 1, "casual": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "competitiveMind": 2, "control": 1, "social": 1, "calm": 0, "fun": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q02_a2",
+          "text": "今晚一定出金闪闪",
+          "highlights": [
+            { "term": "出金", "glossaryKey": "出金", "tooltip": "抽到高稀有/金色品质。" },
+            { "term": "闪闪", "glossaryKey": "闪闪", "tooltip": "形容稀有物品/角色非常亮眼（常与出金连用）。" }
+          ],
+          "score": {
+            "axes": { "gacha": 3, "casual": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "fun": 2, "calm": 1, "social": 0, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q02_a3",
+          "text": "先把家搭好再探险",
+          "highlights": [
+            { "term": "搭家", "glossaryKey": "搭家", "tooltip": "建造基地/房子与功能区。" },
+            { "term": "探险", "glossaryKey": "探险", "tooltip": "外出探索资源点/地下城/未知区域。" }
+          ],
+          "score": {
+            "axes": { "sandbox": 3, "casual": 1, "moba": 0, "fps": 0, "gacha": 0, "racing": 0 },
+            "traits": { "control": 2, "calm": 1, "fun": 1, "social": 0, "speed": 0, "competitiveMind": 0 }
+          }
+        },
+        {
+          "id": "q02_a4",
+          "text": "听枪声，卡视野",
+          "highlights": [
+            { "term": "卡视野", "glossaryKey": "卡视野", "tooltip": "利用掩体/角度获取信息或规避被看到。" }
+          ],
+          "score": {
+            "axes": { "fps": 3, "moba": 0, "casual": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "control": 2, "competitiveMind": 2, "speed": 1, "social": 0, "fun": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q02_a5",
+          "text": "走内线，漂移！",
+          "highlights": [
+            { "term": "内线", "glossaryKey": "内线", "tooltip": "过弯贴近弯心的路线，通常更短更快。" },
+            { "term": "漂移", "glossaryKey": "漂移", "tooltip": "过弯技巧：打滑控向以保持速度。" }
+          ],
+          "score": {
+            "axes": { "racing": 3, "fps": 0, "moba": 0, "sandbox": 0, "gacha": 0, "casual": 0 },
+            "traits": { "speed": 3, "control": 2, "competitiveMind": 1, "social": 0, "fun": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q02_a6",
+          "text": "佛系一点，开心就好",
+          "highlights": [
+            { "term": "佛系", "glossaryKey": "佛系", "tooltip": "心态平和、不强求输赢的游戏态度。" }
+          ],
+          "score": {
+            "axes": { "casual": 3, "gacha": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "calm": 3, "fun": 2, "social": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "q03",
+      "group": "teamplay",
+      "type": "single",
+      "prompt": "你在队伍里的典型定位是？",
+      "options": [
+        {
+          "id": "q03_a1",
+          "text": "指挥型：开团拉满",
+          "highlights": [
+            { "term": "指挥", "glossaryKey": "指挥", "tooltip": "负责喊战术、带节奏、做决策的人。" },
+            { "term": "开团", "glossaryKey": "开团", "tooltip": "主动发起团战/先手进攻。" }
+          ],
+          "score": {
+            "axes": { "moba": 3, "fps": 1, "casual": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "competitiveMind": 2, "control": 2, "social": 1, "fun": 0, "speed": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q03_a2",
+          "text": "工具人：资源管理达人",
+          "highlights": [
+            { "term": "工具人", "glossaryKey": "工具人", "tooltip": "承担支援/跑腿/运营等不显眼但关键的工作。" },
+            { "term": "资源管理", "glossaryKey": "资源管理", "tooltip": "规划经济、材料、装备、道具的分配与使用。" }
+          ],
+          "score": {
+            "axes": { "sandbox": 2, "moba": 1, "gacha": 1, "casual": 1, "fps": 0, "racing": 0 },
+            "traits": { "control": 2, "social": 1, "calm": 1, "fun": 0, "speed": 0, "competitiveMind": 0 }
+          }
+        },
+        {
+          "id": "q03_a3",
+          "text": "核心 C：伤害拉满",
+          "highlights": [
+            { "term": "C位", "glossaryKey": "C位", "tooltip": "队伍核心输出位（Carry）。" },
+            { "term": "拉满", "glossaryKey": "拉满", "tooltip": "把强度/输出/效率做到极致。" }
+          ],
+          "score": {
+            "axes": { "moba": 2, "fps": 2, "racing": 0, "gacha": 0, "sandbox": 0, "casual": 0 },
+            "traits": { "competitiveMind": 2, "control": 1, "speed": 1, "social": 0, "fun": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q03_a4",
+          "text": "辅助奶妈：兜底护航",
+          "highlights": [
+            { "term": "奶妈", "glossaryKey": "奶妈", "tooltip": "治疗/保护队友的支援角色。" },
+            { "term": "兜底", "glossaryKey": "兜底", "tooltip": "在队友失误时补救，保证团队不崩盘。" }
+          ],
+          "score": {
+            "axes": { "casual": 2, "moba": 1, "gacha": 1, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "social": 2, "calm": 2, "fun": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q03_a5",
+          "text": "极限操作手：极速与激情",
+          "highlights": [
+            { "term": "极限操作", "glossaryKey": "极限操作", "tooltip": "高难度连招/反应/走位，把可行空间压到极限。" }
+          ],
+          "score": {
+            "axes": { "fps": 2, "racing": 2, "moba": 1, "casual": 0, "gacha": 0, "sandbox": 0 },
+            "traits": { "speed": 2, "control": 2, "competitiveMind": 1, "fun": 0, "social": 0, "calm": 0 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "q04",
+      "group": "teamplay",
+      "type": "single",
+      "prompt": "遇到连败你会？",
+      "options": [
+        {
+          "id": "q04_a1",
+          "text": "复盘节奏问题，换战术",
+          "highlights": [
+            { "term": "复盘", "glossaryKey": "复盘", "tooltip": "赛后回看过程，分析失误与改进点。" }
+          ],
+          "score": {
+            "axes": { "moba": 2, "fps": 1, "casual": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "competitiveMind": 2, "control": 1, "calm": 1, "social": 0, "fun": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q04_a2",
+          "text": "抽卡换阵容，下把转运",
+          "highlights": [
+            { "term": "阵容", "glossaryKey": "阵容", "tooltip": "队伍/角色搭配组合。" },
+            { "term": "转运", "glossaryKey": "转运", "tooltip": "靠运气扭转局势的调侃说法。" }
+          ],
+          "score": {
+            "axes": { "gacha": 3, "casual": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "fun": 2, "calm": 1, "social": 0, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q04_a3",
+          "text": "回家造点更强的装备",
+          "highlights": [
+            { "term": "装备", "glossaryKey": "装备", "tooltip": "提升属性/能力的武器、防具或配件。" }
+          ],
+          "score": {
+            "axes": { "sandbox": 2, "gacha": 1, "casual": 1, "moba": 0, "fps": 0, "racing": 0 },
+            "traits": { "control": 2, "calm": 1, "fun": 0, "social": 0, "speed": 0, "competitiveMind": 0 }
+          }
+        },
+        {
+          "id": "q04_a4",
+          "text": "换图/练枪，打基础",
+          "highlights": [
+            { "term": "练枪", "glossaryKey": "练枪", "tooltip": "练习压枪、甩枪、预瞄等基本功。" }
+          ],
+          "score": {
+            "axes": { "fps": 3, "moba": 0, "casual": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "control": 2, "competitiveMind": 2, "calm": 1, "speed": 1, "social": 0, "fun": 0 }
+          }
+        },
+        {
+          "id": "q04_a5",
+          "text": "冲几把竞速换换脑子",
+          "highlights": [
+            { "term": "换脑子", "glossaryKey": "换脑子", "tooltip": "换个模式放松/重置状态的说法。" }
+          ],
+          "score": {
+            "axes": { "racing": 3, "casual": 1, "moba": 0, "fps": 0, "gacha": 0, "sandbox": 0 },
+            "traits": { "speed": 2, "fun": 1, "calm": 1, "competitiveMind": 0, "control": 0, "social": 0 }
+          }
+        },
+        {
+          "id": "q04_a6",
+          "text": "休息一下，明天再战",
+          "highlights": [
+            { "term": "再战", "glossaryKey": "再战", "tooltip": "调整心态与状态后继续挑战。" }
+          ],
+          "score": {
+            "axes": { "casual": 3, "gacha": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "calm": 3, "fun": 1, "social": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "q05",
+      "group": "fun_moment",
+      "type": "single",
+      "prompt": "你最享受的游戏瞬间？",
+      "options": [
+        {
+          "id": "q05_a1",
+          "text": "一波开团翻盘全场沸腾",
+          "highlights": [
+            { "term": "翻盘", "glossaryKey": "翻盘", "tooltip": "劣势局逆转取胜。" }
+          ],
+          "score": {
+            "axes": { "moba": 3, "fps": 1, "casual": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "competitiveMind": 2, "social": 1, "control": 1, "fun": 1, "speed": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q05_a2",
+          "text": "抽到心仪角色/满命",
+          "highlights": [
+            { "term": "满命", "glossaryKey": "满命", "tooltip": "角色命座/突破达到最高等级。" }
+          ],
+          "score": {
+            "axes": { "gacha": 3, "casual": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "fun": 2, "calm": 1, "social": 0, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q05_a3",
+          "text": "搭出复杂机关顺利运转",
+          "highlights": [
+            { "term": "机关", "glossaryKey": "机关", "tooltip": "沙盒/解谜中可触发或自动运行的装置结构。" }
+          ],
+          "score": {
+            "axes": { "sandbox": 3, "casual": 1, "moba": 0, "fps": 0, "gacha": 0, "racing": 0 },
+            "traits": { "control": 3, "fun": 1, "calm": 1, "social": 0, "speed": 0, "competitiveMind": 0 }
+          }
+        },
+        {
+          "id": "q05_a4",
+          "text": "极限 1v3 反杀",
+          "highlights": [
+            { "term": "反杀", "glossaryKey": "反杀", "tooltip": "劣势对拼中反过来击杀对手。" }
+          ],
+          "score": {
+            "axes": { "fps": 3, "moba": 1, "casual": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "competitiveMind": 2, "control": 2, "speed": 1, "social": 0, "fun": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q05_a5",
+          "text": "终点线前反超",
+          "highlights": [
+            { "term": "反超", "glossaryKey": "反超", "tooltip": "在最后阶段超越对手取得领先。" }
+          ],
+          "score": {
+            "axes": { "racing": 3, "fps": 0, "moba": 0, "sandbox": 0, "gacha": 0, "casual": 0 },
+            "traits": { "speed": 3, "competitiveMind": 1, "control": 1, "fun": 1, "social": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q05_a6",
+          "text": "朋友一起哈哈大笑",
+          "highlights": [
+            { "term": "开黑", "glossaryKey": "开黑", "tooltip": "和朋友语音组队一起玩。" }
+          ],
+          "score": {
+            "axes": { "casual": 3, "moba": 1, "gacha": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "social": 3, "fun": 3, "calm": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "q06",
+      "group": "aesthetic",
+      "type": "single",
+      "prompt": "偏爱的美术/界面风格？",
+      "options": [
+        {
+          "id": "q06_a1",
+          "text": "科幻霓虹 / 赛博 UI",
+          "highlights": [
+            { "term": "赛博", "glossaryKey": "赛博", "tooltip": "赛博朋克风：霓虹、金属、信息流与高科技质感。" }
+          ],
+          "score": {
+            "axes": { "fps": 1, "moba": 1, "racing": 1, "casual": 0, "gacha": 0, "sandbox": 0 },
+            "traits": { "control": 1, "speed": 1, "competitiveMind": 1, "fun": 0, "social": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q06_a2",
+          "text": "日系清爽 / 软萌渐变",
+          "highlights": [
+            { "term": "软萌", "glossaryKey": "软萌", "tooltip": "可爱柔和、治愈向的视觉与角色表现。" }
+          ],
+          "score": {
+            "axes": { "gacha": 2, "casual": 2, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "fun": 2, "calm": 1, "social": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q06_a3",
+          "text": "像素/方块/自然质感",
+          "highlights": [
+            { "term": "像素", "glossaryKey": "像素", "tooltip": "复古像素风：低分辨率、硬朗点阵质感。" }
+          ],
+          "score": {
+            "axes": { "sandbox": 2, "casual": 2, "moba": 0, "fps": 0, "gacha": 0, "racing": 0 },
+            "traits": { "control": 1, "calm": 2, "fun": 1, "social": 0, "speed": 0, "competitiveMind": 0 }
+          }
+        },
+        {
+          "id": "q06_a4",
+          "text": "极简战术 / HUD 信息流",
+          "highlights": [
+            { "term": "HUD", "glossaryKey": "HUD", "tooltip": "抬头显示：血量、弹药、地图等关键信息界面。" }
+          ],
+          "score": {
+            "axes": { "fps": 2, "moba": 1, "racing": 0, "casual": 0, "gacha": 0, "sandbox": 0 },
+            "traits": { "control": 2, "competitiveMind": 1, "speed": 1, "fun": 0, "social": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q06_a5",
+          "text": "速度线 / 碳纤维纹理",
+          "highlights": [
+            { "term": "速度线", "glossaryKey": "速度线", "tooltip": "表现高速运动的线条与拖影视觉语言。" }
+          ],
+          "score": {
+            "axes": { "racing": 3, "fps": 0, "moba": 0, "sandbox": 0, "gacha": 0, "casual": 0 },
+            "traits": { "speed": 3, "control": 1, "competitiveMind": 1, "fun": 0, "social": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q06_a6",
+          "text": "糖果色 / 派对贴纸感",
+          "highlights": [
+            { "term": "贴纸感", "glossaryKey": "贴纸感", "tooltip": "像贴纸/徽章一样的可爱装饰元素，轻松活泼。" }
+          ],
+          "score": {
+            "axes": { "casual": 3, "gacha": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "fun": 3, "social": 2, "calm": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "q07",
+      "group": "slang",
+      "type": "single",
+      "prompt": "更像你的一句个性签名是？",
+      "options": [
+        {
+          "id": "q07_a1",
+          "text": "节奏是门艺术",
+          "highlights": [
+            { "term": "节奏", "glossaryKey": "节奏", "tooltip": "推进/团战的时机与速度控制。" }
+          ],
+          "score": {
+            "axes": { "moba": 2, "fps": 1, "casual": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "competitiveMind": 1, "control": 1, "calm": 1, "social": 0, "fun": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q07_a2",
+          "text": "命运与我签了契约",
+          "highlights": [
+            { "term": "契约", "glossaryKey": "契约", "tooltip": "调侃“抽卡玄学/天命之子”的说法。" }
+          ],
+          "score": {
+            "axes": { "gacha": 2, "casual": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "fun": 1, "calm": 1, "social": 0, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q07_a3",
+          "text": "世界是我搭的乐高",
+          "highlights": [
+            { "term": "搭", "glossaryKey": "搭", "tooltip": "搭建/拼装/建造的泛称，强调创造过程。" }
+          ],
+          "score": {
+            "axes": { "sandbox": 2, "casual": 1, "moba": 0, "fps": 0, "gacha": 0, "racing": 0 },
+            "traits": { "control": 2, "fun": 1, "calm": 1, "social": 0, "speed": 0, "competitiveMind": 0 }
+          }
+        },
+        {
+          "id": "q07_a4",
+          "text": "精准即浪漫",
+          "highlights": [
+            { "term": "精准", "glossaryKey": "精准", "tooltip": "枪法/操作/判断的高准确度。" }
+          ],
+          "score": {
+            "axes": { "fps": 2, "moba": 1, "casual": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "control": 2, "competitiveMind": 1, "speed": 1, "fun": 0, "social": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q07_a5",
+          "text": "速度即信仰",
+          "highlights": [
+            { "term": "速度", "glossaryKey": "速度", "tooltip": "对节奏、反应、极限时间的执着追求。" }
+          ],
+          "score": {
+            "axes": { "racing": 2, "fps": 1, "moba": 0, "casual": 0, "gacha": 0, "sandbox": 0 },
+            "traits": { "speed": 3, "competitiveMind": 1, "control": 1, "fun": 0, "social": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q07_a6",
+          "text": "快乐至上",
+          "highlights": [
+            { "term": "快乐至上", "glossaryKey": "快乐至上", "tooltip": "情绪价值第一，不被输赢绑架。" }
+          ],
+          "score": {
+            "axes": { "casual": 3, "gacha": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "fun": 3, "calm": 1, "social": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "q08",
+      "group": "genre",
+      "type": "multi",
+      "maxSelect": 2,
+      "prompt": "可多选：以下你也常玩？（最多选 2 个）",
+      "options": [
+        {
+          "id": "q08_moba",
+          "text": "MOBA",
+          "highlights": [{ "term": "排位", "glossaryKey": "排位", "tooltip": "有段位/积分的竞技匹配模式。" }],
+          "score": { "axes": { "moba": 2 }, "traits": { "competitiveMind": 1, "social": 1 } }
+        },
+        {
+          "id": "q08_gacha",
+          "text": "二次元",
+          "highlights": [{ "term": "抽卡", "glossaryKey": "抽卡", "tooltip": "通过概率获得角色/道具的玩法。" }],
+          "score": { "axes": { "gacha": 2 }, "traits": { "fun": 1, "calm": 1 } }
+        },
+        {
+          "id": "q08_sandbox",
+          "text": "沙盒",
+          "highlights": [{ "term": "建造", "glossaryKey": "建造", "tooltip": "搭房子、做机关、规划基地等创造行为。" }],
+          "score": { "axes": { "sandbox": 2 }, "traits": { "control": 1, "calm": 1 } }
+        },
+        {
+          "id": "q08_fps",
+          "text": "FPS",
+          "highlights": [{ "term": "练枪", "glossaryKey": "练枪", "tooltip": "练习压枪/甩枪/预瞄等基本功。" }],
+          "score": { "axes": { "fps": 2 }, "traits": { "control": 1, "competitiveMind": 1 } }
+        },
+        {
+          "id": "q08_racing",
+          "text": "竞速",
+          "highlights": [{ "term": "跑图", "glossaryKey": "跑图", "tooltip": "反复练习地图线路与最优过弯点。" }],
+          "score": { "axes": { "racing": 2 }, "traits": { "speed": 1, "control": 1 } }
+        },
+        {
+          "id": "q08_casual",
+          "text": "休闲派对",
+          "highlights": [{ "term": "娱乐局", "glossaryKey": "娱乐局", "tooltip": "不严肃、不上分，主打开心。" }],
+          "score": { "axes": { "casual": 2 }, "traits": { "fun": 1, "social": 1 } }
+        }
+      ]
+    },
+
+    {
+      "id": "q09",
+      "group": "teamplay",
+      "type": "single",
+      "prompt": "看到队友失误，你更可能？",
+      "options": [
+        {
+          "id": "q09_a1",
+          "text": "先稳住：别急，能打就打",
+          "highlights": [{ "term": "稳住", "glossaryKey": "稳住", "tooltip": "不冲动，先把局势稳定下来。" }],
+          "score": {
+            "axes": { "casual": 1, "moba": 1, "fps": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "calm": 2, "social": 1, "competitiveMind": 1, "fun": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q09_a2",
+          "text": "给信息：报点/报技能冷却",
+          "highlights": [
+            { "term": "报点", "glossaryKey": "报点", "tooltip": "通报敌人位置/动向。" },
+            { "term": "冷却", "glossaryKey": "冷却", "tooltip": "技能/道具可再次使用前的等待时间。" }
+          ],
+          "score": {
+            "axes": { "fps": 1, "moba": 2, "casual": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "social": 2, "control": 1, "competitiveMind": 1, "calm": 0, "fun": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q09_a3",
+          "text": "兜底救场：我来补位",
+          "highlights": [{ "term": "补位", "glossaryKey": "补位", "tooltip": "临时承担缺失的职责/位置。" }],
+          "score": {
+            "axes": { "casual": 1, "moba": 1, "fps": 0, "gacha": 1, "sandbox": 0, "racing": 0 },
+            "traits": { "social": 2, "calm": 1, "fun": 0, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q09_a4",
+          "text": "直接开喷：别送了！",
+          "highlights": [{ "term": "开喷", "glossaryKey": "开喷", "tooltip": "情绪化指责/输出队友的行为。" }],
+          "score": {
+            "axes": { "moba": 1, "fps": 1, "casual": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "competitiveMind": 2, "control": 0, "speed": 0, "social": -1, "calm": -1, "fun": 0 }
+          }
+        },
+        {
+          "id": "q09_a5",
+          "text": "开摆：随缘吧",
+          "highlights": [{ "term": "开摆", "glossaryKey": "开摆", "tooltip": "放弃认真操作，躺平随缘。" }],
+          "score": {
+            "axes": { "casual": 2, "gacha": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "calm": 2, "fun": 1, "competitiveMind": -1, "social": 0, "control": 0, "speed": 0 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "q10",
+      "group": "economy_grind",
+      "type": "single",
+      "prompt": "进游戏第一件事，你通常会做？",
+      "options": [
+        {
+          "id": "q10_a1",
+          "text": "先领日常/清体力",
+          "highlights": [
+            { "term": "日常", "glossaryKey": "日常", "tooltip": "每天固定刷新、奖励稳定的任务。" },
+            { "term": "体力", "glossaryKey": "体力", "tooltip": "限制刷关/活动次数的资源。" }
+          ],
+          "score": {
+            "axes": { "gacha": 2, "casual": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "control": 1, "calm": 1, "fun": 0, "social": 0, "speed": 0, "competitiveMind": 0 }
+          }
+        },
+        {
+          "id": "q10_a2",
+          "text": "先热身：训练场/靶场",
+          "highlights": [{ "term": "热身", "glossaryKey": "热身", "tooltip": "开局前做短时练习进入状态。" }],
+          "score": {
+            "axes": { "fps": 2, "moba": 1, "casual": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "control": 2, "competitiveMind": 1, "speed": 1, "fun": 0, "social": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q10_a3",
+          "text": "先看地图/路线，准备跑图",
+          "highlights": [{ "term": "跑图", "glossaryKey": "跑图", "tooltip": "反复练习地图线路与最优点位。" }],
+          "score": {
+            "axes": { "racing": 2, "sandbox": 1, "casual": 0, "moba": 0, "fps": 0, "gacha": 0 },
+            "traits": { "speed": 2, "control": 1, "competitiveMind": 1, "calm": 0, "fun": 0, "social": 0 }
+          }
+        },
+        {
+          "id": "q10_a4",
+          "text": "先逛外观：换皮肤/换装",
+          "highlights": [{ "term": "外观党", "glossaryKey": "外观党", "tooltip": "更看重角色皮肤、装扮与审美表达的玩家。" }],
+          "score": {
+            "axes": { "casual": 2, "gacha": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "fun": 2, "social": 1, "calm": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q10_a5",
+          "text": "先拉队：喊人开黑",
+          "highlights": [{ "term": "拉人", "glossaryKey": "拉人", "tooltip": "把朋友/队友拉进房间或队伍。" }],
+          "score": {
+            "axes": { "casual": 2, "moba": 1, "fps": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "social": 3, "fun": 1, "calm": 0, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q10_a6",
+          "text": "先研究配装/符文/天赋",
+          "highlights": [
+            { "term": "配装", "glossaryKey": "配装", "tooltip": "选择装备、属性、套装以优化表现。" },
+            { "term": "符文", "glossaryKey": "符文", "tooltip": "提供被动增益的配置系统。" }
+          ],
+          "score": {
+            "axes": { "moba": 1, "fps": 1, "gacha": 1, "sandbox": 0, "racing": 0, "casual": 0 },
+            "traits": { "control": 2, "competitiveMind": 1, "calm": 1, "fun": 0, "social": 0, "speed": 0 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "q11",
+      "group": "genre",
+      "type": "single",
+      "prompt": "你更在意游戏里的哪件事？",
+      "options": [
+        {
+          "id": "q11_a1",
+          "text": "赢：上分才是正道",
+          "highlights": [{ "term": "上分", "glossaryKey": "上分", "tooltip": "提升段位/积分。" }],
+          "score": {
+            "axes": { "moba": 2, "fps": 2, "racing": 1, "casual": 0, "gacha": 0, "sandbox": 0 },
+            "traits": { "competitiveMind": 3, "control": 1, "speed": 1, "social": 0, "fun": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q11_a2",
+          "text": "收集：图鉴/角色全都要",
+          "highlights": [{ "term": "图鉴", "glossaryKey": "图鉴", "tooltip": "收集记录系统：角色、道具、成就等。" }],
+          "score": {
+            "axes": { "gacha": 3, "casual": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "fun": 2, "calm": 1, "social": 0, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q11_a3",
+          "text": "建造：从零搭出一个世界",
+          "highlights": [{ "term": "从零到一", "glossaryKey": "从零到一", "tooltip": "强调创造与逐步完善的过程。" }],
+          "score": {
+            "axes": { "sandbox": 3, "casual": 1, "moba": 0, "fps": 0, "gacha": 0, "racing": 0 },
+            "traits": { "control": 3, "calm": 1, "fun": 1, "social": 0, "speed": 0, "competitiveMind": 0 }
+          }
+        },
+        {
+          "id": "q11_a4",
+          "text": "操作：手感到位就爽",
+          "highlights": [{ "term": "手感", "glossaryKey": "手感", "tooltip": "操作反馈的顺滑程度与可控性。" }],
+          "score": {
+            "axes": { "fps": 2, "racing": 2, "moba": 1, "casual": 0, "gacha": 0, "sandbox": 0 },
+            "traits": { "control": 3, "speed": 2, "competitiveMind": 1, "fun": 0, "social": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q11_a5",
+          "text": "速度：节奏拉满不墨迹",
+          "highlights": [{ "term": "拉满", "glossaryKey": "拉满", "tooltip": "把强度/效率做到极致。" }],
+          "score": {
+            "axes": { "racing": 3, "moba": 1, "fps": 1, "casual": 0, "gacha": 0, "sandbox": 0 },
+            "traits": { "speed": 3, "competitiveMind": 1, "control": 1, "fun": 0, "social": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q11_a6",
+          "text": "社交：跟朋友一起才好玩",
+          "highlights": [{ "term": "带飞", "glossaryKey": "带飞", "tooltip": "实力较强的队友带着一起赢/通关。" }],
+          "score": {
+            "axes": { "casual": 3, "moba": 1, "gacha": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "social": 3, "fun": 2, "calm": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "q12",
+      "group": "slang",
+      "type": "single",
+      "prompt": "黑话翻译：\"稳住别浪\" 更接近哪种意思？",
+      "options": [
+        {
+          "id": "q12_a1",
+          "text": "别冲动，先保命再找机会",
+          "highlights": [{ "term": "别浪", "glossaryKey": "浪", "tooltip": "浪 = 冒进、上头、不稳。别浪=别乱来。"}],
+          "score": {
+            "axes": { "moba": 2, "fps": 1, "casual": 1, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "calm": 2, "competitiveMind": 1, "control": 1, "social": 0, "fun": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q12_a2",
+          "text": "赶紧开团，抢节奏",
+          "highlights": [{ "term": "抢节奏", "glossaryKey": "抢节奏", "tooltip": "主动制造对自己有利的推进/团战节奏。"}],
+          "score": {
+            "axes": { "moba": 2, "fps": 0, "casual": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "competitiveMind": 2, "control": 1, "speed": 1, "social": 0, "fun": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q12_a3",
+          "text": "随缘吧，开心就行",
+          "highlights": [{ "term": "随缘", "glossaryKey": "随缘", "tooltip": "不强求结果，心态放平。"}],
+          "score": {
+            "axes": { "casual": 3, "gacha": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "calm": 3, "fun": 1, "social": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q12_a4",
+          "text": "去刷装备/升级再回来打",
+          "highlights": [{ "term": "发育", "glossaryKey": "发育", "tooltip": "通过刷资源/升级/经济积累变强。"}],
+          "score": {
+            "axes": { "sandbox": 1, "moba": 1, "gacha": 1, "casual": 1, "fps": 0, "racing": 0 },
+            "traits": { "control": 1, "calm": 1, "fun": 0, "social": 0, "speed": 0, "competitiveMind": 0 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "q13",
+      "group": "slang",
+      "type": "single",
+      "prompt": "场景题：Boss 还剩 10% 血，队友倒了，你会喊？",
+      "options": [
+        {
+          "id": "q13_a1",
+          "text": "RUSH！直接一波带走",
+          "highlights": [{ "term": "RUSH", "glossaryKey": "RUSH", "tooltip": "快速压上、强行推进/集火结束战斗。"}],
+          "score": {
+            "axes": { "moba": 1, "fps": 1, "racing": 0, "gacha": 0, "sandbox": 0, "casual": 0 },
+            "traits": { "competitiveMind": 2, "speed": 2, "control": 0, "social": 1, "fun": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q13_a2",
+          "text": "先拉人！稳住别浪",
+          "highlights": [
+            { "term": "拉人", "glossaryKey": "拉人", "tooltip": "复活/救起队友或把人拉进安全位置。"},
+            { "term": "稳住", "glossaryKey": "稳住", "tooltip": "先稳定局势再输出。"}
+          ],
+          "score": {
+            "axes": { "casual": 1, "moba": 1, "gacha": 1, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "social": 2, "calm": 2, "competitiveMind": 1, "control": 0, "fun": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q13_a3",
+          "text": "给我资源！我来兜底",
+          "highlights": [{ "term": "兜底", "glossaryKey": "兜底", "tooltip": "承担补救责任，保证不崩盘。"}],
+          "score": {
+            "axes": { "moba": 1, "sandbox": 1, "casual": 1, "gacha": 0, "fps": 0, "racing": 0 },
+            "traits": { "control": 1, "social": 1, "calm": 1, "competitiveMind": 1, "fun": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q13_a4",
+          "text": "别急，先保命再输出",
+          "highlights": [{ "term": "保命", "glossaryKey": "保命", "tooltip": "优先活着，避免团灭或断节奏。"}],
+          "score": {
+            "axes": { "casual": 1, "moba": 1, "fps": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "calm": 2, "control": 1, "competitiveMind": 0, "social": 0, "fun": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q13_a5",
+          "text": "算了算了，下一把",
+          "highlights": [{ "term": "下一把", "glossaryKey": "下一把", "tooltip": "放弃当前局，准备重开。"}],
+          "score": {
+            "axes": { "casual": 2, "gacha": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "calm": 2, "fun": 1, "competitiveMind": -1, "social": 0, "control": 0, "speed": 0 }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "q14",
+      "group": "economy_grind",
+      "type": "single",
+      "prompt": "你对“氪金”的态度更像？",
+      "options": [
+        {
+          "id": "q14_a1",
+          "text": "理性微氪：买月卡就够",
+          "highlights": [{ "term": "月卡", "glossaryKey": "月卡", "tooltip": "按月付费获取稳定资源的礼包。"}],
+          "score": {
+            "axes": { "gacha": 2, "casual": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "calm": 1, "control": 1, "fun": 0, "social": 0, "speed": 0, "competitiveMind": 0 }
+          }
+        },
+        {
+          "id": "q14_a2",
+          "text": "全靠肝：不花钱也能毕业",
+          "highlights": [
+            { "term": "肝", "glossaryKey": "肝", "tooltip": "大量投入时间刷任务/材料。"},
+            { "term": "毕业", "glossaryKey": "毕业", "tooltip": "装备/养成达到目标上限或“完成形态”。"}
+          ],
+          "score": {
+            "axes": { "gacha": 1, "sandbox": 1, "moba": 0, "fps": 0, "racing": 0, "casual": 0 },
+            "traits": { "control": 1, "competitiveMind": 1, "calm": 0, "fun": 0, "social": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q14_a3",
+          "text": "为外观买单：皮肤就是战力",
+          "highlights": [{ "term": "皮肤", "glossaryKey": "皮肤", "tooltip": "角色/武器外观装扮。"}],
+          "score": {
+            "axes": { "casual": 2, "gacha": 1, "moba": 1, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "fun": 2, "social": 1, "calm": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q14_a4",
+          "text": "为了强度：抽到关键卡/角色",
+          "highlights": [{ "term": "强度", "glossaryKey": "强度", "tooltip": "角色/装备的实战能力与数值表现。"}],
+          "score": {
+            "axes": { "gacha": 2, "moba": 1, "fps": 0, "sandbox": 0, "racing": 0, "casual": 0 },
+            "traits": { "competitiveMind": 1, "control": 1, "fun": 0, "social": 0, "speed": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q14_a5",
+          "text": "不氪不肝：纯当放松",
+          "highlights": [{ "term": "不肝", "glossaryKey": "不肝", "tooltip": "不做高强度日常/刷材料，轻度游玩。"}],
+          "score": {
+            "axes": { "casual": 3, "gacha": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "calm": 2, "fun": 2, "social": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "q15",
+      "group": "aesthetic",
+      "type": "single",
+      "prompt": "你最常用的语气/表情更像？",
+      "options": [
+        {
+          "id": "q15_a1",
+          "text": "“稳住稳住”型（低压沟通）",
+          "highlights": [{ "term": "低压沟通", "glossaryKey": "低压沟通", "tooltip": "不刺激队友情绪，强调协作与解决问题。"}],
+          "score": {
+            "axes": { "casual": 1, "moba": 1, "gacha": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "calm": 2, "social": 1, "fun": 0, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q15_a2",
+          "text": "“开干开干”型（热血上头）",
+          "highlights": [{ "term": "上头", "glossaryKey": "上头", "tooltip": "情绪/兴奋上来，容易冲动决策。"}],
+          "score": {
+            "axes": { "moba": 1, "fps": 1, "racing": 1, "casual": 0, "gacha": 0, "sandbox": 0 },
+            "traits": { "competitiveMind": 2, "speed": 1, "social": 0, "fun": 0, "control": 0, "calm": -1 }
+          }
+        },
+        {
+          "id": "q15_a3",
+          "text": "“哈哈哈”型（氛围拉满）",
+          "highlights": [{ "term": "氛围拉满", "glossaryKey": "氛围拉满", "tooltip": "用玩笑/互动让队伍更开心。"}],
+          "score": {
+            "axes": { "casual": 2, "moba": 1, "gacha": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "fun": 3, "social": 2, "calm": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q15_a4",
+          "text": "“报点报点”型（信息控）",
+          "highlights": [{ "term": "信息控", "glossaryKey": "信息控", "tooltip": "重视信息优势：位置、资源、技能、时间。"}],
+          "score": {
+            "axes": { "fps": 1, "moba": 2, "casual": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "control": 2, "competitiveMind": 1, "social": 1, "fun": 0, "speed": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q15_a5",
+          "text": "“不急不急”型（佛系躺平）",
+          "highlights": [{ "term": "躺平", "glossaryKey": "躺平", "tooltip": "降低投入与胜负执念，放松游玩。"}],
+          "score": {
+            "axes": { "casual": 2, "gacha": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "calm": 3, "fun": 1, "social": 0, "competitiveMind": -1, "control": 0, "speed": 0 }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "q16",
+      "group": "genre",
+      "type": "single",
+      "prompt": "你更喜欢哪种“成长方式”？",
+      "options": [
+        {
+          "id": "q16_a1",
+          "text": "排位段位一路上升",
+          "highlights": [{ "term": "段位", "glossaryKey": "段位", "tooltip": "竞技排名等级。"}],
+          "score": {
+            "axes": { "moba": 2, "fps": 2, "racing": 1, "casual": 0, "gacha": 0, "sandbox": 0 },
+            "traits": { "competitiveMind": 3, "control": 1, "speed": 1, "calm": 0, "social": 0, "fun": 0 }
+          }
+        },
+        {
+          "id": "q16_a2",
+          "text": "抽卡满命/满精",
+          "highlights": [
+            { "term": "满命", "glossaryKey": "满命", "tooltip": "命座/突破满级。"},
+            { "term": "满精", "glossaryKey": "满精", "tooltip": "武器/道具精炼或强化到最高等级。"}
+          ],
+          "score": {
+            "axes": { "gacha": 3, "casual": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "fun": 2, "calm": 1, "control": 0, "competitiveMind": 0, "social": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q16_a3",
+          "text": "装备毕业/词条完美",
+          "highlights": [
+            { "term": "毕业", "glossaryKey": "毕业", "tooltip": "达成理想上限配置。"},
+            { "term": "词条", "glossaryKey": "词条", "tooltip": "装备/圣遗物等的属性条目。"}
+          ],
+          "score": {
+            "axes": { "gacha": 1, "sandbox": 1, "moba": 1, "fps": 0, "racing": 0, "casual": 0 },
+            "traits": { "control": 2, "competitiveMind": 1, "calm": 0, "fun": 0, "social": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q16_a4",
+          "text": "房子装修/基地扩建",
+          "highlights": [{ "term": "基地扩建", "glossaryKey": "基地扩建", "tooltip": "扩大功能区、提升产能与舒适度。"}],
+          "score": {
+            "axes": { "sandbox": 3, "casual": 1, "moba": 0, "fps": 0, "gacha": 0, "racing": 0 },
+            "traits": { "control": 2, "calm": 1, "fun": 1, "social": 0, "speed": 0, "competitiveMind": 0 }
+          }
+        },
+        {
+          "id": "q16_a5",
+          "text": "枪法提升：KD 变好看",
+          "highlights": [{ "term": "KD", "glossaryKey": "KD", "tooltip": "击杀/死亡比，用来衡量对战表现。"}],
+          "score": {
+            "axes": { "fps": 3, "moba": 0, "racing": 0, "casual": 0, "gacha": 0, "sandbox": 0 },
+            "traits": { "control": 2, "competitiveMind": 2, "speed": 1, "fun": 0, "social": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q16_a6",
+          "text": "速通纪录：刷新 PB",
+          "highlights": [
+            { "term": "速通", "glossaryKey": "速通", "tooltip": "以最短时间完成关卡/流程。"},
+            { "term": "PB", "glossaryKey": "PB", "tooltip": "Personal Best，个人最好成绩。"}
+          ],
+          "score": {
+            "axes": { "racing": 3, "fps": 1, "moba": 0, "casual": 0, "gacha": 0, "sandbox": 0 },
+            "traits": { "speed": 3, "control": 1, "competitiveMind": 1, "fun": 0, "social": 0, "calm": 0 }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "q17",
+      "group": "economy_grind",
+      "type": "single",
+      "prompt": "你对“肝”的看法更像？",
+      "options": [
+        {
+          "id": "q17_a1",
+          "text": "我能肝：刷到毕业为止",
+          "highlights": [
+            { "term": "肝", "glossaryKey": "肝", "tooltip": "高强度投入时间刷资源。"},
+            { "term": "毕业", "glossaryKey": "毕业", "tooltip": "达成理想上限配置。"}
+          ],
+          "score": {
+            "axes": { "gacha": 1, "sandbox": 1, "moba": 1, "fps": 0, "racing": 0, "casual": 0 },
+            "traits": { "competitiveMind": 1, "control": 1, "calm": 0, "fun": 0, "social": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q17_a2",
+          "text": "只做高性价比：不当韭菜",
+          "highlights": [{ "term": "性价比", "glossaryKey": "性价比", "tooltip": "投入时间/金钱与收益的比值。"}],
+          "score": {
+            "axes": { "gacha": 1, "moba": 1, "casual": 1, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "control": 1, "calm": 1, "competitiveMind": 0, "fun": 0, "social": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q17_a3",
+          "text": "不肝：我只想轻松玩",
+          "highlights": [{ "term": "轻松玩", "glossaryKey": "轻松玩", "tooltip": "低投入、低压力的游玩方式。"}],
+          "score": {
+            "axes": { "casual": 3, "gacha": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "calm": 2, "fun": 2, "social": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q17_a4",
+          "text": "看心情：有活动再肝一波",
+          "highlights": [{ "term": "活动", "glossaryKey": "活动", "tooltip": "限时玩法/奖励周期。"}],
+          "score": {
+            "axes": { "gacha": 1, "casual": 2, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "fun": 1, "calm": 1, "social": 0, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q17_a5",
+          "text": "肝可以，但要跟朋友一起肝",
+          "highlights": [{ "term": "组队", "glossaryKey": "组队", "tooltip": "一起刷本/做任务，效率和乐趣更高。"}],
+          "score": {
+            "axes": { "casual": 2, "gacha": 1, "moba": 1, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "social": 2, "fun": 1, "calm": 0, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "q18",
+      "group": "teamplay",
+      "type": "single",
+      "prompt": "你最能忍受哪种队友？",
+      "options": [
+        {
+          "id": "q18_a1",
+          "text": "菜但听指挥：能配合就行",
+          "highlights": [{ "term": "配合", "glossaryKey": "配合", "tooltip": "团队协作执行战术。"}],
+          "score": {
+            "axes": { "moba": 2, "casual": 1, "fps": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "social": 1, "competitiveMind": 1, "calm": 1, "control": 0, "fun": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q18_a2",
+          "text": "强但话少：能赢就行",
+          "highlights": [{ "term": "话少", "glossaryKey": "话少", "tooltip": "不爱交流但效率高。"}],
+          "score": {
+            "axes": { "fps": 1, "moba": 1, "racing": 1, "casual": 0, "gacha": 0, "sandbox": 0 },
+            "traits": { "competitiveMind": 2, "control": 1, "calm": 0, "social": -1, "fun": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q18_a3",
+          "text": "整活型：节目效果拉满",
+          "highlights": [{ "term": "整活", "glossaryKey": "整活", "tooltip": "做出搞笑/出其不意的操作制造节目效果。"}],
+          "score": {
+            "axes": { "casual": 3, "moba": 0, "fps": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "fun": 3, "social": 2, "calm": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q18_a4",
+          "text": "肝帝型：带你刷本带你飞",
+          "highlights": [{ "term": "肝帝", "glossaryKey": "肝帝", "tooltip": "投入时间极多、进度领先的玩家。"}],
+          "score": {
+            "axes": { "gacha": 1, "moba": 1, "casual": 1, "sandbox": 0, "fps": 0, "racing": 0 },
+            "traits": { "social": 1, "control": 1, "competitiveMind": 1, "fun": 0, "calm": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q18_a5",
+          "text": "佛系型：不吵不闹就好",
+          "highlights": [{ "term": "佛系", "glossaryKey": "佛系", "tooltip": "心态平和，不强求输赢。"}],
+          "score": {
+            "axes": { "casual": 2, "gacha": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "calm": 3, "fun": 1, "social": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "q19",
+      "group": "economy_grind",
+      "type": "single",
+      "prompt": "“开黑”对你来说更像？",
+      "options": [
+        {
+          "id": "q19_a1",
+          "text": "冲分：今晚必须上大段",
+          "highlights": [{ "term": "冲分", "glossaryKey": "冲分", "tooltip": "集中时间冲段位/分数。"}],
+          "score": {
+            "axes": { "moba": 2, "fps": 1, "racing": 1, "casual": 0, "gacha": 0, "sandbox": 0 },
+            "traits": { "competitiveMind": 3, "control": 1, "speed": 1, "social": 0, "fun": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q19_a2",
+          "text": "社交：聊天比游戏重要",
+          "highlights": [{ "term": "唠嗑", "glossaryKey": "唠嗑", "tooltip": "边玩边聊天，氛围优先。"}],
+          "score": {
+            "axes": { "casual": 3, "moba": 1, "gacha": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "social": 3, "fun": 2, "calm": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q19_a3",
+          "text": "放松：下班解压用",
+          "highlights": [{ "term": "解压", "glossaryKey": "解压", "tooltip": "释放压力、获得情绪舒缓。"}],
+          "score": {
+            "axes": { "casual": 3, "gacha": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "calm": 2, "fun": 2, "social": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q19_a4",
+          "text": "训练：保持手感和反应",
+          "highlights": [{ "term": "手感", "glossaryKey": "手感", "tooltip": "操作反馈的顺滑与熟练度。"}],
+          "score": {
+            "axes": { "fps": 2, "racing": 1, "moba": 1, "casual": 0, "gacha": 0, "sandbox": 0 },
+            "traits": { "control": 2, "competitiveMind": 1, "speed": 1, "calm": 0, "social": 0, "fun": 0 }
+          }
+        },
+        {
+          "id": "q19_a5",
+          "text": "创造：一起建东西最快乐",
+          "highlights": [{ "term": "共建", "glossaryKey": "共建", "tooltip": "多人协作建造基地/设施/作品。"}],
+          "score": {
+            "axes": { "sandbox": 2, "casual": 2, "moba": 0, "fps": 0, "gacha": 0, "racing": 0 },
+            "traits": { "control": 1, "fun": 2, "social": 2, "calm": 1, "competitiveMind": 0, "speed": 0 }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "q20",
+      "group": "fun_moment",
+      "type": "single",
+      "prompt": "选择地图/模式时，你会偏向？",
+      "options": [
+        {
+          "id": "q20_a1",
+          "text": "排位：上分优先",
+          "highlights": [{ "term": "排位", "glossaryKey": "排位", "tooltip": "段位/积分竞技匹配。"}],
+          "score": {
+            "axes": { "moba": 2, "fps": 2, "racing": 1, "casual": 0, "gacha": 0, "sandbox": 0 },
+            "traits": { "competitiveMind": 3, "control": 1, "speed": 1, "social": 0, "fun": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q20_a2",
+          "text": "娱乐：整活/随机/欢乐局",
+          "highlights": [{ "term": "欢乐局", "glossaryKey": "欢乐局", "tooltip": "不严肃的娱乐对局。"}],
+          "score": {
+            "axes": { "casual": 3, "moba": 0, "fps": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "fun": 3, "social": 2, "calm": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q20_a3",
+          "text": "训练：固定图练到熟",
+          "highlights": [{ "term": "固定图", "glossaryKey": "固定图", "tooltip": "固定选择同一地图进行针对性练习。"}],
+          "score": {
+            "axes": { "fps": 2, "racing": 1, "moba": 1, "casual": 0, "gacha": 0, "sandbox": 0 },
+            "traits": { "control": 2, "competitiveMind": 1, "speed": 1, "calm": 0, "social": 0, "fun": 0 }
+          }
+        },
+        {
+          "id": "q20_a4",
+          "text": "探索：新地图/新机制先尝鲜",
+          "highlights": [{ "term": "尝鲜", "glossaryKey": "尝鲜", "tooltip": "优先体验新内容而非追求效率。"}],
+          "score": {
+            "axes": { "sandbox": 1, "gacha": 1, "casual": 1, "moba": 0, "fps": 0, "racing": 0 },
+            "traits": { "fun": 2, "calm": 1, "control": 0, "social": 0, "speed": 0, "competitiveMind": 0 }
+          }
+        },
+        {
+          "id": "q20_a5",
+          "text": "竞速：最短路线/最稳过弯",
+          "highlights": [{ "term": "过弯", "glossaryKey": "过弯", "tooltip": "入弯/出弯的线路与速度控制。"}],
+          "score": {
+            "axes": { "racing": 3, "fps": 0, "moba": 0, "sandbox": 0, "gacha": 0, "casual": 0 },
+            "traits": { "speed": 3, "control": 2, "competitiveMind": 1, "fun": 0, "social": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q20_a6",
+          "text": "PVE：刷本/材料/装备",
+          "highlights": [{ "term": "刷本", "glossaryKey": "刷本", "tooltip": "重复打副本获取材料/装备。"}],
+          "score": {
+            "axes": { "gacha": 1, "sandbox": 1, "casual": 1, "moba": 0, "fps": 0, "racing": 0 },
+            "traits": { "control": 1, "calm": 1, "fun": 0, "social": 0, "speed": 0, "competitiveMind": 0 }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "q21",
+      "group": "slang",
+      "type": "single",
+      "prompt": "当你说“这波赚了”，通常指？",
+      "options": [
+        {
+          "id": "q21_a1",
+          "text": "团战换掉对面核心，稳赚",
+          "highlights": [{ "term": "换掉", "glossaryKey": "换掉", "tooltip": "用自己/队友的代价换掉关键目标。"}],
+          "score": {
+            "axes": { "moba": 2, "fps": 1, "casual": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "competitiveMind": 2, "control": 1, "calm": 0, "social": 0, "fun": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q21_a2",
+          "text": "抽卡一发出金，血赚",
+          "highlights": [{ "term": "血赚", "glossaryKey": "血赚", "tooltip": "收益远超预期，特别划算。"}],
+          "score": {
+            "axes": { "gacha": 3, "casual": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "fun": 2, "calm": 1, "social": 0, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q21_a3",
+          "text": "捡到稀有材料/毕业词条",
+          "highlights": [{ "term": "稀有", "glossaryKey": "稀有", "tooltip": "掉率低或获取成本高的物品/属性。"}],
+          "score": {
+            "axes": { "sandbox": 1, "gacha": 1, "casual": 1, "moba": 0, "fps": 0, "racing": 0 },
+            "traits": { "control": 1, "fun": 1, "calm": 1, "social": 0, "speed": 0, "competitiveMind": 0 }
+          }
+        },
+        {
+          "id": "q21_a4",
+          "text": "反杀成功，打回面子",
+          "highlights": [{ "term": "面子", "glossaryKey": "面子", "tooltip": "调侃“争口气/不服就干”的心态。"}],
+          "score": {
+            "axes": { "fps": 2, "moba": 1, "casual": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "competitiveMind": 2, "control": 1, "speed": 1, "social": 0, "fun": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q21_a5",
+          "text": "朋友一起整活：快乐血赚",
+          "highlights": [{ "term": "整活", "glossaryKey": "整活", "tooltip": "制造节目效果的搞笑操作。"}],
+          "score": {
+            "axes": { "casual": 3, "moba": 0, "fps": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "fun": 3, "social": 2, "calm": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "q22",
+      "group": "fun_moment",
+      "type": "single",
+      "prompt": "你最想炫耀的一张截图是？",
+      "options": [
+        {
+          "id": "q22_a1",
+          "text": "五杀/超神结算",
+          "highlights": [
+            { "term": "五杀", "glossaryKey": "五杀", "tooltip": "一次团战/短时间内击杀对方五人。"},
+            { "term": "超神", "glossaryKey": "超神", "tooltip": "连续击杀不死，表现非常强势。"}
+          ],
+          "score": {
+            "axes": { "moba": 3, "fps": 1, "casual": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "competitiveMind": 2, "control": 1, "fun": 1, "social": 0, "speed": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q22_a2",
+          "text": "出金十连/欧皇时刻",
+          "highlights": [
+            { "term": "十连", "glossaryKey": "十连", "tooltip": "一次性抽取 10 次。"},
+            { "term": "欧皇", "glossaryKey": "欧皇", "tooltip": "运气极好的人（常指抽卡）。"}
+          ],
+          "score": {
+            "axes": { "gacha": 3, "casual": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "fun": 2, "calm": 1, "social": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q22_a3",
+          "text": "基地完工/机关启动的瞬间",
+          "highlights": [{ "term": "完工", "glossaryKey": "完工", "tooltip": "建造/制作完成的成就感时刻。"}],
+          "score": {
+            "axes": { "sandbox": 3, "casual": 1, "moba": 0, "fps": 0, "gacha": 0, "racing": 0 },
+            "traits": { "control": 3, "fun": 1, "calm": 1, "social": 0, "speed": 0, "competitiveMind": 0 }
+          }
+        },
+        {
+          "id": "q22_a4",
+          "text": "残局 1v3 反杀回放",
+          "highlights": [{ "term": "回放", "glossaryKey": "回放", "tooltip": "录像/精彩集锦，用来复盘或炫耀。"}],
+          "score": {
+            "axes": { "fps": 3, "moba": 1, "casual": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "competitiveMind": 2, "control": 2, "speed": 1, "fun": 0, "social": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q22_a5",
+          "text": "竞速 PB：0.01 秒提升",
+          "highlights": [{ "term": "PB", "glossaryKey": "PB", "tooltip": "Personal Best，个人最好成绩。"}],
+          "score": {
+            "axes": { "racing": 3, "fps": 0, "moba": 0, "sandbox": 0, "gacha": 0, "casual": 0 },
+            "traits": { "speed": 3, "control": 2, "competitiveMind": 1, "fun": 0, "social": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q22_a6",
+          "text": "朋友整活合照：笑到断气",
+          "highlights": [{ "term": "断气", "glossaryKey": "断气", "tooltip": "夸张说法：笑到不行/笑疯了。"}],
+          "score": {
+            "axes": { "casual": 3, "moba": 0, "fps": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "fun": 3, "social": 3, "calm": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "q23",
+      "group": "slang",
+      "type": "single",
+      "prompt": "你最讨厌听到的一句黑话是？",
+      "options": [
+        {
+          "id": "q23_a1",
+          "text": "“别急，稳住”——但大家都不稳",
+          "highlights": [{ "term": "稳住", "glossaryKey": "稳住", "tooltip": "先稳定局势，避免失误扩大。"}],
+          "score": {
+            "axes": { "moba": 1, "casual": 0, "fps": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "competitiveMind": 1, "calm": 0, "social": 0, "fun": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q23_a2",
+          "text": "“运气不好”——永远在甩锅",
+          "highlights": [{ "term": "甩锅", "glossaryKey": "甩锅", "tooltip": "把责任推给他人/运气/系统。"}],
+          "score": {
+            "axes": { "gacha": 1, "casual": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "competitiveMind": 1, "calm": 0, "social": 0, "fun": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q23_a3",
+          "text": "“这波我能 C”——然后就送",
+          "highlights": [
+            { "term": "C", "glossaryKey": "C位", "tooltip": "核心输出位（Carry）。"},
+            { "term": "送", "glossaryKey": "送", "tooltip": "失误白给，把优势送给对面。"}
+          ],
+          "score": {
+            "axes": { "moba": 1, "fps": 1, "casual": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "competitiveMind": 1, "control": 0, "calm": 0, "social": 0, "fun": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q23_a4",
+          "text": "“别怂，上！”——强行开冲",
+          "highlights": [{ "term": "上头", "glossaryKey": "上头", "tooltip": "兴奋冲动，容易做冒进决策。"}],
+          "score": {
+            "axes": { "fps": 1, "moba": 1, "racing": 0, "casual": 0, "gacha": 0, "sandbox": 0 },
+            "traits": { "calm": 0, "competitiveMind": 1, "speed": 1, "social": 0, "fun": 0, "control": 0 }
+          }
+        },
+        {
+          "id": "q23_a5",
+          "text": "“随便玩玩”——但其实很较真",
+          "highlights": [{ "term": "较真", "glossaryKey": "较真", "tooltip": "表面随意，实际对输赢/细节很在意。"}],
+          "score": {
+            "axes": { "casual": 1, "moba": 1, "fps": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "competitiveMind": 1, "calm": 0, "fun": 0, "social": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q23_a6",
+          "text": "“我去摸鱼了”——关键时刻消失",
+          "highlights": [{ "term": "摸鱼", "glossaryKey": "摸鱼", "tooltip": "偷懒/不认真输出/划水。"}],
+          "score": {
+            "axes": { "moba": 1, "casual": 0, "fps": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "competitiveMind": 1, "social": -1, "calm": 0, "fun": 0, "control": 0, "speed": 0 }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "q24",
+      "group": "teamplay",
+      "type": "single",
+      "prompt": "终极题：今晚开黑，你最希望队友是？",
+      "options": [
+        {
+          "id": "q24_a1",
+          "text": "会指挥：能带节奏",
+          "highlights": [{ "term": "带节奏", "glossaryKey": "带节奏", "tooltip": "引导团队行动与推进方向。"}],
+          "score": {
+            "axes": { "moba": 2, "fps": 1, "casual": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "competitiveMind": 2, "control": 1, "social": 1, "fun": 0, "speed": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q24_a2",
+          "text": "会整活：笑点密集",
+          "highlights": [{ "term": "整活", "glossaryKey": "整活", "tooltip": "制造节目效果的搞笑操作。"}],
+          "score": {
+            "axes": { "casual": 3, "moba": 0, "fps": 0, "gacha": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "fun": 3, "social": 2, "calm": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q24_a3",
+          "text": "会Carry：关键时刻 C 我",
+          "highlights": [
+            { "term": "Carry", "glossaryKey": "Carry", "tooltip": "凭实力带队友赢。"},
+            { "term": "C", "glossaryKey": "C位", "tooltip": "核心输出位（Carry）。"}
+          ],
+          "score": {
+            "axes": { "fps": 2, "moba": 2, "racing": 1, "casual": 0, "gacha": 0, "sandbox": 0 },
+            "traits": { "competitiveMind": 3, "control": 1, "speed": 1, "social": 0, "fun": 0, "calm": 0 }
+          }
+        },
+        {
+          "id": "q24_a4",
+          "text": "会配合：不吵不喷",
+          "highlights": [{ "term": "配合", "glossaryKey": "配合", "tooltip": "协作执行战术与互相补位。"}],
+          "score": {
+            "axes": { "casual": 2, "moba": 1, "gacha": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "social": 2, "calm": 2, "fun": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        },
+        {
+          "id": "q24_a5",
+          "text": "会卷：一起冲榜冲纪录",
+          "highlights": [{ "term": "卷", "glossaryKey": "卷", "tooltip": "投入与竞争强度很高，追求更强更快。"}],
+          "score": {
+            "axes": { "racing": 2, "fps": 1, "moba": 1, "casual": 0, "gacha": 0, "sandbox": 0 },
+            "traits": { "competitiveMind": 2, "speed": 2, "control": 1, "calm": 0, "social": 0, "fun": 0 }
+          }
+        },
+        {
+          "id": "q24_a6",
+          "text": "会躺：轻松娱乐就行",
+          "highlights": [{ "term": "躺", "glossaryKey": "躺", "tooltip": "不追求强度，轻松玩、随缘赢。"}],
+          "score": {
+            "axes": { "casual": 3, "gacha": 1, "moba": 0, "fps": 0, "sandbox": 0, "racing": 0 },
+            "traits": { "calm": 2, "fun": 2, "social": 1, "competitiveMind": 0, "control": 0, "speed": 0 }
+          }
+        }
+      ]
+    }
+  ],
+  "devNotes": {
+    "tooltipSourcePriority": ["dataset_glossary_by_key", "config_tooltip"],
+    "highlightRender": {
+      "style": "underline_bold",
+      "hover": "tooltip_card",
+      "mobile": "tap_toast"
+    },
+    "negativeTraitScoresAllowed": true,
+    "recommendedResultPayload": [
+      "axisPercents",
+      "topAxisKey",
+      "topAxisLabel",
+      "topAxisPercent",
+      "profileTitle",
+      "oneLiner",
+      "traitBadges",
+      "answerReasons",
+      "randomSampleLine"
+    ]
+  }
+}

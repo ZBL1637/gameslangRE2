@@ -1,0 +1,322 @@
+// 森林地图 - 像素艺术风格
+.forest-map {
+  width: 100%;
+  max-width: 1200px;
+  padding: 2rem;
+
+  // 标题区域
+  .map-header {
+    text-align: center;
+    margin-bottom: 2rem;
+
+    .map-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 1.5rem;
+      color: #64ff64;
+      margin: 0 0 0.5rem 0;
+      text-shadow: 
+        0 0 20px rgba(100, 255, 100, 0.6),
+        3px 3px 0 #1a3a1a;
+    }
+
+    .map-subtitle {
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: 1rem;
+      color: rgba(200, 255, 200, 0.8);
+      margin: 0;
+    }
+  }
+
+  // 进度指示器
+  .progress-indicator {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: rgba(26, 58, 26, 0.6);
+    border: 2px solid rgba(100, 255, 100, 0.3);
+
+    .progress-bar {
+      flex: 1;
+      height: 20px;
+      background: rgba(13, 45, 13, 0.8);
+      border: 2px solid rgba(100, 255, 100, 0.5);
+      overflow: hidden;
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #2d8a2d, #64ff64);
+        transition: width 0.5s ease;
+        box-shadow: 0 0 10px rgba(100, 255, 100, 0.5);
+      }
+    }
+
+    .progress-text {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.625rem;
+      color: #64ff64;
+      white-space: nowrap;
+    }
+  }
+
+  // 碎片展示
+  .fragments-display {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: rgba(26, 58, 26, 0.8);
+    border: 3px solid rgba(100, 255, 100, 0.4);
+
+    h3 {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.875rem;
+      color: #64ff64;
+      margin: 0 0 1rem 0;
+      text-align: center;
+    }
+
+    .fragments-grid {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+
+      .fragment-slot {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        background: rgba(13, 45, 13, 0.6);
+        border: 2px solid rgba(100, 255, 100, 0.3);
+        min-width: 120px;
+        transition: all 0.3s ease;
+
+        &.collected {
+          border-color: #64ff64;
+          box-shadow: 0 0 20px rgba(100, 255, 100, 0.4);
+
+          .fragment-image {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            animation: fragmentGlow 2s ease-in-out infinite;
+          }
+
+          .fragment-name {
+            color: #64ff64;
+          }
+        }
+
+        &.empty {
+          opacity: 0.6;
+
+          .fragment-placeholder {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 2rem;
+            color: rgba(100, 255, 100, 0.3);
+            border: 2px dashed rgba(100, 255, 100, 0.3);
+          }
+
+          .fragment-name {
+            color: rgba(100, 255, 100, 0.5);
+          }
+        }
+
+        .fragment-name {
+          font-family: 'Press Start 2P', monospace;
+          font-size: 0.625rem;
+        }
+      }
+    }
+  }
+
+  @keyframes fragmentGlow {
+    0%, 100% { filter: drop-shadow(0 0 10px rgba(100, 255, 100, 0.5)); }
+    50% { filter: drop-shadow(0 0 20px rgba(100, 255, 100, 0.8)); }
+  }
+
+  // 区域容器
+  .zones-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  // 区域卡片
+  .zone-card {
+    position: relative;
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(26, 58, 26, 0.9) 0%, rgba(13, 45, 13, 0.95) 100%);
+    border: 3px solid rgba(100, 255, 100, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover:not(.locked) {
+      border-color: #64ff64;
+      transform: translateX(10px);
+      box-shadow: 0 0 30px rgba(100, 255, 100, 0.3);
+    }
+
+    &.completed {
+      border-color: #2d8a2d;
+      
+      &:hover {
+        border-color: #64ff64;
+      }
+    }
+
+    &.locked {
+      opacity: 0.5;
+      cursor: not-allowed;
+      filter: grayscale(50%);
+    }
+
+    // 连接线
+    .connector-line {
+      position: absolute;
+      top: -1.5rem;
+      left: 50px;
+      width: 4px;
+      height: 1.5rem;
+      background: linear-gradient(180deg, rgba(100, 255, 100, 0.3), rgba(100, 255, 100, 0.6));
+    }
+
+    // 区域图标
+    .zone-icon {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(13, 45, 13, 0.8);
+      border: 3px solid rgba(100, 255, 100, 0.5);
+      flex-shrink: 0;
+
+      .icon-emoji {
+        font-size: 3rem;
+      }
+
+      .check-mark {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        width: 30px;
+        height: 30px;
+        background: #2d8a2d;
+        border: 2px solid #64ff64;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        color: #ffffff;
+      }
+
+      .lock-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 2rem;
+        opacity: 0.8;
+      }
+    }
+
+    // 区域信息
+    .zone-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .zone-name {
+        font-family: 'Press Start 2P', monospace;
+        font-size: 1rem;
+        color: #64ff64;
+        margin: 0;
+        text-shadow: 0 0 10px rgba(100, 255, 100, 0.5);
+      }
+
+      .zone-description {
+        font-family: 'Noto Sans SC', sans-serif;
+        font-size: 0.9rem;
+        color: rgba(200, 255, 200, 0.9);
+        margin: 0;
+        line-height: 1.6;
+      }
+
+      .challenge-preview {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+        padding: 0.5rem;
+        background: rgba(100, 255, 100, 0.1);
+        border-left: 3px solid #64ff64;
+
+        .challenge-label {
+          font-family: 'Press Start 2P', monospace;
+          font-size: 0.5rem;
+          color: rgba(100, 255, 100, 0.7);
+        }
+
+        .challenge-title {
+          font-family: 'Noto Sans SC', sans-serif;
+          font-size: 0.875rem;
+          color: #c0ffc0;
+        }
+      }
+
+      .enter-button {
+        align-self: flex-start;
+        margin-top: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(180deg, #2d5a2d, #1a3a1a);
+        border: 2px solid #64ff64;
+        font-family: 'Press Start 2P', monospace;
+        font-size: 0.625rem;
+        color: #64ff64;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover:not(.disabled) {
+          background: linear-gradient(180deg, #3d7a3d, #2d5a2d);
+          box-shadow: 0 0 20px rgba(100, 255, 100, 0.4);
+          transform: scale(1.05);
+        }
+
+        &.replay {
+          background: linear-gradient(180deg, #1a3a1a, #0d2d0d);
+          border-color: rgba(100, 255, 100, 0.5);
+          color: rgba(100, 255, 100, 0.7);
+        }
+
+        &.disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    // 完成标记
+    .completed-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 0.25rem 0.75rem;
+      background: rgba(45, 138, 45, 0.8);
+      border: 2px solid #64ff64;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.5rem;
+      color: #ffffff;
+    }
+  }
+}

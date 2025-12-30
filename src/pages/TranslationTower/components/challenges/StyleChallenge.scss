@@ -1,0 +1,265 @@
+// StyleChallenge - 挑战二：语气熔炉
+@import '../../TranslationTower.scss';
+
+.style-challenge {
+  .original-section {
+    background: rgba($background-dark, 0.5);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+
+    .label {
+      display: block;
+      font-size: 0.85rem;
+      color: $text-secondary;
+      margin-bottom: 0.5rem;
+    }
+
+    .text {
+      font-size: 1.1rem;
+      color: $text-primary;
+      line-height: 1.6;
+    }
+
+    .chinese-text .text {
+      font-size: 1.5rem;
+      color: $primary-color;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+  }
+
+  .style-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+
+    .style-btn {
+      padding: 1.5rem;
+      background: rgba($background-dark, 0.5);
+      border: 2px solid rgba($primary-color, 0.3);
+      border-radius: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+
+      .style-icon {
+        display: block;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .style-name {
+        display: block;
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: $text-primary;
+        margin-bottom: 0.25rem;
+      }
+
+      .style-desc {
+        font-size: 0.85rem;
+        color: $text-secondary;
+      }
+
+      &.foreignization {
+        &:hover:not(:disabled), &.selected {
+          border-color: $primary-color;
+          background: rgba($primary-color, 0.1);
+        }
+      }
+
+      &.domestication {
+        &:hover:not(:disabled), &.selected {
+          border-color: $secondary-color;
+          background: rgba($secondary-color, 0.1);
+        }
+      }
+
+      &:disabled {
+        opacity: 0.7;
+        cursor: default;
+      }
+    }
+  }
+
+  .comparison-section {
+    animation: slideUp 0.5s ease;
+
+    .merchant-reaction {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: rgba($background-dark, 0.5);
+      border-radius: 0.75rem;
+      margin-bottom: 1.5rem;
+
+      .merchant-emoji {
+        font-size: 2.5rem;
+      }
+
+      .reaction-text {
+        font-size: 1rem;
+        color: $text-primary;
+        font-weight: bold;
+      }
+    }
+
+    .translation-display {
+      background: rgba($primary-color, 0.1);
+      border: 1px solid rgba($primary-color, 0.3);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+
+      .final-text {
+        font-size: 1.2rem;
+        color: $text-primary;
+        margin-bottom: 1rem;
+        line-height: 1.6;
+      }
+
+      .gloss-btn {
+        background: $primary-color;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        
+        &:hover:not(:disabled) {
+          transform: scale(1.05);
+          box-shadow: 0 2px 8px rgba($primary-color, 0.4);
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    .dual-feedback-bar {
+      margin-bottom: 1.5rem;
+      
+      .bar-container {
+        height: 24px;
+        background: #334155;
+        border-radius: 12px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        
+        .bar-fill {
+          height: 100%;
+          transition: width 0.5s ease;
+          display: flex;
+          align-items: center;
+          padding: 0 10px;
+          white-space: nowrap;
+          
+          &.culture {
+            background: linear-gradient(90deg, $primary-color, lighten($primary-color, 10%));
+            justify-content: flex-start;
+          }
+          
+          &.clarity {
+            background: linear-gradient(90deg, darken($secondary-color, 10%), $secondary-color);
+            margin-left: auto; // Push to right
+            justify-content: flex-end;
+          }
+
+          .bar-label {
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+          }
+        }
+      }
+
+      .bar-legend {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 0.5rem;
+        font-size: 0.8rem;
+        color: $text-secondary;
+      }
+    }
+
+    .explanation-box {
+      background: rgba($background-dark, 0.3);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      color: $text-secondary;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+      border-left: 3px solid $text-secondary;
+    }
+
+    .next-btn {
+      width: 100%;
+      background: linear-gradient(135deg, $primary-color, $secondary-color);
+      color: white;
+      border: none;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      
+      &:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+      }
+    }
+  }
+
+  .complete-area {
+    text-align: center;
+    padding: 2rem;
+    
+    .complete-icon {
+      font-size: 4rem;
+      display: block;
+      margin-bottom: 1rem;
+    }
+    
+    h3 {
+      font-size: 2rem;
+      color: $text-primary;
+      margin-bottom: 1rem;
+    }
+    
+    p {
+      color: $text-secondary;
+      margin-bottom: 2rem;
+    }
+    
+    .finish-btn {
+      background: $success-color;
+      color: white;
+      border: none;
+      padding: 1rem 3rem;
+      border-radius: 2rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
