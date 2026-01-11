@@ -1,5 +1,5 @@
 // MetaphorChallenge - 挑战三：隐喻回廊
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState } from 'react';
 import { MetaphorItem, Chapter5GlobalState } from '../../types';
 import './MetaphorChallenge.scss';
 
@@ -18,7 +18,7 @@ interface Connection {
 export const MetaphorChallenge: React.FC<MetaphorChallengeProps> = ({
   items,
   onComplete,
-  onExit,
+  onExit: _onExit,
   onUpdateState
 }) => {
   // 准备数据：左侧源点和右侧目标
@@ -104,17 +104,7 @@ export const MetaphorChallenge: React.FC<MetaphorChallengeProps> = ({
   };
 
   // 渲染连线（SVG）
-  const renderLines = () => {
-    // 简单实现：由于是React，很难直接获取DOM位置画线，
-    // 这里用CSS伪元素或简化的视觉连线。
-    // 为了更好的效果，这里我们假设左右是对齐的，中间是连线区。
-    // 但因为右侧是乱序的，线会交叉。
-    // 使用SVG覆盖在中间区域可能是最好的。
-    // 但为了简化代码，我们可以只在“选中”状态下高亮。
-    // 或者，我们可以用一个简化的 SVG 层，但这需要计算坐标。
-    // 既然是 MVP，我们先用颜色对应来表示连接。
-    return null; 
-  };
+  // const _renderLines = () => { ... } // Removed unused function
   
   // 实际上，为了实现“回廊点亮”动画，我们需要在结果页展示。
 

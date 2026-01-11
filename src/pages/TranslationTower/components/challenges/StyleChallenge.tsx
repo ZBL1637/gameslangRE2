@@ -42,9 +42,9 @@ export const StyleChallenge: React.FC<StyleChallengeProps> = ({
     setSelectedStyle(style);
     setShowComparison(true);
     
-    const styleData = style === 'foreignization' 
-      ? currentItem.foreignization 
-      : currentItem.domestication;
+    // const styleData = style === 'foreignization' 
+    //   ? currentItem.foreignization 
+    //   : currentItem.domestication;
 
     // 初始数值影响
     onUpdateState({

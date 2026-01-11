@@ -1,5 +1,5 @@
 // KeywordChallenge - 挑战一：关键词锻炉
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   KeywordItem, 
   Chapter5GlobalState, 
@@ -9,6 +9,7 @@ import './KeywordChallenge.scss';
 
 interface KeywordChallengeProps {
   items: KeywordItem[];
+  collectedRunes: RuneType[];
   onComplete: () => void;
   onExit: () => void;
   onUpdateState: (delta: Partial<Chapter5GlobalState>) => void;
@@ -17,6 +18,7 @@ interface KeywordChallengeProps {
 
 export const KeywordChallenge: React.FC<KeywordChallengeProps> = ({
   items,
+  collectedRunes,
   onComplete,
   onExit,
   onUpdateState,
@@ -40,7 +42,8 @@ export const KeywordChallenge: React.FC<KeywordChallengeProps> = ({
   const strategyMap = {
     transliteration: '音译',
     paraphrase: '意译',
-    domestication: '归化'
+    domestication: '归化',
+    foreignization: '异化'
   };
 
   // 符文对应的图标

@@ -8,7 +8,7 @@ interface TowerOverviewProps {
 }
 
 export const TowerOverview: React.FC<TowerOverviewProps> = ({
-  narrationText,
+  // narrationText,
   onEnterChallenges
 }) => {
   const [activeMenu, setActiveMenu] = useState(0);

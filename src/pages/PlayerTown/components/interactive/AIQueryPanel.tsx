@@ -96,11 +96,11 @@ export const AIQueryPanel: React.FC<AIQueryPanelProps> = ({
       let errorHandled = false;
 
       // 1. 检查 API Key 配置
-      if (msg.includes('VITE_DEEPSEEK_API_KEY')) {
+      if (msg.includes('VITE_DEEPSEEK_API_KEY') || msg.includes('API Key not configured') || msg.includes('Server configuration error')) {
         const sysMsg: Message = {
           id: `system-${Date.now()}`,
           type: 'system',
-          content: '【系统警告】未检测到 DeepSeek API Key。请在项目根目录创建 .env.local 并设置 VITE_DEEPSEEK_API_KEY。目前仅支持查询本地档案。'
+          content: '【系统警告】未检测到 API Key。请在 Vercel 环境变量中配置 DEEPSEEK_API_KEY (线上) 或在 .env.local 设置 VITE_DEEPSEEK_API_KEY (本地)。目前仅支持查询本地档案。'
         };
         setMessages(prev => [...prev, sysMsg]);
         errorHandled = true;

@@ -117,7 +117,7 @@ export const FinalTask: React.FC<FinalTaskProps> = ({
             <div className="hints-section">
               <h4>翻译提示（点击展开）</h4>
               <div className="hints-list">
-                {FINAL_TASK.hints.map((hint, index) => (
+                {FINAL_TASK.hints.map((hint: string, index: number) => (
                   <div 
                     key={index} 
                     className={`hint-item ${showHints[index] ? 'expanded' : ''}`}

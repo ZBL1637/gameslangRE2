@@ -177,7 +177,7 @@ export const SentimentDistributionChart: React.FC = () => {
           <div
             key={gameData.game}
             className="pie-chart-container"
-            ref={el => chartRefs.current[index] = el}
+            ref={(el) => { chartRefs.current[index] = el; }}
           />
         ))}
       </div>

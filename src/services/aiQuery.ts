@@ -264,12 +264,13 @@ async function fetchDeepSeekWithRetry(
  */
 export async function queryDeepSeek(term: string, signal?: AbortSignal): Promise<AiQueryResult> {
   const env = import.meta.env as any
-  const defaultUrl = import.meta.env.DEV ? '/api/deepseek' : 'https://api.deepseek.com/v1/chat/completions'
+  // 默认使用相对路径代理 (Vercel Function 或 Vite Proxy)
+  const defaultUrl = '/api/deepseek'
   const url = env?.VITE_DEEPSEEK_API_URL || defaultUrl
   const apiKey = env?.VITE_DEEPSEEK_API_KEY
-  if (!apiKey) {
-    throw new Error('缺少 VITE_DEEPSEEK_API_KEY（请在 .env.local 中设置，并重启开发服务器）')
-  }
+  
+  // 注意：不再强制检查 apiKey，因为生产环境可能通过后端代理鉴权
+  // if (!apiKey) { ... }
 
   const model = env?.VITE_DEEPSEEK_MODEL || 'deepseek-chat'
 
@@ -287,17 +288,24 @@ export async function queryDeepSeek(term: string, signal?: AbortSignal): Promise
   const prompt = buildPrompt(term, lang)
 
   const run = async (): Promise<AiQueryResult> => {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    }
+    
+    // 只有当存在 apiKey 时才添加 Authorization 头
+    // 生产环境使用 Vercel 代理时，由后端添加 Key
+    if (apiKey) {
+      headers['Authorization'] = `Bearer ${apiKey}`
+    }
+
     const res = await deepSeekLimit(
       () =>
         fetchDeepSeekWithRetry(
           url,
           {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
-              Authorization: `Bearer ${apiKey}`
-            },
+            headers,
             body: JSON.stringify({
               model,
               messages: [

@@ -13,7 +13,7 @@ interface PixelDialogBoxProps {
 export const PixelDialogBox: React.FC<PixelDialogBoxProps> = ({ 
   text, 
   speaker,
-  avatar,
+  // avatar,
   onComplete,
   onNext,
   speed = 30 

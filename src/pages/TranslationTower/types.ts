@@ -88,7 +88,7 @@ export interface KeywordItem {
   correctAnswer: string;
   options: string[];
   explanation: string;
-  strategy: 'transliteration' | 'paraphrase' | 'domestication'; // 音译/意译/归化
+  strategy: 'transliteration' | 'paraphrase' | 'domestication' | 'foreignization'; // 音译/意译/归化/异化
   culturalNote: string;
   runeDrop?: RuneType;
 }
@@ -197,13 +197,8 @@ export interface Chapter5State {
   currentChallenge: ChallengeType | null;
 }
 
-// NPC对话
-export interface NPCDialogue {
-  id: string;
-  speaker: string;
-  text: string;
-  emotion?: 'neutral' | 'happy' | 'confused' | 'excited';
-}
+// NPC对话 (Removed duplicate definition)
+// export interface NPCDialogue { ... }
 
 // 角色译名注解
 export interface CharacterNameNote {

@@ -2,7 +2,7 @@
 // 第五章：译语通天塔 (Tower of Translation) - 主组件
 // ============================================================================
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Chapter5GlobalState, 

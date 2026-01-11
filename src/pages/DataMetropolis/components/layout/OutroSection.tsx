@@ -11,7 +11,7 @@ interface OutroSectionProps {
   onComplete: () => void;
 }
 
-export const OutroSection: React.FC<OutroSectionProps> = ({ onComplete }) => {
+export const OutroSection: React.FC<OutroSectionProps> = ({ onComplete: _onComplete }) => {
   const [step, setStep] = useState<'narration1' | 'narration2' | 'summary' | 'complete'>('narration1');
   const navigate = useNavigate();
   const { completeChapter } = usePlayerActions();

@@ -11,8 +11,7 @@ import {
   BossSlot,
   NPCDialogue,
   SkillData,
-  FloorType,
-  RuneType
+  FloorType
 } from './types';
 
 // 章节元数据
@@ -551,3 +550,27 @@ export const NARRATION_TEXTS = {
   tower_desc: '塔身内外流动着由不同语言文字组成的数据流。塔的底部是一个国际化的贸易集市。',
   outro: '在你的帮助下，阿里终于找到了志同道合的队友，欢声笑语在集市中回荡。\n\n你成功地架起了文化的桥梁，让来自不同世界的人们得以相互理解。'
 };
+
+// 最终任务数据
+export const FINAL_TASK = {
+  originalText: "Tonight we explore new dungeon. Need Tank and Healer. DPS be strong, no lazy!",
+  context: "阿里试图在世界频道招募队友",
+  hints: [
+    "Tank = 肉盾/坦克",
+    "Healer = 奶妈/治疗",
+    "DPS = 输出位",
+    "No lazy = 别划水"
+  ]
+};
+
+// 商人数据
+export const MERCHANTS = [
+  {
+    name: '阿里',
+    avatar: '👳',
+    dialogues: {
+      confused: '我发出去的消息，为什么没人理我？是不是我的语法有问题？',
+      understanding: '原来如此！谢谢你的帮助，我现在感觉自信多了！'
+    }
+  }
+];

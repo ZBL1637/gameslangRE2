@@ -192,7 +192,7 @@ export const MultiGameRadarChart: React.FC = () => {
             key={gameData.game}
             className="radar-chart-container"
             id={`multi-radar-${index}`}
-            ref={el => chartRefs.current[index] = el}
+            ref={(el) => { chartRefs.current[index] = el; }}
           />
         ))}
       </div>
