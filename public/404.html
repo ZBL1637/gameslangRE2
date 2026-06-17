@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redirecting...</title>
+  </head>
+  <body>
+    <script>
+      (function () {
+        var base = '/gameslangRE2/';
+        var path = window.location.pathname;
+        var route = path.indexOf(base) === 0 ? path.slice(base.length) : '';
+        var target = '/' + route + window.location.search + window.location.hash;
+        window.sessionStorage.setItem('gh-pages-spa-redirect', target);
+        window.location.replace(base);
+      })();
+    </script>
+  </body>
+</html>

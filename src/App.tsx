@@ -36,8 +36,25 @@ function getProdBaseRedirectTarget(pathname: string, baseUrl: string): string | 
   return isUnderBase ? null : normalizedBaseUrl;
 }
 
+function applyStoredPagesRedirect(baseUrl: string): void {
+  if (!import.meta.env.PROD) return;
+
+  const storedPath = window.sessionStorage.getItem('gh-pages-spa-redirect');
+  if (!storedPath) return;
+
+  window.sessionStorage.removeItem('gh-pages-spa-redirect');
+  if (!storedPath.startsWith('/')) return;
+
+  const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+  const baseWithoutTrailingSlash = normalizedBaseUrl.replace(/\/$/, '');
+  window.history.replaceState(null, '', `${baseWithoutTrailingSlash}${storedPath}`);
+}
+
 function App() {
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(() => {
+    applyStoredPagesRedirect(import.meta.env.BASE_URL);
+    return true;
+  });
 
   const prodRedirectTarget = useMemo(
     () => getProdBaseRedirectTarget(window.location.pathname, import.meta.env.BASE_URL),
