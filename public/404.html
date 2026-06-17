@@ -12,8 +12,7 @@
         var path = window.location.pathname;
         var route = path.indexOf(base) === 0 ? path.slice(base.length) : '';
         var target = '/' + route + window.location.search + window.location.hash;
-        window.sessionStorage.setItem('gh-pages-spa-redirect', target);
-        window.location.replace(base);
+        window.location.replace(base + '#' + target);
       })();
     </script>
   </body>

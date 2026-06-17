@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { PlayerProvider } from '@/context/PlayerContext';
 import { Layout } from '@/components/Layout/Layout';
 import SplashScreen from '@/components/SplashScreen/SplashScreen';
@@ -36,25 +36,8 @@ function getProdBaseRedirectTarget(pathname: string, baseUrl: string): string | 
   return isUnderBase ? null : normalizedBaseUrl;
 }
 
-function applyStoredPagesRedirect(baseUrl: string): void {
-  if (!import.meta.env.PROD) return;
-
-  const storedPath = window.sessionStorage.getItem('gh-pages-spa-redirect');
-  if (!storedPath) return;
-
-  window.sessionStorage.removeItem('gh-pages-spa-redirect');
-  if (!storedPath.startsWith('/')) return;
-
-  const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
-  const baseWithoutTrailingSlash = normalizedBaseUrl.replace(/\/$/, '');
-  window.history.replaceState(null, '', `${baseWithoutTrailingSlash}${storedPath}`);
-}
-
 function App() {
-  const [showSplash, setShowSplash] = useState(() => {
-    applyStoredPagesRedirect(import.meta.env.BASE_URL);
-    return true;
-  });
+  const [showSplash, setShowSplash] = useState(true);
 
   const prodRedirectTarget = useMemo(
     () => getProdBaseRedirectTarget(window.location.pathname, import.meta.env.BASE_URL),
@@ -70,7 +53,7 @@ function App() {
   return (
     <PlayerProvider>
       {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
-      <Router basename={import.meta.env.BASE_URL}>
+      <Router>
         <Layout>
           <Suspense fallback={<div style={{ padding: 24 }}>Loading...</div>}>
             <Routes>
