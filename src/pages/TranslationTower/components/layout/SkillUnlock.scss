@@ -1,3 +1,4 @@
+﻿@use 'sass:color';
 // SkillUnlock 样式 - 像素艺术风格
 $primary-color: #8b5cf6;
 $secondary-color: #06b6d4;
@@ -112,7 +113,7 @@ $glow-cyan: rgba(6, 182, 212, 0.5);
         .npc-avatar {
           width: 100px;
           height: 150px;
-          background-image: url('@/assets/images/npc_translation_master.png');
+          background-image: url('@/assets/images/npc_translation_master.webp');
           background-size: contain;
           background-position: center;
           background-repeat: no-repeat;
@@ -203,7 +204,7 @@ $glow-cyan: rgba(6, 182, 212, 0.5);
           align-items: center;
           justify-content: center;
           // 使用技能图标图片
-          background-image: url('@/assets/images/skill_logos_conversion.png');
+          background-image: url('@/assets/images/skill_logos_conversion.webp');
           background-size: 70%;
           background-position: center;
           background-repeat: no-repeat;
@@ -225,7 +226,7 @@ $glow-cyan: rgba(6, 182, 212, 0.5);
           text-shadow: 
             0 0 20px $glow-purple,
             0 0 40px $glow-cyan,
-            0 4px 0 darken($primary-color, 30%);
+            0 4px 0 color.adjust($primary-color, $lightness: -30%);
         }
 
         .sparkle-icon {
@@ -337,16 +338,16 @@ $glow-cyan: rgba(6, 182, 212, 0.5);
 
         .confirm-btn {
           width: 100%;
-          background: linear-gradient(180deg, $primary-color 0%, darken($primary-color, 15%) 100%);
+          background: linear-gradient(180deg, $primary-color 0%, color.adjust($primary-color, $lightness: -15%) 100%);
           color: white;
-          border: 4px solid darken($primary-color, 20%);
+          border: 4px solid color.adjust($primary-color, $lightness: -20%);
           padding: 1rem 2rem;
           font-family: 'Press Start 2P', cursive;
           font-size: 0.7rem;
           box-shadow: 
             inset 0 2px 0 rgba(255,255,255,0.2),
             inset 0 -2px 0 rgba(0,0,0,0.2),
-            0 6px 0 darken($primary-color, 25%),
+            0 6px 0 color.adjust($primary-color, $lightness: -25%),
             0 0 30px rgba($primary-color, 0.3);
           position: relative;
           top: 0;
@@ -357,7 +358,7 @@ $glow-cyan: rgba(6, 182, 212, 0.5);
             box-shadow: 
               inset 0 2px 0 rgba(255,255,255,0.2),
               inset 0 -2px 0 rgba(0,0,0,0.2),
-              0 3px 0 darken($primary-color, 25%),
+              0 3px 0 color.adjust($primary-color, $lightness: -25%),
               0 0 40px rgba($primary-color, 0.5);
           }
 
@@ -365,7 +366,7 @@ $glow-cyan: rgba(6, 182, 212, 0.5);
             top: 6px;
             box-shadow: 
               inset 0 2px 0 rgba(0,0,0,0.2),
-              0 0 0 darken($primary-color, 25%);
+              0 0 0 color.adjust($primary-color, $lightness: -25%);
           }
         }
       }

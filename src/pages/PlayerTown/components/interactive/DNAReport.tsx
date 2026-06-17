@@ -38,6 +38,7 @@ export const DNAReport: React.FC<DNAReportProps> = ({ results, onClose, onRetake
   const [sampleText, setSampleText] = useState('');
   const [traitModal, setTraitModal] = useState<{ show: boolean; title: string; reason: string; slang: string } | null>(null);
   const [donutSize, setDonutSize] = useState(220);
+  const [notice, setNotice] = useState('');
 
   const topGenre = results[0];
   const theme = DNA_THEMES[topGenre.genre];
@@ -179,6 +180,11 @@ export const DNAReport: React.FC<DNAReportProps> = ({ results, onClose, onRetake
   };
 
   // 分享
+  const showNotice = (message: string) => {
+    setNotice(message);
+    window.setTimeout(() => setNotice(''), 2200);
+  };
+
   const handleShare = async () => {
     if (navigator.share) {
       try {
@@ -187,15 +193,15 @@ export const DNAReport: React.FC<DNAReportProps> = ({ results, onClose, onRetake
           text: shareText,
           url: window.location.href
         });
-      } catch (e) {
+      } catch {
         // 用户取消分享
       }
     } else {
       try {
         await navigator.clipboard.writeText(shareText);
-        alert('分享文案已复制到剪贴板！');
-      } catch (e) {
-        alert('分享功能暂不可用');
+        showNotice('分享文案已复制到剪贴板');
+      } catch {
+        showNotice('分享功能暂不可用');
       }
     }
   };
@@ -281,7 +287,7 @@ export const DNAReport: React.FC<DNAReportProps> = ({ results, onClose, onRetake
           <p className="jargon-sample">{sampleText}</p>
           <div className="jargon-actions">
             <button className="action-btn outline" onClick={() => setSampleText(getJargonSample())}>换一条</button>
-            <button className="action-btn accent" onClick={() => alert('已加入我的词库')}>加入词库</button>
+            <button className="action-btn accent" onClick={() => showNotice('已加入我的词库')}>加入词库</button>
           </div>
           
           <div className="share-divider" style={{ margin: '0.75rem 0', borderTop: '1px dashed rgba(255,255,255,0.1)' }}></div>
@@ -290,6 +296,8 @@ export const DNAReport: React.FC<DNAReportProps> = ({ results, onClose, onRetake
             "{shareText}"
           </p>
         </div>
+
+        {notice && <div className="report-notice">{notice}</div>}
 
         {/* 操作按钮 */}
         <div className="actions">

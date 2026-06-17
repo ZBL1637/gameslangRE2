@@ -4,8 +4,6 @@ import { Button } from '@/components/Button/Button';
 import { useNavigate } from 'react-router-dom';
 import { usePlayer } from '@/context/PlayerContext';
 import { Icon } from '@/components/Icon/Icon';
-import { getDataProcessor } from '@/utils/dataProcessor';
-import { getBasicStats } from '@/utils/dataLoader';
 import { RPGTitleCard } from '@/components/RPGTitleCard/RPGTitleCard';
 import './TitlePage.scss';
 
@@ -27,6 +25,7 @@ const TitlePage: React.FC = () => {
 
   // Random slang generator
   const refreshDailySlang = async () => {
+    const { getDataProcessor } = await import('@/utils/dataProcessor');
     const dp = await getDataProcessor();
     const terms = dp.getAllTerms();
     const encyclopediaTerms = terms.filter(t => t.source === 'encyclopedia');
@@ -72,7 +71,8 @@ const TitlePage: React.FC = () => {
     let timer: number | null = null;
 
     const idleHandle = maybeIdle(() => {
-      void getBasicStats()
+      void import('@/utils/dataLoader')
+        .then(module => module.getBasicStats())
         .then(stats => {
           if (disposed) return;
 
@@ -119,7 +119,7 @@ const TitlePage: React.FC = () => {
 
   const handleStart = () => {
     if (state.level > 1 || state.currentExp > 0) {
-       if (confirm('Start a new game? Current progress will be lost.')) {
+       if (confirm('要开始新游戏吗？当前进度会被清空。')) {
          resetProgress();
          navigate('/tutorial');
        }

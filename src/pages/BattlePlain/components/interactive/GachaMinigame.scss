@@ -1,4 +1,5 @@
-@import '@/styles/variables';
+﻿@use 'sass:color';
+@use '@/styles/variables' as *;
 
 $color-legendary: #ffd700;
 $color-epic: #a855f7;
@@ -331,7 +332,7 @@ $color-common: #6b7280;
     transition: all 0.2s;
     
     &:hover {
-      background-color: lighten($color-primary, 10%);
+      background-color: color.adjust($color-primary, $lightness: 10%);
     }
   }
 
@@ -517,7 +518,7 @@ $color-common: #6b7280;
       transition: all 0.2s;
       
       &:hover {
-        background-color: lighten($color-primary, 10%);
+        background-color: color.adjust($color-primary, $lightness: 10%);
       }
     }
   }

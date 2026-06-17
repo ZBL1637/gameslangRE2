@@ -11,11 +11,16 @@ export default defineConfig({
     }
   },
   build: {
+    chunkSizeWarningLimit: 900,
     rollupOptions: {
       output: {
         manualChunks(id) {
           if (!id.includes('node_modules')) return;
-          if (id.includes('echarts')) return 'vendor-echarts';
+          if (id.includes('zrender')) return 'vendor-zrender';
+          if (id.includes('echarts/charts')) return 'vendor-echarts-charts';
+          if (id.includes('echarts/components')) return 'vendor-echarts-components';
+          if (id.includes('echarts/renderers')) return 'vendor-echarts-renderers';
+          if (id.includes('echarts')) return 'vendor-echarts-core';
           if (id.includes('react-router')) return 'vendor-router';
           if (id.includes('react-dom') || id.includes('react')) return 'vendor-react';
           if (id.includes('lucide-react')) return 'vendor-icons';

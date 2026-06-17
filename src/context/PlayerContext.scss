@@ -1,0 +1,20 @@
+.player-achievement-toast {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 9999;
+  width: 300px;
+  animation: player-achievement-slide-in 0.5s ease-out;
+}
+
+@keyframes player-achievement-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

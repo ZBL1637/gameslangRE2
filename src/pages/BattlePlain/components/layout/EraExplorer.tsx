@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { TimelineEra } from '../../types';
 import { QTEMinigame } from '../interactive/QTEMinigame';
 import { CardPlacementMinigame } from '../interactive/CardPlacementMinigame';
 import { GachaMinigame } from '../interactive/GachaMinigame';
 import { BulletCatchMinigame } from '../interactive/BulletCatchMinigame';
 import { X, BookOpen, Gamepad2, Gift } from 'lucide-react';
-import chip1 from '../../../../assets/images/chip1.png';
-import chip2 from '../../../../assets/images/chip2.png';
-import chip3 from '../../../../assets/images/chip3.png';
-import chip4 from '../../../../assets/images/chip4.png';
+import chip1 from '../../../../assets/images/chip1.webp';
+import chip2 from '../../../../assets/images/chip2.webp';
+import chip3 from '../../../../assets/images/chip3.webp';
+import chip4 from '../../../../assets/images/chip4.webp';
 import './EraExplorer.scss';
 
 interface EraExplorerProps {

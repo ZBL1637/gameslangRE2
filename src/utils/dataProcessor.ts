@@ -1,4 +1,4 @@
-import { rawData, RawData } from './dataLoader';
+import { loadRawData, RawData } from './dataLoader';
 import { Term, GameIndex, CategoryIndex, ChartData, QuizItem } from '@/types';
 
 // 辅助函数：标准化游戏名称 (简单处理)
@@ -355,8 +355,12 @@ class DataProcessor {
   }
 }
 
-export const dataProcessor = new DataProcessor(rawData);
+let dataProcessorPromise: Promise<DataProcessor> | null = null;
 
 export const getDataProcessor = async (): Promise<DataProcessor> => {
-  return dataProcessor;
+  if (!dataProcessorPromise) {
+    dataProcessorPromise = loadRawData().then(data => new DataProcessor(data));
+  }
+
+  return dataProcessorPromise;
 };

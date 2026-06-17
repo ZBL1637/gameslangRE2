@@ -2,16 +2,29 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePlayer } from '@/context/PlayerContext';
 import { Button } from '@/components/Button/Button';
-import { ChartCooccurrenceGraph, ChartCooccurrenceHeatmap, ChartSunburst } from '@/components/Charts';
+import { ChapterCompass } from '@/components/ChapterCompass/ChapterCompass';
+import { ChapterRewardOverlay } from '@/components/ChapterRewardOverlay/ChapterRewardOverlay';
+import { DataEvidencePanel } from '@/components/DataEvidencePanel/DataEvidencePanel';
 import { DialogBox } from '@/pages/TutorialVillage/components/DialogBox';
+import type { ChapterReward } from '@/data/chapterProgress';
 import { getDataProcessor } from '@/utils/dataProcessor';
 import type { Term } from '@/types';
-import forestBg from '@/assets/images/chapter1_forest_bg.png';
-import npcForestKeeper from '@/assets/images/npc_forest_keeper.png';
-import fragmentTaxonomy from '@/assets/images/fragment_taxonomy.png';
-import fragmentRelation from '@/assets/images/fragment_relation.png';
-import fragmentMigration from '@/assets/images/fragment_migration.png';
+import forestBg from '@/assets/images/chapter1_forest_bg.webp';
+import npcForestKeeper from '@/assets/images/npc_forest_keeper.webp';
+import fragmentTaxonomy from '@/assets/images/fragment_taxonomy.webp';
+import fragmentRelation from '@/assets/images/fragment_relation.webp';
+import fragmentMigration from '@/assets/images/fragment_migration.webp';
 import './OriginForest.scss';
+
+const ChartSunburst = React.lazy(() =>
+  import('@/components/Charts/ChartSunburst').then(module => ({ default: module.ChartSunburst }))
+);
+const ChartCooccurrenceGraph = React.lazy(() =>
+  import('@/components/Charts/ChartCooccurrenceGraph').then(module => ({ default: module.ChartCooccurrenceGraph }))
+);
+const ChartCooccurrenceHeatmap = React.lazy(() =>
+  import('@/components/Charts/ChartCooccurrenceHeatmap').then(module => ({ default: module.ChartCooccurrenceHeatmap }))
+);
 
 type Phase = 'narration' | 'npc_intro' | 'npc_options' | 'npc_task';
 type Stage = 'intro' | 'map' | 'explore' | 'outro';
@@ -553,6 +566,51 @@ const ExplorationModal: React.FC<{
     return Boolean(collocationUnlocked);
   }, [bridgeTermId, collocationUnlocked, taxonomyCategories.length, zone.challenge.type]);
 
+  const recommendedTargets = (() => {
+    if (zone.challenge.type === 'sunburst') {
+      return [
+        {
+          label: '动态难度',
+          meta: '游戏综合术语',
+          done: taxonomyCategories.includes('游戏综合术语'),
+          onClick: () => openTermInfo({ kind: 'sunburst' as const, termId: '动态难度', l1Category: '游戏综合术语' })
+        },
+        {
+          label: '动作冒险游戏（A-AVG）',
+          meta: '游戏分类相关',
+          done: taxonomyCategories.includes('游戏分类相关'),
+          onClick: () => openTermInfo({ kind: 'sunburst' as const, termId: '动作冒险游戏（A-AVG）', l1Category: '游戏分类相关' })
+        },
+        {
+          label: '玩家角色',
+          meta: '角色与职责',
+          done: taxonomyCategories.includes('角色与职责'),
+          onClick: () => openTermInfo({ kind: 'sunburst' as const, termId: '玩家角色', l1Category: '角色与职责' })
+        }
+      ];
+    }
+
+    if (zone.challenge.type === 'network') {
+      return [
+        {
+          label: '玩家',
+          meta: '连接 252 个术语',
+          done: Boolean(bridgeTermId),
+          onClick: () => openTermInfo({ kind: 'network' as const, termId: '玩家', degree: 252 })
+        }
+      ];
+    }
+
+    return [
+      {
+        label: '活动 × 玩家',
+        meta: '共现强度 948',
+        done: Boolean(collocationUnlocked),
+        onClick: () => openTermInfo({ kind: 'heatmap' as const, a: '活动', b: '玩家', value: 948 })
+      }
+    ];
+  })();
+
   useEffect(() => {
     if (completionArmed && canComplete) window.setTimeout(() => setShowCompletion(true), 280);
   }, [canComplete, completionArmed]);
@@ -597,6 +655,25 @@ const ExplorationModal: React.FC<{
           <div className="inst">{zone.challenge.instructions}</div>
         </div>
 
+        <div className="ch1-recommended-targets">
+          <div className="ch1-recommended-title">推荐证据点</div>
+          <div className="ch1-recommended-actions">
+            {recommendedTargets.map((target) => (
+              <button
+                key={`${target.label}-${target.meta}`}
+                type="button"
+                className={`ch1-recommended-target ${target.done ? 'is-done' : ''}`}
+                onClick={() => {
+                  void target.onClick();
+                }}
+              >
+                <span className="name">{target.label}</span>
+                <span className="meta">{target.done ? '已计入' : target.meta}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="ch1-modal-progress">
           <div className="text">{completionHint}</div>
           <div className="dots">
@@ -616,7 +693,9 @@ const ExplorationModal: React.FC<{
           </div>
         )}
 
-        <div className="ch1-modal-chart">{renderChart()}</div>
+        <React.Suspense fallback={<div className="ch1-chart-loading">正在装载图表证据...</div>}>
+          <div className="ch1-modal-chart">{renderChart()}</div>
+        </React.Suspense>
 
         {termInfoOpen && (
           <div className="ch1-term-overlay" onClick={closeTermInfo}>
@@ -752,7 +831,7 @@ const OutroOverlay: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
 
 const OriginForest: React.FC = () => {
   const navigate = useNavigate();
-  const { state, addExp, completeQuest, unlockAchievement, completeChapter, updateChapterProgress } = usePlayer();
+  const { state, addExp, completeQuest, completeChapterRun, updateChapterProgress } = usePlayer();
 
   const saved = (state.chapterProgress?.ch1 as Record<string, unknown> | undefined)?.forest as Record<string, unknown> | undefined;
   const initialProgress: ForestProgress = useMemo(() => {
@@ -768,6 +847,7 @@ const OriginForest: React.FC = () => {
   const [progress, setProgress] = useState<ForestProgress>(initialProgress);
   const [stage, setStage] = useState<Stage>(initialProgress.introCompleted ? 'map' : 'intro');
   const [activeZoneId, setActiveZoneId] = useState<ZoneId | null>(null);
+  const [reward, setReward] = useState<ChapterReward | null>(null);
 
   const activeZone = useMemo(() => ZONES.find((z) => z.id === activeZoneId) ?? null, [activeZoneId]);
 
@@ -788,15 +868,13 @@ const OriginForest: React.FC = () => {
   }, [completeQuest, progress.zonesCompleted.length]);
 
   useEffect(() => {
-    if (progress.zonesCompleted.length === 3) {
+    if (progress.zonesCompleted.length === 3 && stage !== 'outro') {
       const t = window.setTimeout(() => {
-        unlockAchievement('forest_explorer');
-        addExp(200);
         setStage('outro');
       }, 650);
       return () => window.clearTimeout(t);
     }
-  }, [addExp, progress.zonesCompleted.length, unlockAchievement]);
+  }, [progress.zonesCompleted.length, stage]);
 
   const enterZone = (zoneId: ZoneId) => {
     setActiveZoneId(zoneId);
@@ -818,8 +896,13 @@ const OriginForest: React.FC = () => {
   };
 
   const finishChapter = () => {
-    completeChapter(1);
-    navigate('/world-map');
+    const newsProgress = state.chapterProgress?.news_1 as { revealed?: boolean; correct?: boolean } | undefined;
+    const newsScore = (newsProgress?.revealed ? 2 : 0) + (newsProgress?.correct ? 2 : 0);
+    const chapterReward = completeChapterRun(1, {
+      score: 14 + progress.zonesCompleted.length * 2 + (progress.bridgeTermId ? 2 : 0) + (progress.collocationUnlocked ? 2 : 0) + newsScore,
+      fragmentIds: progress.fragmentsCollected,
+    });
+    setReward(chapterReward);
   };
 
   return (
@@ -838,7 +921,17 @@ const OriginForest: React.FC = () => {
 
         {stage !== 'intro' && (
           <div className="ch1-main">
-            <ForestMap zones={ZONES} completedZones={progress.zonesCompleted} onEnterZone={enterZone} />
+            <div className="ch1-side-panel">
+              <ChapterCompass
+                chapterId={1}
+                objective="探索三个区域，收集分类、关系和迁徙碎片。"
+                progress={`已完成 ${progress.zonesCompleted.length} / 3 个区域`}
+              />
+              <DataEvidencePanel chapterId={1} compact />
+            </div>
+            <div className="ch1-map-panel">
+              <ForestMap zones={ZONES} completedZones={progress.zonesCompleted} onEnterZone={enterZone} />
+            </div>
           </div>
         )}
       </div>
@@ -859,6 +952,10 @@ const OriginForest: React.FC = () => {
       )}
 
       {stage === 'outro' && <OutroOverlay onComplete={finishChapter} />}
+      <ChapterRewardOverlay
+        reward={reward}
+        onContinue={() => navigate('/world-map', { state: { fromChapter: 1 } })}
+      />
     </div>
   );
 };

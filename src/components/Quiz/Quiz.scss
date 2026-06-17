@@ -1,4 +1,4 @@
-@import '@/styles/variables';
+﻿@use '@/styles/variables' as *;
 
 .quiz-container {
   display: flex;
@@ -78,7 +78,17 @@
     font-size: 3rem;
     font-weight: bold;
     color: #fff;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .reward-claimed {
+    display: inline-block;
+    margin-bottom: 1.25rem;
+    padding: 0.5rem 0.9rem;
+    color: $color-bg-dark;
+    background: $color-accent;
+    border-radius: 4px;
+    font-weight: 800;
   }
 }
 

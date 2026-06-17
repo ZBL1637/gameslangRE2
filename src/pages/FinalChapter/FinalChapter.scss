@@ -1,7 +1,7 @@
-// ============================================================================
+﻿// ============================================================================
 // FinalChapter - 主样式文件（像素艺术风格）
 // ============================================================================
-@import '../../styles/variables';
+@use '../../styles/variables' as *;
 
 $pixel-primary: #8B0000;
 $pixel-secondary: #4B0082;
@@ -44,7 +44,7 @@ $pixel-border: #333344;
     left: 0;
     width: 100%;
     height: 100%;
-    background: url('@/assets/images/final_chapter_bg.png') center center / cover no-repeat;
+    background: url('@/assets/images/final_chapter_bg.webp') center center / cover no-repeat;
     opacity: 0.6;
     z-index: 0;
   }
@@ -136,5 +136,31 @@ $pixel-border: #333344;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+  }
+
+  .chapter-compass {
+    left: auto;
+    right: 24px;
+    width: min(280px, calc(100vw - 48px));
+    max-height: 220px;
+    overflow: auto;
+    padding: 12px;
+
+    h2 {
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .compass-objective,
+    .compass-evidence p,
+    .compass-source {
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .compass-progress {
+      padding: 6px 8px;
+      font-size: 11px;
+    }
   }
 }

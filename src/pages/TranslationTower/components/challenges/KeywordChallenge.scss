@@ -1,4 +1,4 @@
-@import '../../TranslationTower.scss';
+﻿@use '../../TranslationTower.scss' as *;
 
 .challenge-overlay {
   position: absolute; // 修改为 absolute 以适应容器
@@ -22,7 +22,7 @@
   max-width: 500px;
   max-height: 80vh;
   overflow-y: auto;
-  padding: 1.5rem;
+  padding: 1.25rem;
   position: relative;
 
   .close-btn {
@@ -46,12 +46,12 @@
 
   .challenge-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 
     .challenge-icon {
-      font-size: 3rem;
+      font-size: 2.25rem;
       display: block;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.35rem;
     }
 
     .combo-badge {
@@ -82,9 +82,9 @@
     }
 
     h2 {
-      font-size: 1.75rem;
+      font-size: 1.5rem;
       color: $text-primary;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.25rem;
     }
 
     p {
@@ -96,7 +96,7 @@
     height: 8px;
     background: rgba($primary-color, 0.2);
     border-radius: 4px;
-    margin-bottom: 2rem;
+    margin-bottom: 1.25rem;
     position: relative;
 
     .progress-fill {
@@ -119,17 +119,17 @@
 .keyword-challenge {
   .question-area {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 
     .chinese-term {
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.75rem;
 
       .term-text {
         display: block;
-        font-size: 3rem;
+        font-size: 2.25rem;
         font-weight: bold;
         color: $primary-color;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.25rem;
       }
 
       .pinyin {
@@ -167,18 +167,18 @@
     }
 
     .arrow-indicator {
-      font-size: 2rem;
+      font-size: 1.5rem;
       color: $accent-color;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.75rem;
     }
 
     .options-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
+      gap: 0.75rem;
 
       .option-btn {
-        padding: 1rem 1.5rem;
+        padding: 0.75rem 1rem;
         background: rgba($background-dark, 0.5);
         border: 2px solid rgba($primary-color, 0.3);
         border-radius: 0.75rem;
@@ -211,9 +211,9 @@
   }
 
   .result-area {
-    padding: 1.5rem;
+    padding: 1rem;
     border-radius: 1rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 
     &.correct {
       background: rgba($success-color, 0.1);
@@ -288,7 +288,7 @@
       background: linear-gradient(135deg, $primary-color, $secondary-color);
       color: white;
       border: none;
-      padding: 1rem 2rem;
+      padding: 0.8rem 1.5rem;
       border-radius: 0.5rem;
       font-size: 1rem;
       font-weight: bold;
@@ -346,7 +346,7 @@
       background: linear-gradient(135deg, $primary-color, $secondary-color);
       color: white;
       border: none;
-      padding: 1rem 2rem;
+      padding: 0.8rem 1.5rem;
       border-radius: 0.5rem;
       font-size: 1rem;
       font-weight: bold;

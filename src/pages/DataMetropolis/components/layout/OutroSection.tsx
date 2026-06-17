@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { usePlayerActions } from '@/context/PlayerContext';
+﻿import React, { useState, useEffect } from 'react';
 import { ArrowRight, MapPin } from 'lucide-react';
 import { SCRIPT } from '../../data';
 import { PixelDialogBox } from '../ui/PixelDialogBox';
-import npcAvatar from '@/assets/images/npc_data_weaver.png';
+import npcAvatar from '@/assets/images/npc_data_weaver.webp';
 import './OutroSection.scss';
 
 interface OutroSectionProps {
@@ -13,8 +11,6 @@ interface OutroSectionProps {
 
 export const OutroSection: React.FC<OutroSectionProps> = ({ onComplete: _onComplete }) => {
   const [step, setStep] = useState<'narration1' | 'narration2' | 'summary' | 'complete'>('narration1');
-  const navigate = useNavigate();
-  const { completeChapter } = usePlayerActions();
 
   useEffect(() => {
     // 只有进入summary后才自动计时结束
@@ -97,17 +93,11 @@ export const OutroSection: React.FC<OutroSectionProps> = ({ onComplete: _onCompl
           </div>
 
           <div className="action-buttons">
-            <button className="action-btn next-chapter-btn" onClick={() => {
-              completeChapter(4);
-              navigate('/chapter/5');
-            }}>
-              前往下一章
+            <button className="action-btn next-chapter-btn" onClick={_onComplete}>
+              领取奖励
               <ArrowRight size={20} />
             </button>
-            <button className="action-btn world-map-btn" onClick={() => {
-              completeChapter(4);
-              navigate('/world-map', { state: { fromChapter: 4 } });
-            }}>
+            <button className="action-btn world-map-btn" onClick={_onComplete}>
               返回世界地图
               <ArrowRight size={20} />
             </button>

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { TimelineEra } from '../../types';
-import chip1 from '../../../../assets/images/chip1.png';
-import chip2 from '../../../../assets/images/chip2.png';
-import chip3 from '../../../../assets/images/chip3.png';
-import chip4 from '../../../../assets/images/chip4.png';
+import chip1 from '../../../../assets/images/chip1.webp';
+import chip2 from '../../../../assets/images/chip2.webp';
+import chip3 from '../../../../assets/images/chip3.webp';
+import chip4 from '../../../../assets/images/chip4.webp';
 import { 
   Check, 
   Lock, 

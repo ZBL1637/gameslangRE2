@@ -24,6 +24,7 @@ export const HUDBar: React.FC<HUDBarProps> = ({
   const navigate = useNavigate();
   const { state } = usePlayer();
   const expPercentage = Math.min(100, (currentExp / maxExp) * 100);
+  const canOpenWorldMap = state.unlockedChapters.some((id) => id > 0);
 
   return (
     <div className="hud-bar">
@@ -39,7 +40,12 @@ export const HUDBar: React.FC<HUDBarProps> = ({
           </div>
           
           <div className="hud-center">
-             <Button size="sm" onClick={() => navigate('/world-map')}>
+             <Button
+               size="sm"
+               onClick={() => navigate('/world-map')}
+               disabled={!canOpenWorldMap}
+               title={!canOpenWorldMap ? '完成新手村后解锁世界地图' : '打开世界地图'}
+             >
                <span style={{ marginRight: '4px' }}>🗺️</span> 地图
              </Button>
              <Button size="sm" onClick={() => navigate('/quests')}>

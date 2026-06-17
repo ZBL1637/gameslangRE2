@@ -1,3 +1,4 @@
+﻿@use 'sass:color';
 // AIQueryPanel 样式 - RPG 对话风格
 
 $primary-color: #7F0056;
@@ -107,8 +108,8 @@ $dialog-border: #4a5568;
         left: 0;
         width: 20px;
         height: 20px;
-        border-top: 2px solid lighten($accent-color, 20%);
-        border-left: 2px solid lighten($accent-color, 20%);
+        border-top: 2px solid color.adjust($accent-color, $lightness: 20%);
+        border-left: 2px solid color.adjust($accent-color, $lightness: 20%);
         border-radius: 0.8rem 0 0 0;
       }
 
@@ -119,8 +120,8 @@ $dialog-border: #4a5568;
         right: 0;
         width: 20px;
         height: 20px;
-        border-bottom: 2px solid lighten($accent-color, 20%);
-        border-right: 2px solid lighten($accent-color, 20%);
+        border-bottom: 2px solid color.adjust($accent-color, $lightness: 20%);
+        border-right: 2px solid color.adjust($accent-color, $lightness: 20%);
         border-radius: 0 0 0.8rem 0;
       }
 
@@ -307,7 +308,7 @@ $dialog-border: #4a5568;
         .option-btn {
           background: rgba(59, 130, 246, 0.1);
           border: 1px solid rgba(59, 130, 246, 0.2);
-          color: lighten($accent-color, 10%);
+          color: color.adjust($accent-color, $lightness: 10%);
           padding: 0.4rem 0.8rem;
           border-radius: 0.25rem;
           font-size: 0.8rem;
@@ -363,11 +364,11 @@ $dialog-border: #4a5568;
           transition: background 0.2s;
 
           &:hover:not(:disabled) {
-            background: lighten($accent-color, 5%);
+            background: color.adjust($accent-color, $lightness: 5%);
           }
 
           &:disabled {
-            background: grayscale($accent-color);
+            background: color.grayscale($accent-color);
             opacity: 0.5;
             cursor: not-allowed;
           }

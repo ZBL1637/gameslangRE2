@@ -1,7 +1,8 @@
+﻿@use 'sass:color';
 // ============================================================================
 // SkillPanel - 技能面板样式（统一开场动画配色）
 // ============================================================================
-@import '../../../../styles/variables';
+@use '../../../../styles/variables' as *;
 
 $primary-color: $color-primary;
 $secondary-color: $color-info;
@@ -20,13 +21,13 @@ $text-secondary: $color-text-muted;
 .skill-panel {
   grid-column: 1;
   background: rgba($background-medium, 0.9);
-  padding: 1.5rem;
+  padding: 0.85rem;
   border-radius: 1rem;
   border: 1px solid rgba($secondary-color, 0.3);
 
   .action-prompt {
     text-align: center;
-    margin-bottom: 1rem;
+    margin-bottom: 0.55rem;
 
     .prompt-text {
       font-size: 1.1rem;
@@ -40,7 +41,7 @@ $text-secondary: $color-text-muted;
   }
 
   .attack-section {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.75rem;
 
     .attack-btn {
       width: 100%;
@@ -48,8 +49,8 @@ $text-secondary: $color-text-muted;
       align-items: center;
       justify-content: center;
       gap: 1rem;
-      padding: 1rem;
-      background: linear-gradient(135deg, $primary-color, darken($primary-color, 10%));
+      padding: 0.75rem;
+      background: linear-gradient(135deg, $primary-color, color.adjust($primary-color, $lightness: -10%));
       border: none;
       border-radius: 0.75rem;
       cursor: pointer;
@@ -88,20 +89,20 @@ $text-secondary: $color-text-muted;
     .skills-label {
       font-size: 0.9rem;
       color: $text-secondary;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.45rem;
     }
 
     .skills-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 0.75rem;
+      gap: 0.5rem;
 
       .skill-btn {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.5rem;
-        padding: 1rem;
+        gap: 0.35rem;
+        padding: 0.65rem;
         background: rgba($secondary-color, 0.1);
         border: 2px solid rgba($secondary-color, 0.3);
         border-radius: 0.75rem;
@@ -137,14 +138,14 @@ $text-secondary: $color-text-muted;
 
         .skill-icon-wrapper {
           position: relative;
-          width: 48px;
-          height: 48px;
+          width: 38px;
+          height: 38px;
           display: flex;
           align-items: center;
           justify-content: center;
 
           .skill-icon {
-            font-size: 2rem;
+            font-size: 1.55rem;
           }
 
           .cooldown-overlay {
@@ -179,7 +180,7 @@ $text-secondary: $color-text-muted;
         }
 
         .skill-name {
-          font-size: 0.85rem;
+          font-size: 0.78rem;
           color: $text-primary;
           text-align: center;
         }
@@ -314,7 +315,7 @@ $text-secondary: $color-text-muted;
         .use-skill-btn {
           width: 100%;
           padding: 1rem;
-          background: linear-gradient(135deg, $secondary-color, darken($secondary-color, 10%));
+          background: linear-gradient(135deg, $secondary-color, color.adjust($secondary-color, $lightness: -10%));
           color: white;
           border: none;
           border-radius: 0.5rem;

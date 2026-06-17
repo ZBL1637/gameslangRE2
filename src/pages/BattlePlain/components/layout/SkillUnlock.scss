@@ -1,4 +1,5 @@
-@import '@/styles/variables';
+﻿@use 'sass:color';
+@use '@/styles/variables' as *;
 
 .skill-unlock-overlay {
   position: fixed;
@@ -209,7 +210,7 @@
         transform: translate(-50%, -50%);
         width: 64px;
         height: 64px;
-        background: linear-gradient(135deg, $color-info 0%, lighten($color-info, 20%) 100%);
+        background: linear-gradient(135deg, $color-info 0%, color.adjust($color-info, $lightness: 20%) 100%);
         border: 2px solid white;
         border-radius: 12px; // Rounded square badge
         display: flex;
@@ -331,16 +332,16 @@
     .unlock-btn {
       margin-top: 1rem;
       padding: 1rem 4rem;
-      background: linear-gradient(to bottom, lighten($color-info, 10%), $color-info);
+      background: linear-gradient(to bottom, color.adjust($color-info, $lightness: 10%), $color-info);
       color: white;
-      border: 2px solid darken($color-info, 20%);
+      border: 2px solid color.adjust($color-info, $lightness: -20%);
       border-radius: 8px;
       font-size: 1.25rem;
       font-weight: bold;
       cursor: pointer;
       transition: all 0.1s;
       box-shadow: 
-        0 4px 0 darken($color-info, 20%),
+        0 4px 0 color.adjust($color-info, $lightness: -20%),
         0 8px 20px rgba(0,0,0,0.4);
       position: relative;
       top: 0;
@@ -349,14 +350,14 @@
         filter: brightness(1.1);
         transform: translateY(-2px);
         box-shadow: 
-          0 6px 0 darken($color-info, 20%),
+          0 6px 0 color.adjust($color-info, $lightness: -20%),
           0 10px 25px rgba(0,0,0,0.5);
       }
       
       &:active {
         transform: translateY(4px);
         box-shadow: 
-          0 0 0 darken($color-info, 20%),
+          0 0 0 color.adjust($color-info, $lightness: -20%),
           inset 0 2px 5px rgba(0,0,0,0.2);
       }
     }

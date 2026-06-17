@@ -1,11 +1,11 @@
-// ============================================================================
+﻿// ============================================================================
 // BossDisplay - Boss显示组件
 // ============================================================================
 
 import React from 'react';
 import { BossState, MinionState } from '../../types';
-import bossAlgorithmOverlordImg from '@/assets/images/boss_algorithm_overlord.png';
-import minionGatekeeperImg from '@/assets/images/minion_gatekeeper.png';
+import bossAlgorithmOverlordImg from '@/assets/images/boss_algorithm_overlord.webp';
+import minionGatekeeperImg from '@/assets/images/minion_gatekeeper.webp';
 import './BossDisplay.scss';
 
 interface BossDisplayProps {

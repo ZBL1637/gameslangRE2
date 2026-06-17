@@ -34,9 +34,9 @@ export const BazaarHub: React.FC<BazaarHubProps> = ({
     // Apply rewards/penalties
     const newState: Partial<Chapter5GlobalState> = {};
     if (option.reward) {
-      if (option.reward.comms) newState.comms = Math.min(100, Math.max(0, state.comms + option.reward.comms));
-      if (option.reward.clarity) newState.clarity = Math.min(100, Math.max(0, state.clarity + option.reward.clarity));
-      if (option.reward.culture) newState.culture = Math.min(100, Math.max(0, state.culture + option.reward.culture));
+      if (option.reward.comms) newState.comms = option.reward.comms;
+      if (option.reward.clarity) newState.clarity = option.reward.clarity;
+      if (option.reward.culture) newState.culture = option.reward.culture;
       if (option.reward.ticket) onAddTicket();
     }
     

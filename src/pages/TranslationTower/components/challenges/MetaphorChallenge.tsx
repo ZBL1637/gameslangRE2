@@ -36,6 +36,20 @@ export const MetaphorChallenge: React.FC<MetaphorChallengeProps> = ({
   // 拖拽状态
   const [draggedSourceId, setDraggedSourceId] = useState<string | null>(null);
 
+  const connectPair = (sourceId: string, targetId: string) => {
+    const newConnections = connections.filter(
+      c => c.sourceId !== sourceId && c.targetId !== targetId
+    );
+
+    newConnections.push({
+      sourceId,
+      targetId
+    });
+
+    setConnections(newConnections);
+    setDraggedSourceId(null);
+  };
+
   // 拖拽开始
   const handleDragStart = (e: React.DragEvent, sourceId: string) => {
     setDraggedSourceId(sourceId);
@@ -54,19 +68,17 @@ export const MetaphorChallenge: React.FC<MetaphorChallengeProps> = ({
     e.preventDefault();
     if (!draggedSourceId) return;
 
-    // 如果该源点已经连接了其他目标，先断开
-    // 如果该目标已经连接了其他源点，也先断开
-    const newConnections = connections.filter(
-      c => c.sourceId !== draggedSourceId && c.targetId !== targetId
-    );
+    connectPair(draggedSourceId, targetId);
+  };
 
-    newConnections.push({
-      sourceId: draggedSourceId,
-      targetId: targetId
-    });
+  const handleSourceClick = (sourceId: string) => {
+    if (showResult) return;
+    setDraggedSourceId(prev => prev === sourceId ? null : sourceId);
+  };
 
-    setConnections(newConnections);
-    setDraggedSourceId(null);
+  const handleTargetClick = (targetId: string) => {
+    if (showResult || !draggedSourceId) return;
+    connectPair(draggedSourceId, targetId);
   };
 
   // 获取连接状态
@@ -113,7 +125,7 @@ export const MetaphorChallenge: React.FC<MetaphorChallengeProps> = ({
       <div className="challenge-content">
         <div className="header">
           <h2>隐喻回廊</h2>
-          <p>拖拽左侧的【源语概念】连接到右侧对应的【游戏术语】</p>
+          <p>拖拽左侧的【源语概念】，或先点左侧再点右侧，连接对应的【游戏术语】</p>
           <div className="progress">
             已连接: {connections.length} / {items.length}
           </div>
@@ -129,9 +141,10 @@ export const MetaphorChallenge: React.FC<MetaphorChallengeProps> = ({
                 return (
                   <div
                     key={source.id}
-                    className={`card source-card ${isConnected ? 'connected' : ''}`}
+                    className={`card source-card ${isConnected ? 'connected' : ''} ${draggedSourceId === source.id ? 'selected' : ''}`}
                     draggable={!isConnected} // 连接后也可以拖拽修改？或者锁定？通常可以修改
                     onDragStart={(e) => handleDragStart(e, source.id)}
+                    onClick={() => handleSourceClick(source.id)}
                   >
                     <span className="card-icon">🏮</span>
                     <span className="card-text">{source.text}</span>
@@ -162,7 +175,8 @@ export const MetaphorChallenge: React.FC<MetaphorChallengeProps> = ({
                 return (
                   <div
                     key={target.id}
-                    className={`card target-card ${isConnected ? 'connected' : ''}`}
+                    className={`card target-card ${isConnected ? 'connected' : ''} ${draggedSourceId ? 'ready' : ''}`}
+                    onClick={() => handleTargetClick(target.id)}
                     onDragOver={handleDragOver}
                     onDrop={(e) => handleDrop(e, target.id)}
                   >

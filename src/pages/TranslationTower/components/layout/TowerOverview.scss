@@ -1,3 +1,4 @@
+﻿@use 'sass:color';
 // TowerOverview 样式 - JRPG 系统菜单风格
 $primary-color: #8b5cf6;
 $secondary-color: #06b6d4; // 青蓝（主强调）
@@ -109,13 +110,13 @@ $border-color: #4a3f6b;
 
           .item-subtitle {
             font-size: 0.8rem;
-            color: darken($text-secondary, 20%);
+            color: color.adjust($text-secondary, $lightness: -20%);
           }
         }
 
         // Hover 态
         &:hover {
-          border-color: lighten($border-color, 20%);
+          border-color: color.adjust($border-color, $lightness: 20%);
           box-shadow: 0 0 10px rgba($secondary-color, 0.2);
           
           .item-text .item-title {
@@ -154,7 +155,7 @@ $border-color: #4a3f6b;
       margin-top: auto;
       font-family: 'Press Start 2P', cursive;
       font-size: 0.7rem;
-      color: darken($text-secondary, 30%);
+      color: color.adjust($text-secondary, $lightness: -30%);
     }
   }
 
@@ -412,13 +413,13 @@ $border-color: #4a3f6b;
       .primary-btn {
         width: 280px;
         background: $primary-color;
-        border: 2px solid lighten($primary-color, 10%);
+        border: 2px solid color.adjust($primary-color, $lightness: 10%);
         color: white;
         box-shadow: 0 0 15px rgba($primary-color, 0.4);
         animation: breathe 3s infinite ease-in-out;
 
         &:hover {
-          background: lighten($primary-color, 5%);
+          background: color.adjust($primary-color, $lightness: 5%);
           transform: translateY(-2px);
           box-shadow: 0 5px 20px rgba($primary-color, 0.6);
         }

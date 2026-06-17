@@ -19,6 +19,7 @@ export const Quiz: React.FC<QuizProps> = ({ count = 5, onComplete }) => {
   const [isFinished, setIsFinished] = useState(false);
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [rewardClaimed, setRewardClaimed] = useState(false);
   
   const { addExp } = usePlayerActions();
 
@@ -75,6 +76,7 @@ export const Quiz: React.FC<QuizProps> = ({ count = 5, onComplete }) => {
         setSelectedOption(null);
         setIsFinished(false);
         setFeedback(null);
+        setRewardClaimed(false);
       })
       .finally(() => setIsLoading(false));
   };
@@ -82,21 +84,31 @@ export const Quiz: React.FC<QuizProps> = ({ count = 5, onComplete }) => {
   const handleClaimReward = () => {
     const exp = score * 50;
     addExp(exp);
-    alert(`Claimed ${exp} EXP!`);
-    handleRestart(); // Or close
+    setRewardClaimed(true);
   };
 
   if (isLoading) return <div>Loading quiz...</div>;
 
   if (isFinished) {
+    const exp = score * 50;
+
     return (
       <Panel className="quiz-result">
-        <h3>Quiz Completed!</h3>
+        <h3>测验完成</h3>
         <div className="score-display">
-          Score: {score} / {questions.length}
+          {score} / {questions.length}
         </div>
+        {rewardClaimed && (
+          <div className="reward-claimed">
+            已领取 {exp} EXP
+          </div>
+        )}
         <div className="result-actions">
-          <Button onClick={handleClaimReward}>Claim Reward & Restart</Button>
+          {rewardClaimed ? (
+            <Button onClick={handleRestart}>重新挑战</Button>
+          ) : (
+            <Button onClick={handleClaimReward}>领取奖励</Button>
+          )}
         </div>
       </Panel>
     );

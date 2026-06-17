@@ -2,8 +2,13 @@
 // 第五章：译语通天塔 (Tower of Translation) - 主组件
 // ============================================================================
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { usePlayer } from '@/context/PlayerContext';
+import { ChapterCompass } from '@/components/ChapterCompass/ChapterCompass';
+import { ChapterRewardOverlay } from '@/components/ChapterRewardOverlay/ChapterRewardOverlay';
+import { DataEvidencePanel } from '@/components/DataEvidencePanel/DataEvidencePanel';
+import type { ChapterReward } from '@/data/chapterProgress';
 import { 
   Chapter5GlobalState, 
   FloorType, 
@@ -39,9 +44,11 @@ import './TranslationTower.scss';
 
 export const TranslationTower: React.FC = () => {
   const navigate = useNavigate();
+  const { state, completeChapterRun, updateChapterProgress } = usePlayer();
+  const savedProgress = state.chapterProgress?.chapter_5 || {};
 
   // 初始状态
-  const [gameState, setGameState] = useState<Chapter5GlobalState>({
+  const [gameState, setGameState] = useState<Chapter5GlobalState>(() => savedProgress.gameState || {
     currentFloor: FloorType.F0_BAZAAR, // 初始在集市，但在 Intro 阶段会被隐藏
     comms: 100,
     clarity: 50,
@@ -60,13 +67,28 @@ export const TranslationTower: React.FC = () => {
   });
 
   // 流程控制状态
-  const [phase, setPhase] = useState<'intro' | 'game' | 'skill' | 'outro'>('intro');
+  const [phase, setPhase] = useState<'intro' | 'game' | 'skill' | 'outro'>(savedProgress.phase || 'intro');
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [failureMessage, setFailureMessage] = useState<string | null>(null);
+  const [reward, setReward] = useState<ChapterReward | null>(null);
+  const notificationSeqRef = useRef(0);
+
+  const completedChallengeCount = useMemo(() => {
+    return [FloorType.F1_KEYWORD, FloorType.F2_STYLE, FloorType.F3_METAPHOR, FloorType.F4_BOSS]
+      .filter(floor => gameState.floorProgress[floor]).length;
+  }, [gameState.floorProgress]);
+
+  useEffect(() => {
+    updateChapterProgress('chapter_5', {
+      phase,
+      gameState
+    });
+  }, [gameState, phase, updateChapterProgress]);
 
   // 通知辅助函数
   const showNotification = useCallback((type: NotificationItem['type'], message: string, icon?: string) => {
     const newNote: NotificationItem = {
-      id: Date.now().toString(),
+      id: `${Date.now()}_${notificationSeqRef.current++}`,
       type,
       message,
       icon
@@ -77,17 +99,29 @@ export const TranslationTower: React.FC = () => {
   const removeNotification = useCallback((id: string) => {
     setNotifications(prev => prev.filter(n => n.id !== id));
   }, []);
+
+  const clampStat = (value: number) => Math.max(0, Math.min(100, value));
   
   // 处理状态更新
   const updateState = useCallback((delta: Partial<Chapter5GlobalState>) => {
     setGameState(prev => {
+      const nextComms = delta.comms !== undefined ? clampStat(prev.comms + delta.comms) : prev.comms;
+      const nextClarity = delta.clarity !== undefined ? clampStat(prev.clarity + delta.clarity) : prev.clarity;
+      const nextCulture = delta.culture !== undefined ? clampStat(prev.culture + delta.culture) : prev.culture;
+      const nextState = {
+        ...prev,
+        ...delta,
+        comms: nextComms,
+        clarity: nextClarity,
+        culture: nextCulture,
+      };
+
       // 检查失败条件
-      if (delta.comms !== undefined && delta.comms <= 0) {
-        // 这里可以触发失败弹窗，简单起见先重置为 50
-        alert("沟通彻底崩溃！请重新尝试。");
-        return { ...prev, ...delta, comms: 50 };
+      if (nextState.comms <= 0) {
+        setFailureMessage('沟通彻底崩溃。重新整理翻译策略后再试一次。');
+        return { ...nextState, comms: 0 };
       }
-      return { ...prev, ...delta };
+      return nextState;
     });
   }, []);
 
@@ -149,6 +183,22 @@ export const TranslationTower: React.FC = () => {
     setPhase('outro');
   };
 
+  const handleChapterComplete = () => {
+    const newsProgress = state.chapterProgress?.news_5 as { revealed?: boolean; correct?: boolean } | undefined;
+    const newsScore = (newsProgress?.revealed ? 2 : 0) + (newsProgress?.correct ? 2 : 0);
+    const chapterReward = completeChapterRun(5, {
+      score: 16 + completedChallengeCount * 3 + Math.min(gameState.runes.length, 3) + newsScore,
+      fragmentIds: ['fragment_translation'],
+    });
+    setReward(chapterReward);
+  };
+
+  const handleRecoverFromFailure = () => {
+    setFailureMessage(null);
+    setGameState(prev => ({ ...prev, comms: 50, currentFloor: FloorType.F0_BAZAAR }));
+    setPhase('game');
+  };
+
   // 渲染主内容
   const renderContent = () => {
     if (phase === 'intro') {
@@ -177,7 +227,7 @@ export const TranslationTower: React.FC = () => {
           narrationText={NARRATION_TEXTS.outro}
           globalState={gameState}
           skillData={SKILL_DATA}
-          onContinue={() => navigate('/chapter/final')}
+          onContinue={handleChapterComplete}
         />
       );
     }
@@ -263,13 +313,37 @@ export const TranslationTower: React.FC = () => {
       {phase === 'game' && (
         <HUD state={gameState} title={CHAPTER_META.title} />
       )}
+      {phase === 'game' && (
+        <ChapterCompass
+          chapterId={5}
+          objective="完成关键词、语气、隐喻与最终组装试炼。"
+          progress={`已完成 ${completedChallengeCount} / 4 个试炼`}
+        />
+      )}
       
       <NotificationOverlay notifications={notifications} onRemove={removeNotification} />
 
       {/* 主内容 */}
       <main className="main-content" style={{ paddingTop: phase === 'game' ? '0' : '0' }}>
+        {phase === 'game' && <DataEvidencePanel chapterId={5} compact />}
         {renderContent()}
       </main>
+
+      {failureMessage && (
+        <div className="translation-failure-panel" role="dialog" aria-modal="true">
+          <div className="failure-card">
+            <h2>沟通断裂</h2>
+            <p>{failureMessage}</p>
+            <button onClick={handleRecoverFromFailure}>返回集市重试</button>
+          </div>
+        </div>
+      )}
+
+      <ChapterRewardOverlay
+        reward={reward}
+        onContinue={() => navigate('/chapter/final')}
+        continueLabel="进入终章"
+      />
     </div>
   );
 };

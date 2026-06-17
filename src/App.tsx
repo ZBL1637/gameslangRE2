@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { PlayerProvider } from '@/context/PlayerContext';
 import { Layout } from '@/components/Layout/Layout';
 import SplashScreen from '@/components/SplashScreen/SplashScreen';
@@ -59,6 +59,7 @@ function App() {
             <Routes>
               <Route path="/" element={<TitlePage />} />
               <Route path="/tutorial" element={<TutorialVillage />} />
+              <Route path="/world" element={<Navigate to="/world-map" replace />} />
               <Route path="/world-map" element={<WorldMap />} />
               <Route path="/chapter/1" element={<OriginForest />} />
               <Route path="/chapter/2" element={<BattlePlain />} />

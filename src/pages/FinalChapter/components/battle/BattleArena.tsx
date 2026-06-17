@@ -16,6 +16,7 @@ import {
   BASIC_ATTACK,
   MINION_TEMPLATE
 } from '../../data';
+import type { EvidenceBattleBonus } from '@/data/chapterProgress';
 
 import BossDisplay from './BossDisplay';
 import PlayerDisplay from './PlayerDisplay';
@@ -30,12 +31,14 @@ interface BattleArenaProps {
   gameState: FinalChapterState;
   updateGameState: (updates: Partial<FinalChapterState>) => void;
   setPhase: (phase: BattlePhase) => void;
+  evidenceBonus: EvidenceBattleBonus;
 }
 
 const BattleArena: React.FC<BattleArenaProps> = ({
   gameState,
   updateGameState,
-  setPhase
+  setPhase,
+  evidenceBonus
 }) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [currentAnimation, setCurrentAnimation] = useState<string | null>(null);
@@ -82,7 +85,7 @@ const BattleArena: React.FC<BattleArenaProps> = ({
     setCurrentAnimation('player_attack');
 
     const isCrit = checkCrit();
-    let damage = calculateDamage(BASIC_ATTACK.baseDamage, isCrit);
+    let damage = calculateDamage(BASIC_ATTACK.baseDamage + evidenceBonus.attackBonus, isCrit);
     let actualDamage = damage;
 
     // 检查是否有小怪
@@ -103,7 +106,7 @@ const BattleArena: React.FC<BattleArenaProps> = ({
         turn: gameState.currentTurn,
         actor: 'player',
         action: '普通攻击',
-        detail: `对${targetMinion.name}造成 ${damage} 点伤害${isCrit ? '（暴击！）' : ''}`
+        detail: `对${targetMinion.name}造成 ${damage} 点伤害${isCrit ? '（暴击！）' : ''}${evidenceBonus.attackBonus ? '（语言地图加成）' : ''}`
       });
 
       updateGameState({ minions: newMinions });
@@ -120,7 +123,7 @@ const BattleArena: React.FC<BattleArenaProps> = ({
         turn: gameState.currentTurn,
         actor: 'player',
         action: '普通攻击',
-        detail: `对算法霸主造成 ${actualDamage} 点伤害${isCrit ? '（暴击！）' : ''}${gameState.boss.shield > 0 ? '（护盾减伤）' : ''}`
+        detail: `对算法霸主造成 ${actualDamage} 点伤害${isCrit ? '（暴击！）' : ''}${gameState.boss.shield > 0 ? '（护盾减伤）' : ''}${evidenceBonus.attackBonus ? '（语言地图加成）' : ''}`
       });
 
       updateGameState({
@@ -133,7 +136,7 @@ const BattleArena: React.FC<BattleArenaProps> = ({
       setCurrentAnimation(null);
       endPlayerTurn();
     }, 1000);
-  }, [isAnimating, gameState, checkCrit, calculateDamage, addLog, updateGameState]);
+  }, [isAnimating, gameState, checkCrit, calculateDamage, addLog, updateGameState, evidenceBonus.attackBonus]);
 
   // 使用玩家技能
   const handleUseSkill = useCallback((skill: PlayerSkill) => {
@@ -346,13 +349,15 @@ const BattleArena: React.FC<BattleArenaProps> = ({
           newPlayerState.currentHp = Math.min(newPlayerState.maxHp, newPlayerState.currentHp + damage);
           logDetail = `普通攻击被言灵·转化！转化为${damage}点治疗！`;
         } else {
+          actualDamage = Math.max(0, actualDamage - evidenceBonus.damageReduction);
           newPlayerState.currentHp = Math.max(0, newPlayerState.currentHp - actualDamage);
-          logDetail = `普通攻击对玩家造成${actualDamage}点伤害！`;
+          logDetail = `普通攻击对玩家造成${actualDamage}点伤害！${evidenceBonus.damageReduction ? '压力透镜削弱了伤害。' : ''}`;
         }
         newPlayerState.damageConvert = false;
       } else {
+        actualDamage = Math.max(0, actualDamage - evidenceBonus.damageReduction);
         newPlayerState.currentHp = Math.max(0, newPlayerState.currentHp - actualDamage);
-        logDetail = `普通攻击对玩家造成${actualDamage}点伤害！`;
+        logDetail = `普通攻击对玩家造成${actualDamage}点伤害！${evidenceBonus.damageReduction ? '压力透镜削弱了伤害。' : ''}`;
       }
 
       addLog({
@@ -401,16 +406,18 @@ const BattleArena: React.FC<BattleArenaProps> = ({
             if (newPlayerState.shield > 0) {
               damage = Math.floor(damage * (1 - newPlayerState.shield / 100));
             }
+            damage = Math.max(0, damage - evidenceBonus.damageReduction);
             newPlayerState.currentHp = Math.max(0, newPlayerState.currentHp - damage);
-            logDetail = `流量操纵对玩家造成${damage}点伤害！`;
+            logDetail = `流量操纵对玩家造成${damage}点伤害！${evidenceBonus.damageReduction ? '压力透镜削弱了伤害。' : ''}`;
           }
           newPlayerState.damageConvert = false;
         } else {
           if (newPlayerState.shield > 0) {
             damage = Math.floor(damage * (1 - newPlayerState.shield / 100));
           }
+          damage = Math.max(0, damage - evidenceBonus.damageReduction);
           newPlayerState.currentHp = Math.max(0, newPlayerState.currentHp - damage);
-          logDetail = `流量操纵对玩家造成${damage}点伤害！`;
+          logDetail = `流量操纵对玩家造成${damage}点伤害！${evidenceBonus.damageReduction ? '压力透镜削弱了伤害。' : ''}`;
         }
         break;
 
@@ -443,7 +450,7 @@ const BattleArena: React.FC<BattleArenaProps> = ({
         newBossState.isCharging = true;
         newBossState.chargeProgress = 1;
         logDetail = '终极过滤开始充能！（1/3）必须在3回合内打断！';
-        setShowTip(BATTLE_TIPS.charging);
+        setShowTip(evidenceBonus.maxTurnBonus ? `${BATTLE_TIPS.charging} 转译桥已延长战斗窗口。` : BATTLE_TIPS.charging);
         break;
     }
 
@@ -460,7 +467,7 @@ const BattleArena: React.FC<BattleArenaProps> = ({
     });
 
     finishBossTurn(newBossState, newPlayerState, newMinions, usedSkillId);
-  }, [gameState, addLog]);
+  }, [gameState, addLog, evidenceBonus.damageReduction, evidenceBonus.maxTurnBonus]);
 
   const executeBossTurnRef = useRef<() => void>(() => {});
   useEffect(() => {
@@ -534,6 +541,14 @@ const BattleArena: React.FC<BattleArenaProps> = ({
           <span className="tip-icon">💡</span>
           <span className="tip-text">{showTip}</span>
           <button className="close-tip" onClick={() => setShowTip(null)}>×</button>
+        </div>
+      )}
+
+      {evidenceBonus.unlockedCombos.length > 0 && (
+        <div className="evidence-bonus-strip">
+          {evidenceBonus.unlockedCombos.map(combo => (
+            <span key={combo.id}>{combo.badge} · {combo.title}</span>
+          ))}
         </div>
       )}
 

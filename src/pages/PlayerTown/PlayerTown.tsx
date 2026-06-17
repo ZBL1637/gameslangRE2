@@ -5,7 +5,11 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Trophy } from 'lucide-react';
-import { usePlayerActions } from '@/context/PlayerContext';
+import { usePlayer } from '@/context/PlayerContext';
+import { ChapterCompass } from '@/components/ChapterCompass/ChapterCompass';
+import { ChapterRewardOverlay } from '@/components/ChapterRewardOverlay/ChapterRewardOverlay';
+import { DataEvidencePanel } from '@/components/DataEvidencePanel/DataEvidencePanel';
+import type { ChapterReward } from '@/data/chapterProgress';
 
 import { IntroSection } from './components/layout/IntroSection';
 import { TownMap } from './components/layout/TownMap';
@@ -21,19 +25,23 @@ import { SCRIPT } from './data';
 
 import './PlayerTown.scss';
 
+const RECOMMENDED_ARCHIVE_TERMS = ['GG', 'YYDS', '欧皇', '氪金', '破防', '666', '肝', '送人头', '开团', 'Carry', 'DPS', '奶妈'];
+
 export const PlayerTown: React.FC = () => {
   const navigate = useNavigate();
-  const { completeChapter } = usePlayerActions();
+  const { state, completeChapterRun, updateChapterProgress } = usePlayer();
+  const savedProgress = state.chapterProgress?.chapter_3 || {};
   
   // 章节状态
-  const [phase, setPhase] = useState<Chapter3Phase>('intro');
-  const [dnaCompleted, setDnaCompleted] = useState(false);
-  const [dnaResult, setDnaResult] = useState<DNAResult[] | null>(null);
-  const [queriedTerms, setQueriedTerms] = useState<string[]>([]);
-  const [exploredTerms, setExploredTerms] = useState<string[]>([]);
-  const [skillUnlocked, setSkillUnlocked] = useState(false);
+  const [phase, setPhase] = useState<Chapter3Phase>(savedProgress.phase || 'intro');
+  const [dnaCompleted, setDnaCompleted] = useState(Boolean(savedProgress.dnaCompleted));
+  const [dnaResult, setDnaResult] = useState<DNAResult[] | null>(savedProgress.dnaResult || null);
+  const [queriedTerms, setQueriedTerms] = useState<string[]>(savedProgress.queriedTerms || []);
+  const [exploredTerms, setExploredTerms] = useState<string[]>(savedProgress.exploredTerms || []);
+  const [skillUnlocked, setSkillUnlocked] = useState(Boolean(savedProgress.skillUnlocked));
   const [showAchievement, setShowAchievement] = useState(false);
   const [showSkillToast, setShowSkillToast] = useState(false);
+  const [reward, setReward] = useState<ChapterReward | null>(null);
   
   // 当前活动的建筑/功能
   const [, setActiveBuilding] = useState<string | null>(null);
@@ -54,6 +62,17 @@ export const PlayerTown: React.FC = () => {
   useEffect(() => {
     skillUnlockedRef.current = skillUnlocked;
   }, [skillUnlocked]);
+
+  useEffect(() => {
+    updateChapterProgress('chapter_3', {
+      phase,
+      dnaCompleted,
+      dnaResult,
+      queriedTerms,
+      exploredTerms,
+      skillUnlocked
+    });
+  }, [dnaCompleted, dnaResult, exploredTerms, phase, queriedTerms, skillUnlocked, updateChapterProgress]);
 
   // 完成入场
   const handleIntroComplete = useCallback(() => {
@@ -106,6 +125,8 @@ export const PlayerTown: React.FC = () => {
         
         // 延迟显示技能解锁
         setTimeout(() => {
+          setShowAIPanel(false);
+          setActiveBuilding(null);
           setPhase('skill_unlock');
         }, 3500);
       }
@@ -133,9 +154,14 @@ export const PlayerTown: React.FC = () => {
 
   // 章节完成
   const handleChapterComplete = useCallback(() => {
-    completeChapter(3);
-    navigate('/world-map');
-  }, [completeChapter, navigate]);
+    const newsProgress = state.chapterProgress?.news_3 as { revealed?: boolean; correct?: boolean } | undefined;
+    const newsScore = (newsProgress?.revealed ? 2 : 0) + (newsProgress?.correct ? 2 : 0);
+    const chapterReward = completeChapterRun(3, {
+      score: 14 + Math.min(queriedTerms.length, 10) + (dnaCompleted ? 4 : 0) + newsScore,
+      fragmentIds: ['fragment_identity'],
+    });
+    setReward(chapterReward);
+  }, [completeChapterRun, dnaCompleted, queriedTerms.length, state.chapterProgress]);
 
   return (
     <div className="player-town-page">
@@ -146,6 +172,13 @@ export const PlayerTown: React.FC = () => {
 
         {/* 城镇地图 (作为背景在探索、测试、结果等阶段常驻) */}
         {phase !== 'intro' && (
+          <>
+          <ChapterCompass
+            chapterId={3}
+            objective="完成玩家 DNA 测试，并在真言档案馆查询 10 个黑话。"
+            progress={`DNA：${dnaCompleted ? '完成' : '未完成'} · 查询 ${queriedTerms.length} / 10`}
+          />
+          <DataEvidencePanel chapterId={3} compact />
           <TownMap
             dnaCompleted={dnaCompleted}
             queriedCount={queriedTerms.length}
@@ -157,6 +190,7 @@ export const PlayerTown: React.FC = () => {
               exploredTerms={exploredTerms}
             />
           </TownMap>
+          </>
         )}
 
         {/* DNA测试 */}
@@ -184,6 +218,7 @@ export const PlayerTown: React.FC = () => {
             onQuery={handleQueryTerm}
             queriedTerms={queriedTerms}
             onClose={handleCloseAIPanel}
+            suggestedTerms={RECOMMENDED_ARCHIVE_TERMS}
           />
         )}
 
@@ -230,6 +265,11 @@ export const PlayerTown: React.FC = () => {
             </div>
           </div>
         )}
+
+        <ChapterRewardOverlay
+          reward={reward}
+          onContinue={() => navigate('/world-map', { state: { fromChapter: 3 } })}
+        />
 
       </div>
     </div>

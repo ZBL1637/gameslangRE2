@@ -229,6 +229,51 @@ $pixel-border: #6b5b95;
   }
 }
 
+@media (max-width: 768px) {
+  .intro-section.data-metropolis-intro {
+    .entrance-screen .entrance-text p {
+      font-size: 18px;
+      letter-spacing: 4px;
+
+      &:first-child {
+        font-size: 14px;
+        letter-spacing: 6px;
+      }
+    }
+
+    .title-screen .title-content {
+      h1 {
+        font-size: 30px;
+      }
+
+      .subtitle {
+        font-size: 14px;
+        letter-spacing: 2px;
+      }
+    }
+
+    .dialog-layer {
+      padding-bottom: 1rem;
+
+      .npc-container {
+        left: 0.75rem !important;
+        bottom: 7.5rem !important;
+        width: min(34vw, 140px) !important;
+        height: min(34vh, 260px) !important;
+        max-height: 260px !important;
+        transform: none !important;
+        animation: none !important;
+
+        .npc-avatar {
+          width: 100% !important;
+          height: 100% !important;
+          object-position: bottom left;
+        }
+      }
+    }
+  }
+}
+
 @keyframes pixelSlideInRight {
   from {
     transform: translateX(100px);

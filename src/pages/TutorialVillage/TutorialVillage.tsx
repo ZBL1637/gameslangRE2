@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePlayer } from '@/context/PlayerContext';
 import { TutorialPhase, Dialogue } from './types';
@@ -12,8 +12,8 @@ import {
   NV04_DIALOGUE,
   NV07_NARRATION
 } from './constants';
-import villageHeadImg from '@/assets/images/village_head.png';
-import newmanImg from '@/assets/images/newman.png';
+import villageHeadImg from '@/assets/images/village_head.webp';
+import newmanImg from '@/assets/images/newman.webp';
 import './TutorialVillage.scss';
 
 // New Imports for Player Movement
@@ -23,6 +23,18 @@ import { SpriteCharacter, generatePlaceholderSpriteSheet, Direction, SPRITE_SIZE
 // --- Constants ---
 const MOVEMENT_SPEED = 4; // pixels per frame
 const INTERACTION_DISTANCE = 10; // % distance
+
+const DEFAULT_TUTORIAL_FLAGS = {
+  firstMove: false,
+  roadsignLit: false,
+  boardLit: false,
+  sproutLit: false,
+  chiefMet: false,
+  innLit: false,
+  gateUnlocked: false
+};
+
+type TutorialFlags = typeof DEFAULT_TUTORIAL_FLAGS;
 
 interface Point { x: number; y: number; }
 interface EventZone { 
@@ -53,7 +65,14 @@ const scheduleIdle = (callback: () => void, timeoutMs = 1200): (() => void) => {
 
 const TutorialVillage: React.FC = () => {
   const navigate = useNavigate();
-  const { state, addExp, unlockAchievement, unlockChapter, updateTutorialProgress } = usePlayer();
+  const {
+    state,
+    addExp,
+    unlockAchievement,
+    completeChapterRun,
+    updateTutorialProgress,
+    updateChapterProgress
+  } = usePlayer();
   
   const [phase, setPhase] = useState<TutorialPhase>(TutorialPhase.ENTERING);
   const [dialogueQueue, setDialogueQueue] = useState<Dialogue[]>([]);
@@ -73,14 +92,9 @@ const TutorialVillage: React.FC = () => {
   const [isMoving, setIsMoving] = useState(false);
   const [spriteSheet] = useState<string>(() => generatePlaceholderSpriteSheet());
   
-  const [flags, setFlags] = useState({
-    firstMove: false,
-    roadsignLit: false,
-    boardLit: false,
-    sproutLit: false,
-    chiefMet: false,
-    innLit: false,
-    gateUnlocked: false
+  const [flags, setFlags] = useState<TutorialFlags>(() => {
+    const savedFlags = (state.chapterProgress?.tutorial as { flags?: Partial<TutorialFlags> } | undefined)?.flags;
+    return { ...DEFAULT_TUTORIAL_FLAGS, ...(savedFlags ?? {}) };
   });
   const [lastTriggeredEventId, setLastTriggeredEventId] = useState<string | null>(null);
   const [showEventPopup, setShowEventPopup] = useState<{title: string, content: React.ReactNode} | null>(null);
@@ -109,6 +123,10 @@ const TutorialVillage: React.FC = () => {
   useEffect(() => { dialogueQueueRef.current = dialogueQueue; }, [dialogueQueue]);
   useEffect(() => { showEventPopupRef.current = showEventPopup; }, [showEventPopup]);
   useEffect(() => { lastTriggeredEventIdRef.current = lastTriggeredEventId; }, [lastTriggeredEventId]);
+
+  useEffect(() => {
+    updateChapterProgress('tutorial', { flags });
+  }, [flags, updateChapterProgress]);
 
   useEffect(() => {
     const cleanup = scheduleIdle(() => setIsBackgroundEnabled(true), 1200);
@@ -427,9 +445,11 @@ const TutorialVillage: React.FC = () => {
   };
 
   const handleComplete = () => {
-      unlockAchievement('first_step');
-      unlockChapter(1);
-      navigate('/world-map');
+      completeChapterRun(0, {
+        score: quizResult === 'correct' ? 10 : 8,
+        fragmentIds: ['village_signal'],
+      });
+      navigate('/world-map', { state: { fromChapter: 1 } });
   };
 
   const isHudHighlighted = phase === TutorialPhase.EXPLAIN_HUD;
@@ -464,6 +484,24 @@ const TutorialVillage: React.FC = () => {
                         key={zone.id}
                         className={`event-marker ${isCompleted ? 'completed' : ''}`}
                         style={{ left: `${zone.x}%`, top: `${zone.y}%` }}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`触发 ${zone.label}`}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            if (showEventPopup || dialogueQueue.length > 0 || phase !== TutorialPhase.EXPLORATION) return;
+                            if (isCompleted && zone.id !== 'EVT_worldgate') return;
+                            zone.trigger?.();
+                            setLastTriggeredEventId(zone.id);
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key !== 'Enter' && e.key !== ' ') return;
+                            e.preventDefault();
+                            if (showEventPopup || dialogueQueue.length > 0 || phase !== TutorialPhase.EXPLORATION) return;
+                            if (isCompleted && zone.id !== 'EVT_worldgate') return;
+                            zone.trigger?.();
+                            setLastTriggeredEventId(zone.id);
+                        }}
                     >
                         <span className="marker-label">{zone.label}</span>
                     </div>

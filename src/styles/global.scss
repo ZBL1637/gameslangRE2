@@ -1,5 +1,6 @@
-@import 'variables';
-@import 'animations';
+﻿@use 'sass:color';
+@use 'variables' as *;
+@use 'animations' as *;
 
 // Reset & Global Styles
 *, *::before, *::after {
@@ -51,5 +52,5 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: lighten($color-accent, 10%); 
+  background: color.adjust($color-accent, $lightness: 10%); 
 }

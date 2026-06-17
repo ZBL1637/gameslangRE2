@@ -1,4 +1,5 @@
-@import '@/styles/variables';
+﻿@use 'sass:color';
+@use '@/styles/variables' as *;
 
 .game-term {
   color: $color-accent;
@@ -9,7 +10,7 @@
   // 默认样式（由 Tooltip 组件的 .rpg-tooltip-container 处理虚线，这里处理颜色）
   
   &.active:hover {
-    color: lighten($color-accent, 10%);
+    color: color.adjust($color-accent, $lightness: 10%);
     background-color: rgba($color-accent, 0.1);
     border-radius: 2px;
   }
@@ -26,7 +27,7 @@
   }
 
   &.active:hover {
-    color: lighten($color-accent, 10%);
+    color: color.adjust($color-accent, $lightness: 10%);
     background-color: rgba($color-accent, 0.08);
     border-radius: 2px;
   }

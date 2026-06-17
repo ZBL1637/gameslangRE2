@@ -1,11 +1,11 @@
-// IntroSection - 入场动画和NPC对话
+﻿// IntroSection - 入场动画和NPC对话
 import React, { useState, useEffect } from 'react';
 import { NPCDialogue } from '../../types';
 import { PixelDialogBox } from '../ui/PixelDialogBox';
 import './IntroSection.scss';
 
-import npcAvatar from '../../../../assets/images/npc_translation_master.png';
-import chapter5Bg from '../../../../assets/images/chapter5_bg.png';
+import npcAvatar from '../../../../assets/images/npc_translation_master.webp';
+import chapter5Bg from '../../../../assets/images/chapter5_bg.webp';
 
 interface IntroSectionProps {
   dialogues: NPCDialogue[];

@@ -2,22 +2,33 @@
 // VictoryScreen - 胜利画面
 // ============================================================================
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FinalChapterState } from '../../types';
+import type { GameEnding } from '@/data/chapterProgress';
 import { ENDING_TEXT, NARRATION_TEXTS } from '../../data';
 import './VictoryScreen.scss';
 
 interface VictoryScreenProps {
   gameState: FinalChapterState;
+  ending: GameEnding | null;
   onRestart: () => void;
 }
 
 type VictoryPhase = 'boss_defeat' | 'narration' | 'ending' | 'summary';
 
-const VictoryScreen: React.FC<VictoryScreenProps> = ({ gameState, onRestart }) => {
+const VictoryScreen: React.FC<VictoryScreenProps> = ({ gameState, ending, onRestart }) => {
   const navigate = useNavigate();
   const [phase, setPhase] = useState<VictoryPhase>('boss_defeat');
+  const summaryRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (phase !== 'summary') return;
+
+    window.requestAnimationFrame(() => {
+      summaryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, [phase]);
 
   const handleClick = () => {
     switch (phase) {
@@ -106,14 +117,20 @@ const VictoryScreen: React.FC<VictoryScreenProps> = ({ gameState, onRestart }) =
 
       case 'summary':
         return (
-          <div className="summary-screen">
+          <div className="summary-screen" ref={summaryRef}>
             <div className="summary-card">
               <div className="victory-badge">
                 <span className="badge-icon">🏆</span>
-                <span className="badge-text">游戏通关</span>
+                <span className="badge-text">{ending ? `${ending.rank} · ${ending.title}` : '游戏通关'}</span>
               </div>
               
               <h2>战斗总结</h2>
+              {ending && (
+                <div className="ending-summary-card">
+                  <strong>最终评分：{ending.score}</strong>
+                  <p>{ending.summary}</p>
+                </div>
+              )}
               
               <div className="stats-grid">
                 <div className="stat-item">
@@ -151,6 +168,9 @@ const VictoryScreen: React.FC<VictoryScreenProps> = ({ gameState, onRestart }) =
                 </button>
                 <button className="gallery-btn" onClick={() => navigate('/') }>
                   返回主页
+                </button>
+                <button className="gallery-btn" onClick={() => navigate('/world-map', { state: { fromChapter: 6 } })}>
+                  世界地图
                 </button>
               </div>
             </div>

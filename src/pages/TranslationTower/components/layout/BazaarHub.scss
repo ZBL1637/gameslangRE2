@@ -1,5 +1,5 @@
-// BazaarHub.scss
-@import '../../TranslationTower.scss';
+﻿// BazaarHub.scss
+@use '../../TranslationTower.scss' as *;
 
 .bazaar-hub-section {
   display: flex;

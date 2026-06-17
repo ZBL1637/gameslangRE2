@@ -1,4 +1,4 @@
-@import '../../TranslationTower.scss';
+﻿@use '../../TranslationTower.scss' as *;
 
 .metaphor-challenge {
   position: relative;
@@ -143,6 +143,16 @@
           background: $success-color;
           box-shadow: 0 0 8px $success-color;
         }
+      }
+
+      &.selected {
+        border-color: $accent-color;
+        background: rgba($accent-color, 0.16);
+        box-shadow: 0 0 18px rgba($accent-color, 0.35);
+      }
+
+      &.ready:not(.connected) {
+        border-color: rgba($accent-color, 0.65);
       }
 
       .card-icon {

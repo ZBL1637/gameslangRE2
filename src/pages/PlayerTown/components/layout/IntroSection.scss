@@ -1,3 +1,4 @@
+﻿@use 'sass:color';
 // IntroSection 样式 - 像素艺术风格
 
 $primary-color: #8B4513;
@@ -63,7 +64,8 @@ $bg-panel: rgba(44, 24, 16, 0.95);
 
   .intro-frame {
     position: relative;
-    width: 85%;
+    width: min(96vw, calc((100dvh - 140px) * 16 / 9));
+    max-width: 1200px;
     aspect-ratio: 16 / 9;
     overflow: hidden;
     border-radius: 0.5rem;
@@ -222,7 +224,7 @@ $bg-panel: rgba(44, 24, 16, 0.95);
           .npc-icon {
             width: 120px;
             height: 120px;
-            background: linear-gradient(135deg, $primary-color, darken($primary-color, 15%));
+            background: linear-gradient(135deg, $primary-color, color.adjust($primary-color, $lightness: -15%));
             border: 4px solid $secondary-color;
             border-radius: 50%;
             padding: 1.5rem;
@@ -294,7 +296,7 @@ $bg-panel: rgba(44, 24, 16, 0.95);
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background: linear-gradient(135deg, $primary-color, darken($primary-color, 10%));
+            background: linear-gradient(135deg, $primary-color, color.adjust($primary-color, $lightness: -10%));
             border: 3px solid $secondary-color;
             color: $text-primary;
             padding: 0.75rem 1.5rem;
@@ -324,6 +326,17 @@ $bg-panel: rgba(44, 24, 16, 0.95);
           }
         }
       }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .intro-section {
+    padding: 1rem 0.75rem;
+
+    .intro-frame {
+      width: 100%;
+      aspect-ratio: 16 / 10;
     }
   }
 }

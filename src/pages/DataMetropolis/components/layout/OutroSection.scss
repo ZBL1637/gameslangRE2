@@ -1,3 +1,4 @@
+﻿@use 'sass:color';
 // OutroSection 样式 - Cyberpunk Neon 风格
 $pixel-primary: #D946EF; // Pink
 $pixel-secondary: #A855F7; // Purple
@@ -294,9 +295,9 @@ $pixel-bg-panel: #1a1a2e;
       text-shadow: 0 1px 2px rgba(0,0,0,0.3);
       
       &.next-chapter-btn {
-        background: linear-gradient(135deg, $pixel-accent-cyan, darken($pixel-accent-cyan, 20%));
+        background: linear-gradient(135deg, $pixel-accent-cyan, color.adjust($pixel-accent-cyan, $lightness: -20%));
         box-shadow: 0 0 20px rgba($pixel-accent-cyan, 0.4);
-        border: 2px solid lighten($pixel-accent-cyan, 20%);
+        border: 2px solid color.adjust($pixel-accent-cyan, $lightness: 20%);
 
         &:hover {
           transform: translateY(-2px);
@@ -305,9 +306,9 @@ $pixel-bg-panel: #1a1a2e;
       }
 
       &.world-map-btn {
-        background: linear-gradient(135deg, $pixel-primary, darken($pixel-primary, 20%));
+        background: linear-gradient(135deg, $pixel-primary, color.adjust($pixel-primary, $lightness: -20%));
         box-shadow: 0 0 20px rgba($pixel-primary, 0.4);
-        border: 2px solid lighten($pixel-primary, 20%);
+        border: 2px solid color.adjust($pixel-primary, $lightness: 20%);
 
         &:hover {
           transform: translateY(-2px);

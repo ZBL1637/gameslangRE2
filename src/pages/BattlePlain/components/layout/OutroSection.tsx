@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { SCRIPT } from '../../data';
 import { ArrowRight, RotateCcw, Trophy, Clock } from 'lucide-react';
-import timelordImg from '../../../../assets/images/timelord.png';
-import bgImage from '../../../../assets/images/chapter2_end_bg.png';
+import timelordImg from '../../../../assets/images/timelord.webp';
+import bgImage from '../../../../assets/images/chapter2_end_bg.webp';
 import './OutroSection.scss';
 
 interface OutroSectionProps {

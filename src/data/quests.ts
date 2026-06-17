@@ -39,16 +39,16 @@ export const QUESTS: Quest[] = [
   },
   {
     id: 'main_ch4',
-    title: '理解经济体系',
-    description: '完成第四章：经济与氪金之都的阅读与探索。',
+    title: '破解数据洪流',
+    description: '完成第四章：数据洪流之都的阅读与探索。',
     type: 'main',
     expReward: 500,
     chapterId: 4
   },
   {
     id: 'main_ch5',
-    title: '穿越弹幕峡谷',
-    description: '完成第五章：弹幕大峡谷的阅读与探索。',
+    title: '登上译语通天塔',
+    description: '完成第五章：译语通天塔的阅读与探索。',
     type: 'main',
     expReward: 550,
     chapterId: 5

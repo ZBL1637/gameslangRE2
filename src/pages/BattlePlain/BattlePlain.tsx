@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePlayer } from '@/context/PlayerContext';
+import { ChapterCompass } from '@/components/ChapterCompass/ChapterCompass';
+import { ChapterRewardOverlay } from '@/components/ChapterRewardOverlay/ChapterRewardOverlay';
+import { DataEvidencePanel } from '@/components/DataEvidencePanel/DataEvidencePanel';
+import type { ChapterReward } from '@/data/chapterProgress';
 import { IntroSection } from './components/layout/IntroSection';
 import { OutroSection } from './components/layout/OutroSection';
 import { TimelineMap } from './components/layout/TimelineMap';
@@ -8,13 +12,13 @@ import { EraExplorer } from './components/layout/EraExplorer';
 import { SkillUnlock } from './components/layout/SkillUnlock';
 import { TIMELINE_ERAS } from './data';
 import { GameState } from './types';
-import bgImage from '../../assets/images/timeroad.png';
+import bgImage from '../../assets/images/timeroad.webp';
 
 import './BattlePlain.scss';
 
 const BattlePlain: React.FC = () => {
   const navigate = useNavigate();
-  const { state, addExp, unlockAchievement, unlockChapter, completeChapter, updateChapterProgress } = usePlayer();
+  const { state, addExp, completeChapterRun, updateChapterProgress } = usePlayer();
   
   const savedProgress = state.chapterProgress?.['chapter_2'] || {};
 
@@ -30,7 +34,8 @@ const BattlePlain: React.FC = () => {
   const [introCompleted, setIntroCompleted] = useState(savedProgress.introCompleted || false);
   const [showEraExplorer, setShowEraExplorer] = useState(false);
   const [showSkillUnlock, setShowSkillUnlock] = useState(false);
-  const [showOutro, setShowOutro] = useState(false);
+  const [showOutro, setShowOutro] = useState(savedProgress.showOutro || false);
+  const [reward, setReward] = useState<ChapterReward | null>(null);
   
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -40,9 +45,10 @@ const BattlePlain: React.FC = () => {
       fragmentsCollected: gameState.fragmentsCollected,
       minigamesCompleted: gameState.minigamesCompleted,
       skillUnlocked: gameState.skillUnlocked,
-      introCompleted
+      introCompleted,
+      showOutro
     });
-  }, [gameState.fragmentsCollected, gameState.minigamesCompleted, gameState.skillUnlocked, introCompleted]);
+  }, [gameState.fragmentsCollected, gameState.minigamesCompleted, gameState.skillUnlocked, introCompleted, showOutro, updateChapterProgress]);
 
   // 当完成介绍后滚动到主内容
   useEffect(() => {
@@ -71,6 +77,11 @@ const BattlePlain: React.FC = () => {
 
   // 完成时代小游戏
   const handleCompleteMinigame = (eraId: string) => {
+    if (gameState.minigamesCompleted.includes(eraId)) {
+      setShowEraExplorer(false);
+      return;
+    }
+
     setGameState(prev => ({
       ...prev,
       minigamesCompleted: [...prev.minigamesCompleted, eraId],
@@ -92,9 +103,6 @@ const BattlePlain: React.FC = () => {
   const handleUnlockSkill = () => {
     setGameState(prev => ({ ...prev, skillUnlocked: true }));
     setShowSkillUnlock(false);
-    
-    // 解锁成就
-    unlockAchievement('time_traveler');
     addExp(200);
     
     // 立即显示结尾，无缝衔接
@@ -103,9 +111,13 @@ const BattlePlain: React.FC = () => {
 
   // 完成章节
   const handleComplete = () => {
-    completeChapter(2); // 标记当前章节为完成
-    unlockChapter(3);
-    navigate('/world-map');
+    const newsProgress = state.chapterProgress?.news_2 as { revealed?: boolean; correct?: boolean } | undefined;
+    const newsScore = (newsProgress?.revealed ? 2 : 0) + (newsProgress?.correct ? 2 : 0);
+    const chapterReward = completeChapterRun(2, {
+      score: 14 + gameState.minigamesCompleted.length * 3 + newsScore,
+      fragmentIds: ['fragment_timeline'],
+    });
+    setReward(chapterReward);
   };
 
   // 获取当前时代数据
@@ -128,7 +140,12 @@ const BattlePlain: React.FC = () => {
         {/* 2. 主内容区域 */}
         {introCompleted && (
           <div ref={contentRef} className="main-content">
-            
+            <ChapterCompass
+              chapterId={2}
+              objective="沿时间之路完成四个时代挑战，收集时间碎片。"
+              progress={`已完成 ${gameState.minigamesCompleted.length} / ${TIMELINE_ERAS.length} 个时代`}
+            />
+            <DataEvidencePanel chapterId={2} />
 
 
             {/* 时间线地图 */}
@@ -168,6 +185,11 @@ const BattlePlain: React.FC = () => {
           <OutroSection onComplete={handleComplete} />
         </div>
       )}
+
+      <ChapterRewardOverlay
+        reward={reward}
+        onContinue={() => navigate('/world-map', { state: { fromChapter: 2 } })}
+      />
 
     </div>
   );

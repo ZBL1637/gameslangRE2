@@ -1,6 +1,10 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { usePlayerActions } from '@/context/PlayerContext';
+import { usePlayer } from '@/context/PlayerContext';
+import { ChapterCompass } from '@/components/ChapterCompass/ChapterCompass';
+import { ChapterRewardOverlay } from '@/components/ChapterRewardOverlay/ChapterRewardOverlay';
+import { DataEvidencePanel } from '@/components/DataEvidencePanel/DataEvidencePanel';
+import type { ChapterReward } from '@/data/chapterProgress';
 import { GamePhase, DataNode } from './types';
 import { DATA_NODES } from './data';
 import { IntroSection } from './components/layout/IntroSection';
@@ -12,16 +16,31 @@ import './DataMetropolis.scss';
 
 export const DataMetropolis: React.FC = () => {
   const navigate = useNavigate();
-  const { completeChapter } = usePlayerActions();
+  const { state, completeChapterRun, updateChapterProgress } = usePlayer();
+  const savedProgress = state.chapterProgress?.chapter_4 || {};
   
   // 游戏状态
-  const [phase, setPhase] = useState<GamePhase>('intro');
-  const [nodes, setNodes] = useState<DataNode[]>(DATA_NODES);
-  const [currentNodeId, setCurrentNodeId] = useState<string | null>(null);
-  const [skillUnlocked, setSkillUnlocked] = useState(false);
+  const [phase, setPhase] = useState<GamePhase>(savedProgress.phase || 'intro');
+  const [nodes, setNodes] = useState<DataNode[]>(() => {
+    const completedNodeIds = new Set<string>(savedProgress.completedNodeIds || []);
+    return DATA_NODES.map(node => ({ ...node, completed: completedNodeIds.has(node.id) }));
+  });
+  const [currentNodeId, setCurrentNodeId] = useState<string | null>(savedProgress.currentNodeId || null);
+  const [skillUnlocked, setSkillUnlocked] = useState(Boolean(savedProgress.skillUnlocked));
+  const [reward, setReward] = useState<ChapterReward | null>(null);
   
   // 检查是否所有节点都已完成
   const allNodesCompleted = nodes.every(node => node.completed);
+  const completedNodeIds = useMemo(() => nodes.filter(node => node.completed).map(node => node.id), [nodes]);
+
+  useEffect(() => {
+    updateChapterProgress('chapter_4', {
+      phase,
+      currentNodeId,
+      skillUnlocked,
+      completedNodeIds
+    });
+  }, [completedNodeIds, currentNodeId, phase, skillUnlocked, updateChapterProgress]);
   
   // 当所有节点完成时，显示技能解锁
   useEffect(() => {
@@ -67,9 +86,14 @@ export const DataMetropolis: React.FC = () => {
   
   // 章节完成
   const handleChapterComplete = useCallback(() => {
-    completeChapter(4);
-    navigate('/world-map');
-  }, [navigate, completeChapter]);
+    const newsProgress = state.chapterProgress?.news_4 as { revealed?: boolean; correct?: boolean } | undefined;
+    const newsScore = (newsProgress?.revealed ? 2 : 0) + (newsProgress?.correct ? 2 : 0);
+    const chapterReward = completeChapterRun(4, {
+      score: 16 + completedNodeIds.length * 3 + newsScore,
+      fragmentIds: ['fragment_sentiment'],
+    });
+    setReward(chapterReward);
+  }, [completeChapterRun, completedNodeIds.length, state.chapterProgress]);
   
   // 获取当前节点
   const currentNode = currentNodeId 
@@ -79,6 +103,17 @@ export const DataMetropolis: React.FC = () => {
   return (
     <div className="data-metropolis-page">
       <main className="main-content">
+        {phase !== 'intro' && (
+          <>
+            <ChapterCompass
+              chapterId={4}
+              objective="破解四个数据节点，读出黑话背后的分类与情绪结构。"
+              progress={`已破解 ${completedNodeIds.length} / ${DATA_NODES.length} 个节点`}
+            />
+            <DataEvidencePanel chapterId={4} compact />
+          </>
+        )}
+
         {/* 入场动画 */}
         {phase === 'intro' && (
           <IntroSection onComplete={handleIntroComplete} />
@@ -113,6 +148,10 @@ export const DataMetropolis: React.FC = () => {
           <OutroSection onComplete={handleChapterComplete} />
         </div>
       )}
+      <ChapterRewardOverlay
+        reward={reward}
+        onContinue={() => navigate('/world-map', { state: { fromChapter: 4 } })}
+      />
     </main>
   </div>
 );

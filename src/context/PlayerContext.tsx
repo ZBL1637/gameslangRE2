@@ -10,11 +10,24 @@ import React, {
 } from 'react';
 import { QUESTS } from '@/data/quests';
 import { ACHIEVEMENTS, Achievement } from '@/data/achievements';
+import {
+  ChapterReward,
+  GameEnding,
+  SkillRewardId,
+  getChapterConfig,
+  getChapterGrade,
+  getFragments,
+} from '@/data/chapterProgress';
 import { DialogBox } from '@/components/DialogBox/DialogBox'; // 复用 DialogBox 做成就弹窗
 import { Icon } from '@/components/Icon/Icon';
+import './PlayerContext.scss';
+
+const SAVE_KEY = 'datanews_player_save';
+const SAVE_VERSION = 2;
 
 // 1. 定义玩家状态接口
 export interface PlayerState {
+  saveVersion: number;
   level: number;
   currentExp: number;
   expToNext: number;
@@ -31,10 +44,16 @@ export interface PlayerState {
     phase: string;
   };
   chapterProgress: Record<string, any>; // 存储各章节的具体进度 state
+  skillsUnlocked: SkillRewardId[];
+  dataFragments: string[];
+  chapterScores: Record<string, number>;
+  visitedChapters: number[];
+  ending: GameEnding | null;
 }
 
 // 默认初始状态
 const INITIAL_STATE: PlayerState = {
+  saveVersion: SAVE_VERSION,
   level: 1,
   currentExp: 0,
   expToNext: 100, // 初始升级所需经验
@@ -48,7 +67,12 @@ const INITIAL_STATE: PlayerState = {
   activeQuests: ['main_ch1', 'side_ch1_bridge', 'side_ch1_collocation'], // 初始激活任务
   newPlayerMode: true,
   tutorialProgress: { phase: 'entering' },
-  chapterProgress: {}
+  chapterProgress: {},
+  skillsUnlocked: [],
+  dataFragments: [],
+  chapterScores: {},
+  visitedChapters: [],
+  ending: null
 };
 
 // 2. Context Value 接口
@@ -57,10 +81,16 @@ interface PlayerContextType {
   addExp: (amount: number) => void;
   unlockChapter: (chapterId: number) => void;
   completeChapter: (chapterId: number) => void;
+  completeChapterRun: (chapterId: number, options?: { score?: number; fragmentIds?: string[] }) => ChapterReward;
   restartChapter: (chapterId: number) => void;
   unlockTerm: (termId: string) => void;
   markTermViewed: (termId: string) => void;
   unlockAchievement: (achievementId: string) => void;
+  unlockSkill: (skillId: SkillRewardId) => void;
+  collectDataFragment: (fragmentId: string) => void;
+  recordChapterScore: (chapterId: number, score: number) => void;
+  visitChapter: (chapterId: number) => void;
+  finishGame: (ending: GameEnding) => void;
   completeQuest: (questId: string) => void;
   toggleNewPlayerMode: () => void;
   resetProgress: () => void;
@@ -73,28 +103,76 @@ const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
 type PlayerActionsContextType = Omit<PlayerContextType, 'state'>;
 const PlayerActionsContext = createContext<PlayerActionsContextType | undefined>(undefined);
 
+const addExpToState = (prev: PlayerState, amount: number): PlayerState => {
+  if (amount <= 0) return prev;
+
+  let newExp = prev.currentExp + amount;
+  let newLevel = prev.level;
+  let newExpToNext = prev.expToNext;
+
+  while (newExp >= newExpToNext) {
+    newExp -= newExpToNext;
+    newLevel++;
+    newExpToNext = Math.floor(newExpToNext * 1.5);
+  }
+
+  return {
+    ...prev,
+    level: newLevel,
+    currentExp: newExp,
+    expToNext: newExpToNext
+  };
+};
+
+const uniqueAppend = <T,>(list: T[], items: T[]) => {
+  const next = [...list];
+  items.forEach((item) => {
+    if (!next.includes(item)) next.push(item);
+  });
+  return next;
+};
+
+const migrateState = (raw: unknown): PlayerState => {
+  const parsed = raw && typeof raw === 'object' ? raw as Partial<PlayerState> : {};
+  const merged: PlayerState = {
+    ...INITIAL_STATE,
+    ...parsed,
+    saveVersion: SAVE_VERSION,
+    unlockedChapters: Array.isArray(parsed.unlockedChapters) ? parsed.unlockedChapters : INITIAL_STATE.unlockedChapters,
+    completedChapters: Array.isArray(parsed.completedChapters) ? parsed.completedChapters : INITIAL_STATE.completedChapters,
+    unlockedTerms: Array.isArray(parsed.unlockedTerms) ? parsed.unlockedTerms : INITIAL_STATE.unlockedTerms,
+    viewedTerms: Array.isArray(parsed.viewedTerms) ? parsed.viewedTerms : INITIAL_STATE.viewedTerms,
+    achievements: Array.isArray(parsed.achievements) ? parsed.achievements : INITIAL_STATE.achievements,
+    completedQuests: Array.isArray(parsed.completedQuests) ? parsed.completedQuests : INITIAL_STATE.completedQuests,
+    activeQuests: Array.isArray(parsed.activeQuests) ? parsed.activeQuests : INITIAL_STATE.activeQuests,
+    chapterProgress: parsed.chapterProgress && typeof parsed.chapterProgress === 'object' ? parsed.chapterProgress : {},
+    skillsUnlocked: Array.isArray(parsed.skillsUnlocked) ? parsed.skillsUnlocked : [],
+    dataFragments: Array.isArray(parsed.dataFragments) ? parsed.dataFragments : [],
+    chapterScores: parsed.chapterScores && typeof parsed.chapterScores === 'object' ? parsed.chapterScores : {},
+    visitedChapters: Array.isArray(parsed.visitedChapters) ? parsed.visitedChapters : [],
+    ending: parsed.ending ?? null,
+  };
+
+  if (!merged.dictionaryUnlocked && merged.completedChapters.includes(1)) {
+    merged.dictionaryUnlocked = true;
+  }
+  if (merged.dictionaryUnlocked && !merged.activeQuests.includes('side_visit_dict')) {
+    merged.activeQuests = [...merged.activeQuests, 'side_visit_dict'];
+  }
+
+  return merged;
+};
+
 // 3. Provider 组件
 export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [state, setState] = useState<PlayerState>(() => {
-    // 初始化时尝试从 localStorage 读取
-    const saved = localStorage.getItem('datanews_player_save');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      // 迁移旧数据：确保 chapterProgress 存在
-      const merged: PlayerState = {
-        ...INITIAL_STATE, // 先填充默认值
-        ...parsed, // 覆盖保存的值
-        chapterProgress: parsed.chapterProgress || {} // 确保 chapterProgress 不为 undefined
-      };
-      if (!merged.dictionaryUnlocked && Array.isArray(merged.completedChapters) && merged.completedChapters.includes(1)) {
-        merged.dictionaryUnlocked = true;
-      }
-      if (merged.dictionaryUnlocked && !merged.activeQuests.includes('side_visit_dict')) {
-        merged.activeQuests = [...merged.activeQuests, 'side_visit_dict'];
-      }
-      return merged;
+    try {
+      const saved = localStorage.getItem(SAVE_KEY);
+      if (!saved) return INITIAL_STATE;
+      return migrateState(JSON.parse(saved));
+    } catch {
+      return INITIAL_STATE;
     }
-    return INITIAL_STATE;
   });
 
   const [notification, setNotification] = useState<{ type: 'achievement', data: Achievement } | null>(null);
@@ -102,7 +180,11 @@ export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
   // 每次状态更新时保存到 localStorage
   useEffect(() => {
-    localStorage.setItem('datanews_player_save', JSON.stringify(state));
+    try {
+      localStorage.setItem(SAVE_KEY, JSON.stringify({ ...state, saveVersion: SAVE_VERSION }));
+    } catch {
+      // localStorage 可能被禁用或超限，游戏仍继续运行。
+    }
   }, [state]);
 
   useEffect(() => {
@@ -111,27 +193,7 @@ export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
   // 经验值增加逻辑
   const addExp = useCallback((amount: number) => {
-    setState(prev => {
-      let newExp = prev.currentExp + amount;
-      let newLevel = prev.level;
-      let newExpToNext = prev.expToNext;
-
-      // 简单的升级逻辑：经验溢出则升级
-      while (newExp >= newExpToNext) {
-        newExp -= newExpToNext;
-        newLevel++;
-        newExpToNext = Math.floor(newExpToNext * 1.5); // 每一级所需经验增加 50%
-        // 这里可以触发升级音效或弹窗（通过 useEffect 或 callback）
-        // alert(`LEVEL UP! You are now Level ${newLevel}!`); // 暂时注释，避免频繁弹窗
-      }
-
-      return {
-        ...prev,
-        level: newLevel,
-        currentExp: newExp,
-        expToNext: newExpToNext
-      };
-    });
+    setState(prev => addExpToState(prev, amount));
   }, []);
 
   const unlockChapter = useCallback((chapterId: number) => {
@@ -155,63 +217,133 @@ export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       
       const quest = QUESTS.find(q => q.id === questId);
       if (quest) {
-        // 自动发放任务经验奖励
-        let newExp = prev.currentExp + quest.expReward;
-        let newLevel = prev.level;
-        let newExpToNext = prev.expToNext;
-
-        while (newExp >= newExpToNext) {
-          newExp -= newExpToNext;
-          newLevel++;
-          newExpToNext = Math.floor(newExpToNext * 1.5);
-        }
-
-        return {
-           ...prev,
-           completedQuests: [...prev.completedQuests, questId],
-           level: newLevel,
-           currentExp: newExp,
-           expToNext: newExpToNext
-        };
+        return addExpToState({
+          ...prev,
+          completedQuests: [...prev.completedQuests, questId],
+        }, quest.expReward);
       }
       
       return { ...prev, completedQuests: [...prev.completedQuests, questId] };
     });
   }, []);
 
-  const completeChapter = useCallback((chapterId: number) => {
+  const completeChapterRun = useCallback((chapterId: number, options?: { score?: number; fragmentIds?: string[] }) => {
+    const currentState = stateRef.current;
+    const config = getChapterConfig(chapterId);
+    const chapterTitle = config?.title ?? `第 ${chapterId} 章`;
+    const isNewCompletion = !currentState.completedChapters.includes(chapterId);
+    const nextChapterId = chapterId < 6 ? chapterId + 1 : undefined;
+    const relatedQuest = QUESTS.find(q => q.chapterId === chapterId && q.type === 'main');
+    const score = options?.score ?? config?.baseScore ?? 10;
+    const fragmentIds = options?.fragmentIds ?? config?.fragmentIds ?? [];
+    const fragments = getFragments(fragmentIds);
+    const grade = getChapterGrade(score, chapterId);
+    const achievements = [
+      ...(config?.achievementId ? [config.achievementId] : []),
+      ...(chapterId >= 1 && chapterId <= 5 && grade === 'S' ? [`s_rank_chapter_${chapterId}`] : []),
+    ];
+    const expReward = relatedQuest
+      ? (currentState.completedQuests.includes(relatedQuest.id) ? 0 : relatedQuest.expReward)
+      : (chapterId === 0 ? 80 : 0);
+
     setState(prev => {
-      if (prev.completedChapters.includes(chapterId)) return prev;
-      
-      let newState = { ...prev, completedChapters: [...prev.completedChapters, chapterId] };
+      const alreadyCompleted = prev.completedChapters.includes(chapterId);
+      let nextState: PlayerState = {
+        ...prev,
+        visitedChapters: uniqueAppend(prev.visitedChapters || [], [chapterId]),
+        chapterScores: {
+          ...(prev.chapterScores || {}),
+          [String(chapterId)]: Math.max(prev.chapterScores?.[String(chapterId)] ?? 0, score),
+        },
+      };
 
-      if (chapterId === 1 && !newState.dictionaryUnlocked) {
-        newState.dictionaryUnlocked = true;
-        if (!newState.activeQuests.includes('side_visit_dict')) {
-          newState.activeQuests = [...newState.activeQuests, 'side_visit_dict'];
-        }
+      if (alreadyCompleted) return nextState;
+
+      nextState.completedChapters = uniqueAppend(nextState.completedChapters, [chapterId]);
+      nextState.dataFragments = uniqueAppend(nextState.dataFragments || [], fragmentIds);
+
+      if (config?.rewardSkillId) {
+        nextState.skillsUnlocked = uniqueAppend(nextState.skillsUnlocked || [], [config.rewardSkillId]);
       }
-      
-      // 解锁下一章
-      const nextChapterId = chapterId + 1;
-      if (nextChapterId <= 6 && !newState.unlockedChapters.includes(nextChapterId)) {
-        newState.unlockedChapters = [...newState.unlockedChapters, nextChapterId];
-        // 激活下一章的主线任务
+
+      if (config?.achievementId) {
+        nextState.achievements = uniqueAppend(nextState.achievements || [], [config.achievementId]);
+      }
+
+      if (chapterId >= 1 && chapterId <= 5 && getChapterGrade(score, chapterId) === 'S') {
+        nextState.achievements = uniqueAppend(nextState.achievements || [], [`s_rank_chapter_${chapterId}`]);
+      }
+
+      if (chapterId === 1 && !nextState.dictionaryUnlocked) {
+        nextState.dictionaryUnlocked = true;
+        nextState.activeQuests = uniqueAppend(nextState.activeQuests, ['side_visit_dict']);
+      }
+
+      if (nextChapterId && !nextState.unlockedChapters.includes(nextChapterId)) {
+        nextState.unlockedChapters = [...nextState.unlockedChapters, nextChapterId];
         const nextQuest = QUESTS.find(q => q.chapterId === nextChapterId && q.type === 'main');
-        if (nextQuest && !newState.activeQuests.includes(nextQuest.id)) {
-          newState.activeQuests = [...newState.activeQuests, nextQuest.id];
-        }
+        if (nextQuest) nextState.activeQuests = uniqueAppend(nextState.activeQuests, [nextQuest.id]);
       }
 
-      return newState;
+      const mainChaptersCompleted = [1, 2, 3, 4, 5, 6].every(id =>
+        id === chapterId || nextState.completedChapters.includes(id)
+      );
+      if (mainChaptersCompleted) {
+        nextState.achievements = uniqueAppend(nextState.achievements, ['completionist']);
+      }
+
+      if ((nextState.skillsUnlocked || []).length >= 4) {
+        nextState.achievements = uniqueAppend(nextState.achievements, ['skill_collector']);
+      }
+
+      if ((nextState.dataFragments || []).length >= 8) {
+        nextState.achievements = uniqueAppend(nextState.achievements, ['evidence_master']);
+      }
+
+      const allMainChaptersS = [1, 2, 3, 4, 5].every(id => {
+        const savedScore = id === chapterId ? score : nextState.chapterScores?.[String(id)] ?? 0;
+        return getChapterGrade(savedScore, id) === 'S';
+      });
+      if (allMainChaptersS) {
+        nextState.achievements = uniqueAppend(nextState.achievements, ['perfect_mainline']);
+      }
+
+      return nextState;
     });
 
-    // 如果有任务，异步触发完成
-    const relatedQuest = QUESTS.find(q => q.chapterId === chapterId && q.type === 'main');
+    achievements.forEach((achievementId) => {
+      if (!currentState.achievements.includes(achievementId)) {
+        const achievement = ACHIEVEMENTS.find(a => a.id === achievementId);
+        if (achievement) {
+          setNotification({ type: 'achievement', data: achievement });
+          setTimeout(() => setNotification(null), 3000);
+        }
+      }
+    });
+
     if (relatedQuest) {
       setTimeout(() => completeQuest(relatedQuest.id), 0);
+    } else if (chapterId === 0 && isNewCompletion) {
+      setTimeout(() => addExp(80), 0);
     }
-  }, [completeQuest]);
+
+    return {
+      chapterId,
+      chapterTitle,
+      isNewCompletion,
+      expReward: isNewCompletion ? expReward : 0,
+      skillId: config?.rewardSkillId,
+      skillName: config?.rewardSkillName,
+      fragments,
+      achievements: isNewCompletion ? achievements : [],
+      nextChapterId,
+      score,
+    };
+  }, [addExp, completeQuest]);
+
+  const completeChapter = useCallback((chapterId: number) => {
+    completeChapterRun(chapterId);
+  }, [completeChapterRun]);
 
   const restartChapter = useCallback((chapterId: number) => {
     setState(prev => {
@@ -254,13 +386,60 @@ export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     });
   }, [unlockAchievement]);
 
+  const unlockSkill = useCallback((skillId: SkillRewardId) => {
+    setState(prev => {
+      const skillsUnlocked = uniqueAppend(prev.skillsUnlocked || [], [skillId]);
+      const achievements = skillsUnlocked.length >= 4
+        ? uniqueAppend(prev.achievements || [], ['skill_collector'])
+        : prev.achievements;
+      return { ...prev, skillsUnlocked, achievements };
+    });
+  }, []);
+
+  const collectDataFragment = useCallback((fragmentId: string) => {
+    setState(prev => ({
+      ...prev,
+      dataFragments: uniqueAppend(prev.dataFragments || [], [fragmentId])
+    }));
+  }, []);
+
+  const recordChapterScore = useCallback((chapterId: number, score: number) => {
+    setState(prev => ({
+      ...prev,
+      chapterScores: {
+        ...(prev.chapterScores || {}),
+        [String(chapterId)]: Math.max(prev.chapterScores?.[String(chapterId)] ?? 0, score),
+      }
+    }));
+  }, []);
+
+  const visitChapter = useCallback((chapterId: number) => {
+    setState(prev => ({
+      ...prev,
+      visitedChapters: uniqueAppend(prev.visitedChapters || [], [chapterId])
+    }));
+  }, []);
+
+  const finishGame = useCallback((ending: GameEnding) => {
+    setState(prev => {
+      const achievements = ending.rank === 'S'
+        ? uniqueAppend(prev.achievements || [], ['s_rank_ending'])
+        : prev.achievements;
+      return { ...prev, ending, achievements };
+    });
+  }, []);
+
   const toggleNewPlayerMode = useCallback(() => {
     setState(prev => ({ ...prev, newPlayerMode: !prev.newPlayerMode }));
   }, []);
 
   const resetProgress = useCallback(() => {
     setState(INITIAL_STATE);
-    localStorage.removeItem('datanews_player_save');
+    try {
+      localStorage.removeItem(SAVE_KEY);
+    } catch {
+      // ignore
+    }
   }, []);
 
   const getQuestStatus = useCallback((questId: string) => {
@@ -299,10 +478,16 @@ export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       addExp,
       unlockChapter,
       completeChapter,
+      completeChapterRun,
       restartChapter,
       unlockTerm,
       markTermViewed,
       unlockAchievement,
+      unlockSkill,
+      collectDataFragment,
+      recordChapterScore,
+      visitChapter,
+      finishGame,
       completeQuest,
       toggleNewPlayerMode,
       resetProgress,
@@ -315,10 +500,16 @@ export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     addExp,
     unlockChapter,
     completeChapter,
+    completeChapterRun,
     restartChapter,
     unlockTerm,
     markTermViewed,
     unlockAchievement,
+    unlockSkill,
+    collectDataFragment,
+    recordChapterScore,
+    visitChapter,
+    finishGame,
     completeQuest,
     toggleNewPlayerMode,
     resetProgress,
@@ -332,10 +523,16 @@ export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       addExp,
       unlockChapter,
       completeChapter,
+      completeChapterRun,
       restartChapter,
       unlockTerm,
       markTermViewed,
       unlockAchievement,
+      unlockSkill,
+      collectDataFragment,
+      recordChapterScore,
+      visitChapter,
+      finishGame,
       completeQuest,
       toggleNewPlayerMode,
       resetProgress,
@@ -347,10 +544,16 @@ export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     addExp,
     unlockChapter,
     completeChapter,
+    completeChapterRun,
     restartChapter,
     unlockTerm,
     markTermViewed,
     unlockAchievement,
+    unlockSkill,
+    collectDataFragment,
+    recordChapterScore,
+    visitChapter,
+    finishGame,
     completeQuest,
     toggleNewPlayerMode,
     resetProgress,
@@ -366,14 +569,7 @@ export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         
         {/* 全局成就通知 */}
         {notification && notification.type === 'achievement' && (
-          <div style={{ 
-            position: 'fixed', 
-            bottom: '20px', 
-            right: '20px', 
-            zIndex: 9999,
-            width: '300px',
-            animation: 'slideIn 0.5s ease-out'
-          }}>
+          <div className="player-achievement-toast">
             <DialogBox 
               text={`Unlocked: ${notification.data.name}`}
               speaker="ACHIEVEMENT"
@@ -382,12 +578,6 @@ export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) 
             />
           </div>
         )}
-        <style>{`
-          @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-          }
-        `}</style>
       </PlayerContext.Provider>
     </PlayerActionsContext.Provider>
   );

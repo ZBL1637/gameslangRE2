@@ -10,6 +10,7 @@
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "typecheck": "tsc --noEmit",
+    "assets:optimize": "node scripts/optimize-assets.mjs",
     "check": "npm run typecheck && npm run lint",
     "preview": "vite preview"
   },

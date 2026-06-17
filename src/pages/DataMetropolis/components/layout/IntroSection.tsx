@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { SCRIPT } from '../../data';
 import { PixelDialogBox } from '../ui/PixelDialogBox';
 import './IntroSection.scss';
 
-import chapter4DataBg from '@/assets/images/chapter4_data_bg.png';
-import npcAvatar from '@/assets/images/npc_data_weaver.png';
+import chapter4DataBg from '@/assets/images/chapter4_data_bg.webp';
+import npcAvatar from '@/assets/images/npc_data_weaver.webp';
 
 interface IntroSectionProps {
   onComplete: () => void;

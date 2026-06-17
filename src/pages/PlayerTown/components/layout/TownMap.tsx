@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Lock } from 'lucide-react';
 import './TownMap.scss';
 
 // 导入NPC图片
-import npcDnaScientist from '@/assets/images/npc_dna_scientist.png';
-import npcAiLibrarian from '@/assets/images/npc_ai_librarian.png';
-import chapter3Bg from '@/assets/images/chapter3_intro_bg.png';
+import npcDnaScientist from '@/assets/images/npc_dna_scientist.webp';
+import npcAiLibrarian from '@/assets/images/npc_ai_librarian.webp';
+import chapter3Bg from '@/assets/images/chapter3_intro_bg.webp';
 
 interface TownMapProps {
   dnaCompleted: boolean;
@@ -66,7 +66,15 @@ export const TownMap: React.FC<TownMapProps> = ({
                   : '来测试一下你的游戏DNA吧！我能分析出你的玩家类型~'
                 }</p>
                 {!dnaCompleted && (
-                  <button className="interact-btn">开始测试</button>
+                  <button
+                    className="interact-btn"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onEnterDNATest();
+                    }}
+                  >
+                    开始测试
+                  </button>
                 )}
               </div>
               <div className="bubble-arrow"></div>
@@ -111,7 +119,15 @@ export const TownMap: React.FC<TownMapProps> = ({
                   : '完成DNA测试后，我才能为你开启档案馆的大门...'
                 }</p>
                 {archiveUnlocked && (
-                  <button className="interact-btn">进入档案馆</button>
+                  <button
+                    className="interact-btn"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onEnterArchive();
+                    }}
+                  >
+                    进入档案馆
+                  </button>
                 )}
               </div>
               <div className="bubble-arrow"></div>

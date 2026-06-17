@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { SCRIPT, NPC_OPTIONS } from '../../data';
 import { Clock } from 'lucide-react';
-import bgImage from '../../../../assets/images/chapter2_intro_bg.png';
-import timelordImg from '../../../../assets/images/timelord.png';
+import bgImage from '../../../../assets/images/chapter2_intro_bg.webp';
+import timelordImg from '../../../../assets/images/timelord.webp';
 import { DialogBox } from '../../../TutorialVillage/components/DialogBox';
 import './IntroSection.scss';
 

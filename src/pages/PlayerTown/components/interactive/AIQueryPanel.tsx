@@ -1,14 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { X, Send } from 'lucide-react';
 import { FLOATING_TERMS, SCRIPT } from '../../data';
 import { queryDeepSeek, AiQueryResult } from '@/services/aiQuery';
-import npcAiLibrarian from '@/assets/images/npc_ai_librarian.png';
+import npcAiLibrarian from '@/assets/images/npc_ai_librarian.webp';
 import './AIQueryPanel.scss';
 
 interface AIQueryPanelProps {
   onQuery: (term: string) => void;
   queriedTerms: string[];
   onClose: () => void;
+  suggestedTerms?: string[];
 }
 
 interface Message {
@@ -28,7 +29,8 @@ interface Message {
 export const AIQueryPanel: React.FC<AIQueryPanelProps> = ({
   onQuery,
   queriedTerms,
-  onClose
+  onClose,
+  suggestedTerms
 }) => {
   const [inputValue, setInputValue] = useState('');
   const [messages, setMessages] = useState<Message[]>([
@@ -70,6 +72,30 @@ export const AIQueryPanel: React.FC<AIQueryPanelProps> = ({
     setIsTyping(true);
 
     try {
+      const localKey = term.trim().toUpperCase();
+      const localMatch = FLOATING_TERMS.find(t => t.term.toUpperCase() === localKey);
+      if (localMatch) {
+        const aiMessage: Message = {
+          id: `ai-${Date.now()}`,
+          type: 'ai',
+          content: `在本地档案中找到了关于「${localMatch.term}」的记录：`,
+          term: localMatch.term,
+          details: {
+            definition: localMatch.definition,
+            usage: localMatch.example,
+            emotion: localMatch.emotion || '—',
+            origin: localMatch.origin || `源自${localMatch.category}游戏圈`,
+            relatedTerms: FLOATING_TERMS
+              .filter(t => t.category === localMatch.category && t.id !== localMatch.id)
+              .slice(0, 3)
+              .map(t => t.term)
+          }
+        };
+        onQuery(localMatch.term);
+        setMessages(prev => [...prev, aiMessage]);
+        return;
+      }
+
       // DeepSeek 查询
       abortRef.current?.abort();
       abortRef.current = new AbortController();
@@ -91,7 +117,7 @@ export const AIQueryPanel: React.FC<AIQueryPanelProps> = ({
       onQuery(result.term);
       setMessages(prev => [...prev, aiMessage]);
     } catch (err) {
-      console.error('AI Query Error:', err);
+      console.warn('AI Query fallback:', err);
       const msg = (err as Error)?.message || '';
       let errorHandled = false;
 
@@ -168,7 +194,7 @@ export const AIQueryPanel: React.FC<AIQueryPanelProps> = ({
   };
 
   // 快捷查询建议
-  const suggestions = ['GG', 'YYDS', '欧皇', '氪金', '破防', '666'];
+  const suggestions = suggestedTerms ?? ['GG', 'YYDS', '欧皇', '氪金', '破防', '666'];
   const unusedSuggestions = suggestions.filter(s => !queriedTerms.includes(s));
 
   return (

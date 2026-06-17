@@ -1,3 +1,4 @@
+﻿@use 'sass:color';
 // CityOverview 样式 - 像素艺术风格
 $pixel-primary: #D946EF;
 $pixel-secondary: #A855F7;
@@ -206,7 +207,7 @@ $pixel-border: #6b5b95;
 
 // 节点容器
 .nodes-container {
-  width: min(1200px, 96vw);
+  width: min(100%, 1120px);
   margin: 0 auto;
   position: relative;
   z-index: 3;
@@ -215,7 +216,7 @@ $pixel-border: #6b5b95;
 .nodes-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 32px;
+  gap: clamp(20px, 2.4vw, 32px);
 }
 
 // 节点卡片 - 像素风格
@@ -360,9 +361,9 @@ $pixel-border: #6b5b95;
       gap: 6px;
       padding: 12px 24px;
       background: linear-gradient(135deg, $pixel-primary, $pixel-secondary);
-      border: 3px solid lighten($pixel-primary, 20%);
+      border: 3px solid color.adjust($pixel-primary, $lightness: 20%);
       box-shadow: 
-        0 4px 0 darken($pixel-primary, 20%),
+        0 4px 0 color.adjust($pixel-primary, $lightness: -20%),
         0 0 15px rgba($pixel-primary, 0.4);
       color: #ffffff;
       font-size: 16px;
@@ -374,14 +375,14 @@ $pixel-border: #6b5b95;
       &:hover {
         transform: translateY(-2px) translateX(4px);
         box-shadow: 
-          0 6px 0 darken($pixel-primary, 20%),
+          0 6px 0 color.adjust($pixel-primary, $lightness: -20%),
           0 0 25px rgba($pixel-primary, 0.6);
       }
 
       &:active {
         transform: translateY(2px);
         box-shadow: 
-          0 2px 0 darken($pixel-primary, 20%),
+          0 2px 0 color.adjust($pixel-primary, $lightness: -20%),
           0 0 10px rgba($pixel-primary, 0.4);
       }
     }

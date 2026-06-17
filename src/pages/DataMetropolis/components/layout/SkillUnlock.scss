@@ -1,3 +1,4 @@
+@use 'sass:color';
 // SkillUnlock 样式 - 像素艺术风格
 $pixel-primary: #D946EF;
 $pixel-secondary: #A855F7;
@@ -11,7 +12,9 @@ $pixel-border: #6b5b95;
   position: absolute;
   inset: 0;
   z-index: 100;
-  background: radial-gradient(ellipse at center, rgba($pixel-primary, 0.2) 0%, rgba($pixel-bg-dark, 0.98) 70%);
+  background:
+    radial-gradient(ellipse at center, rgba($pixel-primary, 0.28) 0%, rgba($pixel-bg-dark, 0.92) 46%, rgba($pixel-bg-dark, 0.99) 100%);
+  backdrop-filter: blur(6px) brightness(0.55);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -37,8 +40,19 @@ $pixel-border: #6b5b95;
 }
 
 .skill-unlock-container {
+  width: min(620px, 100%);
+  padding: 28px;
+  border: 3px solid rgba($pixel-accent-cyan, 0.72);
+  background:
+    linear-gradient(180deg, rgba($pixel-bg-panel, 0.96), rgba($pixel-bg-dark, 0.98)),
+    radial-gradient(circle at top, rgba($pixel-primary, 0.18), transparent 52%);
+  box-shadow:
+    0 0 0 2px rgba($pixel-bg-dark, 0.95),
+    0 0 34px rgba($pixel-accent-cyan, 0.28),
+    inset 0 0 34px rgba(0, 0, 0, 0.5);
   text-align: center;
   position: relative;
+  isolation: isolate;
 }
 
 // 粒子效果
@@ -124,7 +138,7 @@ $pixel-border: #6b5b95;
     width: 120px;
     height: 120px;
     background: linear-gradient(135deg, $pixel-primary, $pixel-secondary);
-    border: 4px solid lighten($pixel-primary, 20%);
+    border: 4px solid color.adjust($pixel-primary, $lightness: 20%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -198,7 +212,7 @@ $pixel-border: #6b5b95;
   }
 
   .skill-effect {
-    background: rgba($pixel-bg-panel, 0.8);
+    background: rgba($pixel-bg-dark, 0.86);
     border: 3px solid $pixel-border;
     box-shadow: 
       0 0 20px rgba($pixel-accent-cyan, 0.2),
@@ -240,7 +254,7 @@ $pixel-border: #6b5b95;
   .skill-lore {
     padding: 16px;
     border-left: 4px solid $pixel-primary;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.72);
     margin-bottom: 24px;
     box-shadow: 0 0 15px rgba($pixel-primary, 0.2);
 
@@ -260,9 +274,9 @@ $pixel-border: #6b5b95;
     gap: 8px;
     padding: 16px 36px;
     background: linear-gradient(135deg, $pixel-primary, $pixel-accent-cyan);
-    border: 4px solid lighten($pixel-accent-cyan, 20%);
+    border: 4px solid color.adjust($pixel-accent-cyan, $lightness: 20%);
     box-shadow: 
-      0 6px 0 darken($pixel-primary, 20%),
+      0 6px 0 color.adjust($pixel-primary, $lightness: -20%),
       0 0 30px rgba($pixel-accent-cyan, 0.4);
     color: #ffffff;
     font-size: 16px;
@@ -274,14 +288,14 @@ $pixel-border: #6b5b95;
     &:hover {
       transform: translateY(-3px);
       box-shadow: 
-        0 9px 0 darken($pixel-primary, 20%),
+        0 9px 0 color.adjust($pixel-primary, $lightness: -20%),
         0 0 40px rgba($pixel-accent-cyan, 0.6);
     }
 
     &:active {
       transform: translateY(3px);
       box-shadow: 
-        0 3px 0 darken($pixel-primary, 20%),
+        0 3px 0 color.adjust($pixel-primary, $lightness: -20%),
         0 0 20px rgba($pixel-accent-cyan, 0.4);
     }
   }
@@ -301,6 +315,16 @@ $pixel-border: #6b5b95;
 
 // 响应式
 @media (max-width: 768px) {
+  .skill-unlock-overlay {
+    align-items: flex-start;
+    padding: 16px;
+    overflow-y: auto;
+  }
+
+  .skill-unlock-container {
+    padding: 20px;
+  }
+
   .skill-name h2 {
     font-size: 24px;
   }

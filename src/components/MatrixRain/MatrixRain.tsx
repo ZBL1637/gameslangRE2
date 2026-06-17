@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import { getDataProcessor } from '@/utils/dataProcessor';
 import './MatrixRain.scss';
 
 const MatrixRain: React.FC = () => {
@@ -22,7 +21,8 @@ const MatrixRain: React.FC = () => {
     };
 
     const idleHandle = maybeIdle(() => {
-      void getDataProcessor()
+      void import('@/utils/dataProcessor')
+        .then(module => module.getDataProcessor())
         .then(dp => {
           const terms = dp
             .getAllTerms()

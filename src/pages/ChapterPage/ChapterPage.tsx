@@ -7,14 +7,12 @@ import { usePlayer } from '@/context/PlayerContext';
 import { QUESTS } from '@/data/quests';
 import { DialogBox } from '@/components/DialogBox/DialogBox';
 import { getDataProcessor } from '@/utils/dataProcessor';
-import { 
-  ChartSunburst, 
-  ChartGameBar, 
-  ChartSourcePie, 
-  ChartTrend,
-  ChartCooccurrenceGraph,
-  ChartCooccurrenceHeatmap
-} from '@/components/Charts';
+import { ChartSunburst } from '@/components/Charts/ChartSunburst';
+import { ChartGameBar } from '@/components/Charts/ChartGameBar';
+import { ChartSourcePie } from '@/components/Charts/ChartSourcePie';
+import { ChartTrend } from '@/components/Charts/ChartTrend';
+import { ChartCooccurrenceGraph } from '@/components/Charts/ChartCooccurrenceGraph';
+import { ChartCooccurrenceHeatmap } from '@/components/Charts/ChartCooccurrenceHeatmap';
 import './ChapterPage.scss';
 
 type ChapterCharts = {

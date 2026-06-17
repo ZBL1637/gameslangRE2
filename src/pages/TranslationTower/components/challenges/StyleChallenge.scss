@@ -1,5 +1,6 @@
+﻿@use 'sass:color';
 // StyleChallenge - 挑战二：语气熔炉
-@import '../../TranslationTower.scss';
+@use '../../TranslationTower.scss' as *;
 
 .style-challenge {
   .original-section {
@@ -165,12 +166,12 @@
           white-space: nowrap;
           
           &.culture {
-            background: linear-gradient(90deg, $primary-color, lighten($primary-color, 10%));
+            background: linear-gradient(90deg, $primary-color, color.adjust($primary-color, $lightness: 10%));
             justify-content: flex-start;
           }
           
           &.clarity {
-            background: linear-gradient(90deg, darken($secondary-color, 10%), $secondary-color);
+            background: linear-gradient(90deg, color.adjust($secondary-color, $lightness: -10%), $secondary-color);
             margin-left: auto; // Push to right
             justify-content: flex-end;
           }

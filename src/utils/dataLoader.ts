@@ -1,7 +1,3 @@
-import allData from '@/data/words_all_data.json';
-import sortData from '@/data/words_sort_data.json';
-import scrapedData from '@/data/words_scraped_data.json';
-
 // 定义基础类型
 export interface Term {
   title: string;
@@ -36,28 +32,37 @@ export type RawData = {
   scrapedData: ScrapedItem[];
 };
 
-export const rawData: RawData = {
-  allData: allData as Term[],
-  sortData: sortData as SortItem[],
-  scrapedData: scrapedData as ScrapedItem[],
-};
+let rawDataPromise: Promise<RawData> | null = null;
 
 export const loadRawData = async (): Promise<RawData> => {
-  return rawData;
+  if (!rawDataPromise) {
+    rawDataPromise = Promise.all([
+      import('@/data/words_all_data.json'),
+      import('@/data/words_sort_data.json'),
+      import('@/data/words_scraped_data.json'),
+    ]).then(([allData, sortData, scrapedData]) => ({
+      allData: allData.default as Term[],
+      sortData: sortData.default as SortItem[],
+      scrapedData: scrapedData.default as ScrapedItem[],
+    }));
+  }
+
+  return rawDataPromise;
 };
 
 export const getBasicStats = async (): Promise<DataStats> => {
+  const data = await loadRawData();
   const uniqueTerms = new Set<string>();
-  rawData.sortData.forEach(item => uniqueTerms.add(String(item.title)));
-  rawData.allData.forEach(item => uniqueTerms.add(String(item.title)));
-  rawData.scrapedData.forEach(item => uniqueTerms.add(String(item.term)));
+  data.sortData.forEach(item => uniqueTerms.add(String(item.title)));
+  data.allData.forEach(item => uniqueTerms.add(String(item.title)));
+  data.scrapedData.forEach(item => uniqueTerms.add(String(item.term)));
 
   const totalTerms = uniqueTerms.size;
-  const uniqueGames = new Set(rawData.scrapedData.map(item => item.game));
+  const uniqueGames = new Set(data.scrapedData.map(item => item.game));
   const totalGames = uniqueGames.size;
-  const uniqueCategories = new Set(rawData.sortData.map(item => item["一级分类"]));
+  const uniqueCategories = new Set(data.sortData.map(item => item["一级分类"]));
   const totalCategories = uniqueCategories.size;
-  const scrapedCount = rawData.scrapedData.length;
+  const scrapedCount = data.scrapedData.length;
 
   return { totalTerms, totalGames, totalCategories, scrapedCount };
 };

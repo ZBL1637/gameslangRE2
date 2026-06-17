@@ -1,7 +1,8 @@
+﻿@use 'sass:color';
 // ============================================================================
 // PlayerDisplay - 玩家显示样式（统一开场动画配色）
 // ============================================================================
-@import '../../../../styles/variables';
+@use '../../../../styles/variables' as *;
 
 $primary-color: $color-primary;
 $secondary-color: $color-info;
@@ -103,15 +104,15 @@ $text-secondary: $color-text-muted;
           overflow: hidden;
 
           &.healthy .hp-fill {
-            background: linear-gradient(90deg, $primary-color, lighten($primary-color, 10%));
+            background: linear-gradient(90deg, $primary-color, color.adjust($primary-color, $lightness: 10%));
           }
 
           &.warning .hp-fill {
-            background: linear-gradient(90deg, $accent-color, lighten($accent-color, 10%));
+            background: linear-gradient(90deg, $accent-color, color.adjust($accent-color, $lightness: 10%));
           }
 
           &.danger .hp-fill {
-            background: linear-gradient(90deg, $danger-color, lighten($danger-color, 10%));
+            background: linear-gradient(90deg, $danger-color, color.adjust($danger-color, $lightness: 10%));
           }
 
           .hp-fill {

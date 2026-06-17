@@ -5,17 +5,19 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FinalChapterState } from '../../types';
+import type { GameEnding } from '@/data/chapterProgress';
 import { ENDING_TEXT, NARRATION_TEXTS, NPC_DIALOGUES } from '../../data';
 import './DefeatScreen.scss';
 
 interface DefeatScreenProps {
   gameState: FinalChapterState;
+  ending: GameEnding | null;
   onRestart: () => void;
 }
 
 type DefeatPhase = 'boss_triumph' | 'narration' | 'ending' | 'retry';
 
-const DefeatScreen: React.FC<DefeatScreenProps> = ({ gameState, onRestart }) => {
+const DefeatScreen: React.FC<DefeatScreenProps> = ({ gameState, ending, onRestart }) => {
   const navigate = useNavigate();
   const [phase, setPhase] = useState<DefeatPhase>('boss_triumph');
 
@@ -105,10 +107,16 @@ const DefeatScreen: React.FC<DefeatScreenProps> = ({ gameState, onRestart }) => 
             <div className="retry-card">
               <div className="defeat-badge">
                 <span className="badge-icon">💀</span>
-                <span className="badge-text">战斗失败</span>
+                <span className="badge-text">{ending ? `${ending.rank} · ${ending.title}` : '战斗失败'}</span>
               </div>
               
               <h2>战斗总结</h2>
+              {ending && (
+                <div className="ending-summary-card">
+                  <strong>当前评分：{ending.score}</strong>
+                  <p>{ending.summary}</p>
+                </div>
+              )}
               
               <div className="stats-grid">
                 <div className="stat-item">

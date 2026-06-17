@@ -2,7 +2,18 @@
 // 终章：魔王城 (The Overlord's Citadel) - 主组件
 // ============================================================================
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { usePlayer } from '@/context/PlayerContext';
+import { ChapterCompass } from '@/components/ChapterCompass/ChapterCompass';
+import { DataEvidencePanel } from '@/components/DataEvidencePanel/DataEvidencePanel';
+import { EvidenceBoard } from '@/components/EvidenceBoard/EvidenceBoard';
+import {
+  EvidenceBattleBonus,
+  GameEnding,
+  SkillRewardId,
+  getEndingForScore,
+  getEvidenceBattleBonus,
+} from '@/data/chapterProgress';
 import { FinalChapterState, BattlePhase } from './types';
 import {
   INITIAL_BOSS_STATE,
@@ -20,14 +31,16 @@ import DefeatScreen from './components/layout/DefeatScreen';
 import './FinalChapter.scss';
 
 // 初始游戏状态
-const getInitialState = (): FinalChapterState => ({
+const getInitialState = (skillsUnlocked: SkillRewardId[], evidenceBonus: EvidenceBattleBonus): FinalChapterState => ({
   currentPhase: 'intro',
   currentTurn: 1,
-  maxTurns: 15,
+  maxTurns: 15 + evidenceBonus.maxTurnBonus,
   isPlayerTurn: true,
   player: {
     ...INITIAL_PLAYER_STATE,
-    skills: PLAYER_SKILLS.map(skill => ({ ...skill }))
+    skills: PLAYER_SKILLS
+      .filter(skill => skillsUnlocked.includes(skill.id))
+      .map(skill => ({ ...skill }))
   },
   boss: {
     ...INITIAL_BOSS_STATE,
@@ -39,8 +52,40 @@ const getInitialState = (): FinalChapterState => ({
   copiedSkill: null
 });
 
+const calculateFinalScore = (
+  globalState: ReturnType<typeof usePlayer>['state'],
+  battleState: FinalChapterState,
+  won: boolean
+) => {
+  const completedScore = [1, 2, 3, 4, 5].filter(id => globalState.completedChapters.includes(id)).length * 6;
+  const finalFragmentIds = won
+    ? Array.from(new Set([...(globalState.dataFragments || []), 'fragment_algorithm']))
+    : (globalState.dataFragments || []);
+  const evidenceBonus = getEvidenceBattleBonus(finalFragmentIds);
+  const fragmentScore = Math.min(27, finalFragmentIds.length * 3);
+  const skillScore = Math.min(16, (globalState.skillsUnlocked?.length || 0) * 4);
+  const chapterScore = Math.min(20, Object.values(globalState.chapterScores || {}).reduce((sum, value) => sum + Math.min(4, Math.floor(value / 6)), 0));
+  const battleScore = won ? 22 : Math.max(0, Math.floor((100 - battleState.boss.currentHp) / 5));
+  const turnBonus = won ? Math.max(0, 10 - Math.max(0, battleState.currentTurn - 8)) : 0;
+  const newsScore = [1, 2, 3, 4, 5, 6].reduce((sum, id) => {
+    const progress = globalState.chapterProgress?.[`news_${id}`] as { revealed?: boolean; correct?: boolean } | undefined;
+    return sum + (progress?.revealed ? 1 : 0) + (progress?.correct ? 1 : 0);
+  }, 0);
+
+  const rawScore = completedScore + fragmentScore + skillScore + chapterScore + battleScore + turnBonus + newsScore + evidenceBonus.comboScoreBonus;
+  return won ? Math.min(100, rawScore) : Math.min(59, rawScore);
+};
+
 const FinalChapter: React.FC = () => {
-  const [gameState, setGameState] = useState<FinalChapterState>(getInitialState());
+  const { state, completeChapterRun, finishGame, visitChapter } = usePlayer();
+  const evidenceBonus = getEvidenceBattleBonus(state.dataFragments || []);
+  const [gameState, setGameState] = useState<FinalChapterState>(() => getInitialState(state.skillsUnlocked, evidenceBonus));
+  const [ending, setEnding] = useState<GameEnding | null>(state.ending);
+  const finalizedRef = useRef(false);
+
+  useEffect(() => {
+    visitChapter(6);
+  }, [visitChapter]);
 
   // 切换游戏阶段
   const setPhase = useCallback((phase: BattlePhase) => {
@@ -69,8 +114,32 @@ const FinalChapter: React.FC = () => {
 
   // 重新开始游戏
   const restartGame = useCallback(() => {
-    setGameState(getInitialState());
-  }, []);
+    finalizedRef.current = false;
+    setEnding(null);
+    setGameState(getInitialState(state.skillsUnlocked, getEvidenceBattleBonus(state.dataFragments || [])));
+  }, [state.dataFragments, state.skillsUnlocked]);
+
+  useEffect(() => {
+    if (finalizedRef.current) return;
+    if (gameState.currentPhase !== 'victory' && gameState.currentPhase !== 'defeat') return;
+
+    finalizedRef.current = true;
+    const won = gameState.currentPhase === 'victory';
+    const score = calculateFinalScore(state, gameState, won);
+    const nextEnding: GameEnding = {
+      ...getEndingForScore(score, won),
+      completedAt: new Date().toISOString(),
+    };
+
+    if (won) {
+      completeChapterRun(6, {
+        score,
+        fragmentIds: ['fragment_algorithm'],
+      });
+    }
+    finishGame(nextEnding);
+    setEnding(nextEnding);
+  }, [completeChapterRun, finishGame, gameState, state]);
 
   // 渲染当前阶段
   const renderCurrentPhase = () => {
@@ -86,6 +155,7 @@ const FinalChapter: React.FC = () => {
             gameState={gameState}
             updateGameState={updateGameState}
             setPhase={setPhase}
+            evidenceBonus={evidenceBonus}
           />
         );
       
@@ -93,6 +163,7 @@ const FinalChapter: React.FC = () => {
         return (
           <VictoryScreen
             gameState={gameState}
+            ending={ending}
             onRestart={restartGame}
           />
         );
@@ -101,6 +172,7 @@ const FinalChapter: React.FC = () => {
         return (
           <DefeatScreen
             gameState={gameState}
+            ending={ending}
             onRestart={restartGame}
           />
         );
@@ -145,6 +217,22 @@ const FinalChapter: React.FC = () => {
       </div>
       
       <div className="chapter-content">
+        {gameState.currentPhase !== 'intro' && (
+          <ChapterCompass
+            chapterId={6}
+            objective="使用已解锁技能击败算法霸主，查看你的数据新闻结局。"
+            progress={`已解锁技能 ${state.skillsUnlocked.length} / 4 · 已收集碎片 ${state.dataFragments.length}`}
+          />
+        )}
+        {gameState.currentPhase === 'battle' && (
+          <>
+            <DataEvidencePanel chapterId={6} compact />
+            <EvidenceBoard fragmentIds={state.dataFragments || []} compact />
+          </>
+        )}
+        {(gameState.currentPhase === 'victory' || gameState.currentPhase === 'defeat') && (
+          <EvidenceBoard fragmentIds={state.dataFragments || []} ending={ending} />
+        )}
         {renderCurrentPhase()}
       </div>
     </div>

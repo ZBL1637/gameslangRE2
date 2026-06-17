@@ -11,7 +11,9 @@ const Profile: React.FC = () => {
   const navigate = useNavigate();
   const { state } = usePlayer();
 
-  const completedCount = state.completedChapters.length;
+  const totalMainChapters = 6;
+  const completedMainChapters = state.completedChapters.filter(ch => ch >= 1 && ch <= totalMainChapters);
+  const completedCount = completedMainChapters.length;
   const achievementCount = state.achievements.length;
   const totalAchievements = ACHIEVEMENTS.length;
   const questCount = state.completedQuests.length;
@@ -25,9 +27,9 @@ const Profile: React.FC = () => {
   };
 
   const getNextObjective = () => {
-    if (completedCount < 6) {
+    if (completedCount < totalMainChapters) {
       // Find first missing chapter
-      for (let i = 1; i <= 6; i++) {
+      for (let i = 1; i <= totalMainChapters; i++) {
         if (!state.completedChapters.includes(i)) {
           return {
             text: `完成第 ${i} 章`,
@@ -73,10 +75,10 @@ const Profile: React.FC = () => {
           <div className="stats-grid">
             <div className="stat-box">
               <span className="stat-val">{state.currentExp}</span>
-              <span className="stat-label">总经验值</span>
+              <span className="stat-label">当前经验</span>
             </div>
             <div className="stat-box">
-              <span className="stat-val">{completedCount} / 6</span>
+              <span className="stat-val">{completedCount} / {totalMainChapters}</span>
               <span className="stat-label">已完成章节</span>
             </div>
             <div className="stat-box">
@@ -106,7 +108,7 @@ const Profile: React.FC = () => {
               state.completedChapters.map(ch => (
                 <div key={ch} className="history-item">
                   <Icon name="flag" size="sm" />
-                  <span>完成了第 {ch} 章</span>
+                  <span>{ch === 0 ? '完成了新手村引导' : `完成了第 ${ch} 章`}</span>
                 </div>
               ))
             ) : (

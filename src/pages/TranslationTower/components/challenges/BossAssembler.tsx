@@ -86,6 +86,15 @@ export const BossAssembler: React.FC<BossAssemblerProps> = ({
   };
 
   const isAllSelected = slots.every(s => selectedOptions[s.id]);
+  const assembledTranslation = useMemo(() => {
+    return slots
+      .map((slot) => slot.options.find((option) => option.id === selectedOptions[slot.id])?.text)
+      .filter((text): text is string => Boolean(text))
+      .join(' ')
+      .replace(/\s+([,.;:!?])/g, '$1')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }, [selectedOptions, slots]);
 
   // 获取显示的选项（如果使用了提示券，过滤掉一些低分选项）
   const getDisplayOptions = (slot: BossSlot) => {
@@ -190,7 +199,7 @@ export const BossAssembler: React.FC<BossAssemblerProps> = ({
         ) : (
           <div className="result-panel animate-fade-in">
             <div className="final-text">
-              {slots.map(s => slots.find(slot => slot.id === s.id)?.options.find(o => o.id === selectedOptions[s.id])?.text).join('')}
+              {assembledTranslation}
             </div>
             <div className="analysis">
               <h4>分析报告</h4>

@@ -1,3 +1,4 @@
+﻿@use 'sass:color';
 // ============================================================================
 // 第三章：玩家生态城镇 - 主样式（像素艺术风格）
 // ============================================================================
@@ -69,7 +70,7 @@ $text-muted: rgba(255, 255, 255, 0.5);
 
 @keyframes pixelBorder {
   0%, 100% { border-color: $secondary-color; }
-  50% { border-color: lighten($secondary-color, 20%); }
+  50% { border-color: color.adjust($secondary-color, $lightness: 20%); }
 }
 
 // 通用动画类

@@ -1,3 +1,4 @@
+﻿@use 'sass:color';
 // DataNodeExplorer 样式 - 像素艺术风格
 $pixel-primary: #D946EF;
 $pixel-secondary: #A855F7;
@@ -364,9 +365,9 @@ $pixel-border: #6b5b95;
 
   &.primary {
     background: linear-gradient(135deg, $pixel-primary, $pixel-secondary);
-    border: 3px solid lighten($pixel-primary, 20%);
+    border: 3px solid color.adjust($pixel-primary, $lightness: 20%);
     box-shadow: 
-      0 4px 0 darken($pixel-primary, 20%),
+      0 4px 0 color.adjust($pixel-primary, $lightness: -20%),
       0 0 20px rgba($pixel-primary, 0.4);
     color: #ffffff;
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
@@ -374,14 +375,14 @@ $pixel-border: #6b5b95;
     &:hover:not(:disabled) {
       transform: translateY(-2px);
       box-shadow: 
-        0 6px 0 darken($pixel-primary, 20%),
+        0 6px 0 color.adjust($pixel-primary, $lightness: -20%),
         0 0 30px rgba($pixel-primary, 0.6);
     }
 
     &:active:not(:disabled) {
       transform: translateY(2px);
       box-shadow: 
-        0 2px 0 darken($pixel-primary, 20%),
+        0 2px 0 color.adjust($pixel-primary, $lightness: -20%),
         0 0 15px rgba($pixel-primary, 0.4);
     }
 

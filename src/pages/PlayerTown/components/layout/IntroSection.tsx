@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { SCRIPT } from '../../data';
 import './IntroSection.scss';
 
-import chapter3IntroBg from '@/assets/images/chapter3_intro_bg.png';
+import chapter3IntroBg from '@/assets/images/chapter3_intro_bg.webp';
 
 interface IntroSectionProps {
   onComplete: () => void;

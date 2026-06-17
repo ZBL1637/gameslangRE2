@@ -1,4 +1,5 @@
-@import '@/styles/variables';
+﻿@use 'sass:color';
+@use '@/styles/variables' as *;
 
 // Pixel Art Fonts (Assuming a pixel font is available globally, otherwise falling back to monospace)
 $font-pixel: 'Press Start 2P', 'Courier New', monospace;
@@ -153,7 +154,7 @@ $color-pixel-bg-bottom: #25263a;
       
       &.active {
         background-color: $color-pixel-purple;
-        border-color: lighten($color-pixel-purple, 20%);
+        border-color: color.adjust($color-pixel-purple, $lightness: 20%);
         color: white;
         box-shadow: 0 0 10px rgba($color-pixel-purple, 0.6);
         transform: scale(1.1);
@@ -174,7 +175,7 @@ $color-pixel-bg-bottom: #25263a;
       
       &.completed {
         background-color: $color-pixel-cyan;
-        border-color: lighten($color-pixel-cyan, 20%);
+        border-color: color.adjust($color-pixel-cyan, $lightness: 20%);
         color: $color-bg-dark;
       }
 
@@ -251,7 +252,7 @@ $color-pixel-bg-bottom: #25263a;
         .primary-btn {
           font-family: $font-pixel;
           padding: 1.2rem 3rem;
-          background: linear-gradient(to bottom, lighten($color-pixel-cyan, 10%), darken($color-pixel-cyan, 10%));
+          background: linear-gradient(to bottom, color.adjust($color-pixel-cyan, $lightness: 10%), color.adjust($color-pixel-cyan, $lightness: -10%));
           color: $color-bg-dark;
           border: 2px solid white;
           border-bottom-width: 4px; // 立体感
@@ -270,7 +271,7 @@ $color-pixel-bg-bottom: #25263a;
           &:hover {
             transform: translateY(-4px) scale(1.05);
             box-shadow: 0 8px 20px rgba($color-pixel-cyan, 0.5);
-            background: linear-gradient(to bottom, lighten($color-pixel-cyan, 20%), $color-pixel-cyan);
+            background: linear-gradient(to bottom, color.adjust($color-pixel-cyan, $lightness: 20%), $color-pixel-cyan);
             border-color: #fff;
           }
           
@@ -393,18 +394,18 @@ $color-pixel-bg-bottom: #25263a;
           
           &.primary {
             background-color: $color-pixel-purple;
-            border-color: lighten($color-pixel-purple, 10%);
-            box-shadow: 0 4px 0 darken($color-pixel-purple, 20%);
+            border-color: color.adjust($color-pixel-purple, $lightness: 10%);
+            box-shadow: 0 4px 0 color.adjust($color-pixel-purple, $lightness: -20%);
             
             &:hover {
-              background-color: lighten($color-pixel-purple, 10%);
+              background-color: color.adjust($color-pixel-purple, $lightness: 10%);
               transform: translateY(-2px);
-              box-shadow: 0 6px 0 darken($color-pixel-purple, 20%);
+              box-shadow: 0 6px 0 color.adjust($color-pixel-purple, $lightness: -20%);
             }
             
             &:active {
                 transform: translateY(2px);
-                box-shadow: 0 2px 0 darken($color-pixel-purple, 20%);
+                box-shadow: 0 2px 0 color.adjust($color-pixel-purple, $lightness: -20%);
             }
           }
         }
@@ -537,7 +538,7 @@ $color-pixel-bg-bottom: #25263a;
           .keyword-tag {
             padding: 0.25rem 0.5rem;
             background-color: rgba($color-pixel-purple, 0.2);
-            color: lighten($color-pixel-purple, 20%);
+            color: color.adjust($color-pixel-purple, $lightness: 20%);
             border: 1px solid $color-pixel-purple;
             border-radius: 2px;
             font-size: 0.75rem;
@@ -557,17 +558,17 @@ $color-pixel-bg-bottom: #25263a;
         font-weight: bold;
         cursor: pointer;
         transition: all 0.2s;
-        box-shadow: 0 4px 0 darken($color-pixel-cyan, 20%);
+        box-shadow: 0 4px 0 color.adjust($color-pixel-cyan, $lightness: -20%);
         
         &:hover {
           transform: translateY(-2px);
-          box-shadow: 0 6px 0 darken($color-pixel-cyan, 20%);
+          box-shadow: 0 6px 0 color.adjust($color-pixel-cyan, $lightness: -20%);
           filter: brightness(1.1);
         }
         
         &:active {
             transform: translateY(2px);
-            box-shadow: 0 2px 0 darken($color-pixel-cyan, 20%);
+            box-shadow: 0 2px 0 color.adjust($color-pixel-cyan, $lightness: -20%);
         }
       }
     }

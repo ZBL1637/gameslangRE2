@@ -1,3 +1,5 @@
+﻿@use 'sass:math';
+@use 'sass:color';
 // ============================================================================
 // 第四章：数据洪流之都 - 主样式文件 (像素艺术风格)
 // ============================================================================
@@ -110,12 +112,12 @@ $text-muted: #9ca3af;
 
 .data-metropolis-page {
   // 游戏窗口框架样式 - 像素艺术风格
-  width: 90%;
+  width: min(96vw, calc((100dvh - 120px) * 16 / 9));
   max-width: 1400px;
-  margin: 20px auto;
+  margin: 0 auto;
   aspect-ratio: 16 / 9;
   // 确保有最小高度，防止高度塌陷
-  min-height: 600px;
+  min-height: min(600px, calc(100dvh - 120px));
   // 如果父容器高度不够，允许自动扩展
   height: auto;
   
@@ -127,7 +129,7 @@ $text-muted: #9ca3af;
     0 0 20px rgba($pixel-primary, 0.3),
     inset 0 0 60px rgba(0, 0, 0, 0.5);
 
-  background: linear-gradient(180deg, $pixel-bg-dark 0%, darken($pixel-bg-dark, 5%) 100%);
+  background: linear-gradient(180deg, $pixel-bg-dark 0%, color.adjust($pixel-bg-dark, $lightness: -5%) 100%);
   color: $text-primary;
   position: relative;
   overflow: hidden;
@@ -191,9 +193,9 @@ $text-muted: #9ca3af;
 
       @for $i from 1 through 20 {
         &:nth-child(#{$i}) {
-          left: #{random(100)}%;
-          animation-delay: #{random(3000) / 1000}s;
-          animation-duration: #{2 + random(3)}s;
+          left: #{math.random(100)}%;
+          animation-delay: #{math.div(math.random(3000), 1000)}s;
+          animation-duration: #{2 + math.random(3)}s;
         }
       }
     }
@@ -219,11 +221,11 @@ $text-muted: #9ca3af;
       border-left: 2px solid $pixel-border;
     }
     &::-webkit-scrollbar-thumb {
-      background: linear-gradient(to bottom, $pixel-primary, darken($pixel-primary, 20%));
+      background: linear-gradient(to bottom, $pixel-primary, color.adjust($pixel-primary, $lightness: -20%));
       border: 2px solid $pixel-border;
       
       &:hover {
-        background: linear-gradient(to bottom, lighten($pixel-primary, 10%), $pixel-primary);
+        background: linear-gradient(to bottom, color.adjust($pixel-primary, $lightness: 10%), $pixel-primary);
       }
     }
   }
@@ -323,6 +325,18 @@ $text-muted: #9ca3af;
 
 // 响应式
 @media (max-width: 768px) {
+  .data-metropolis-page {
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    aspect-ratio: auto;
+    border-width: 2px;
+
+    .main-content {
+      min-height: 100%;
+    }
+  }
+
   .skip-option {
     bottom: 10px;
     left: 10px;

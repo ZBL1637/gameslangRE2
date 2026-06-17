@@ -2,11 +2,20 @@ import React, { useState, useCallback } from 'react';
 import { X, Check, AlertCircle, HelpCircle } from 'lucide-react';
 import { DataNode } from '../../types';
 import { SCRIPT } from '../../data';
-import { TermDistributionChart } from '../charts/TermDistributionChart';
-import { SentimentDistributionChart } from '../charts/SentimentDistributionChart';
-import { CategorySentimentChart } from '../charts/CategorySentimentChart';
-import { MultiGameRadarChart } from '../charts/MultiGameRadarChart';
 import './DataNodeExplorer.scss';
+
+const TermDistributionChart = React.lazy(() =>
+  import('../charts/TermDistributionChart').then(module => ({ default: module.TermDistributionChart }))
+);
+const SentimentDistributionChart = React.lazy(() =>
+  import('../charts/SentimentDistributionChart').then(module => ({ default: module.SentimentDistributionChart }))
+);
+const CategorySentimentChart = React.lazy(() =>
+  import('../charts/CategorySentimentChart').then(module => ({ default: module.CategorySentimentChart }))
+);
+const MultiGameRadarChart = React.lazy(() =>
+  import('../charts/MultiGameRadarChart').then(module => ({ default: module.MultiGameRadarChart }))
+);
 
 interface DataNodeExplorerProps {
   node: DataNode;
@@ -121,7 +130,9 @@ export const DataNodeExplorer: React.FC<DataNodeExplorerProps> = ({
         {step === 'chart' && (
           <div className="chart-content animate-fade-in">
             <div className="chart-container">
-              {renderChart()}
+              <React.Suspense fallback={<div className="chart-loading">正在装载图表证据...</div>}>
+                {renderChart()}
+              </React.Suspense>
             </div>
             <div className="chart-actions">
               <p className="instruction">仔细观察图表，找出其中的规律</p>

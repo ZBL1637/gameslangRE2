@@ -1,7 +1,8 @@
+﻿@use 'sass:color';
 // ============================================================================
 // BossDisplay - Boss显示样式（统一开场动画配色）
 // ============================================================================
-@import '../../../../styles/variables';
+@use '../../../../styles/variables' as *;
 
 $primary-color: $color-primary;
 $secondary-color: $color-info;
@@ -240,7 +241,7 @@ $text-secondary: $color-text-muted;
 
           .hp-fill {
             height: 100%;
-            background: linear-gradient(90deg, $primary-color, darken($primary-color, 10%));
+            background: linear-gradient(90deg, $primary-color, color.adjust($primary-color, $lightness: -10%));
             transition: width 0.5s ease;
           }
 

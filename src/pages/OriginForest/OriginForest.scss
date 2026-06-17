@@ -1,9 +1,10 @@
-@import '@/styles/variables';
+﻿@use '@/styles/variables' as *;
 
 .origin-forest-page {
   position: relative;
   margin: 0 auto;
-  width: 85%;
+  width: min(96vw, calc((100dvh - 120px) * 16 / 9));
+  max-width: 1200px;
   aspect-ratio: 16 / 9;
   height: auto;
   background: linear-gradient(180deg, #0a1f0a 0%, #123012 55%, #0d2d0d 100%);
@@ -13,6 +14,13 @@
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
+}
+
+@media (max-width: 768px) {
+  .origin-forest-page {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+  }
 }
 
 .ch1-global-bg {
@@ -37,8 +45,44 @@
 .ch1-main {
   min-height: 100%;
   padding: 20px 16px 40px;
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+  align-items: start;
+  gap: 18px;
+}
+
+.ch1-side-panel {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.ch1-side-panel .data-evidence-panel {
+  width: 100%;
+  margin: 0;
+}
+
+.ch1-side-panel .evidence-header {
+  flex-direction: column;
+}
+
+.ch1-side-panel .prediction-options {
+  grid-template-columns: 1fr;
+}
+
+.ch1-map-panel {
+  min-width: 0;
+}
+
+.ch1-map-panel .ch1-map {
+  width: 100%;
+}
+
+@media (max-width: 980px) {
+  .ch1-main {
+    grid-template-columns: 1fr;
+    padding: 14px 12px 32px;
+  }
 }
 
 .ch1-intro {
@@ -546,6 +590,63 @@
 .ch1-modal-info .inst {
   color: rgba(150, 255, 150, 0.85);
   font-size: 13px;
+}
+
+.ch1-recommended-targets {
+  margin: 10px 14px 0;
+  padding: 10px;
+  border: 1px solid rgba(120, 255, 180, 0.22);
+  background: rgba(12, 38, 28, 0.48);
+  box-shadow: inset 0 0 16px rgba(80, 255, 160, 0.08);
+}
+
+.ch1-recommended-title {
+  margin-bottom: 8px;
+  color: rgba(232, 255, 232, 0.88);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.ch1-recommended-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+}
+
+.ch1-recommended-target {
+  min-height: 48px;
+  padding: 8px 10px;
+  border: 1px solid rgba(150, 255, 180, 0.28);
+  background: rgba(5, 18, 16, 0.72);
+  color: rgba(232, 255, 232, 0.9);
+  cursor: pointer;
+  display: grid;
+  gap: 3px;
+  text-align: left;
+}
+
+.ch1-recommended-target:hover {
+  border-color: rgba(255, 225, 122, 0.65);
+  box-shadow: 0 0 16px rgba(255, 225, 122, 0.12);
+}
+
+.ch1-recommended-target.is-done {
+  border-color: rgba(120, 255, 140, 0.55);
+  background: rgba(26, 76, 42, 0.7);
+}
+
+.ch1-recommended-target .name {
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.ch1-recommended-target .meta {
+  color: rgba(170, 255, 170, 0.72);
+  font-size: 12px;
+  line-height: 1.25;
 }
 
 .ch1-modal-progress {

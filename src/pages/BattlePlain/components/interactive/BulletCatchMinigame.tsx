@@ -235,6 +235,7 @@ export const BulletCatchMinigame: React.FC<BulletCatchMinigameProps> = ({ onComp
   // 检查是否收集完所有目标
   const allTargetsCaught =
     targetTerms.length > 0 && targetTerms.every(term => targetsCaught.includes(term));
+  const passedTargetCount = targetsCaught.length >= 2;
   const unlockedTerms = Array.from(new Set(targetsCaught));
 
   return (
@@ -332,8 +333,8 @@ export const BulletCatchMinigame: React.FC<BulletCatchMinigameProps> = ({ onComp
       {gameStatus === 'ended' && (
         <div className="ended-screen">
           <div className="result-header">
-            <span className="result-icon">{allTargetsCaught ? '🎉' : '⏰'}</span>
-            <h3>{allTargetsCaught ? '完美捕获！' : '时间到！'}</h3>
+            <span className="result-icon">{allTargetsCaught ? '🎉' : passedTargetCount ? '✅' : '⏰'}</span>
+            <h3>{allTargetsCaught ? '完美捕获！' : passedTargetCount ? '捕获成功！' : '时间到！'}</h3>
           </div>
 
           <div className="result-stats">
@@ -365,7 +366,7 @@ export const BulletCatchMinigame: React.FC<BulletCatchMinigameProps> = ({ onComp
             </div>
           </div>
 
-          {targetsCaught.length >= 2 ? (
+          {passedTargetCount ? (
             <button className="continue-btn" onClick={onComplete}>
               获取碎片 →
             </button>

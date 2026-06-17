@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Check, Lock, ChevronRight } from 'lucide-react';
 import { DataNode } from '../../types';
 import { SCRIPT } from '../../data';
 import './CityOverview.scss';
 
-import chapter4Bg from '@/assets/images/chapter4_data_bg.png';
+import chapter4Bg from '@/assets/images/chapter4_data_bg.webp';
 
 // 导入节点图标图片
-import nodeSpectrum from '@/assets/images/node_spectrum.png';
-import nodeSentiment from '@/assets/images/node_sentiment.png';
-import nodeCategory from '@/assets/images/node_category.png';
-import nodeMultigame from '@/assets/images/node_multigame.png';
+import nodeSpectrum from '@/assets/images/node_spectrum.webp';
+import nodeSentiment from '@/assets/images/node_sentiment.webp';
+import nodeCategory from '@/assets/images/node_category.webp';
+import nodeMultigame from '@/assets/images/node_multigame.webp';
 
 // 节点图标映射
 const nodeIconMap: Record<string, string> = {

@@ -1,0 +1,206 @@
+@use '@/styles/variables' as *;
+
+.evidence-board {
+  width: min(1120px, calc(100% - 32px));
+  margin: 14px auto 18px;
+  padding: 18px;
+  color: $color-text-main;
+  background:
+    linear-gradient(145deg, rgba(14, 18, 30, 0.95), rgba(33, 28, 45, 0.9)),
+    radial-gradient(circle at top right, rgba($color-accent, 0.18), transparent 34%);
+  border: 1px solid rgba($color-accent, 0.45);
+  border-radius: 8px;
+}
+
+.evidence-board.is-compact {
+  padding: 14px;
+}
+
+.board-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+
+  h3 {
+    margin: 4px 0 0;
+    color: $color-text-highlight;
+    font-size: 18px;
+  }
+}
+
+.board-kicker {
+  color: $color-accent;
+  font-family: $font-pixel;
+  font-size: 10px;
+}
+
+.board-count {
+  padding: 6px 10px;
+  color: $color-bg-dark;
+  background: $color-accent;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.fragment-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.fragment-token {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 9px;
+  color: rgba($color-text-main, 0.58);
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  font-size: 12px;
+
+  &.owned {
+    color: $color-text-highlight;
+    border-color: rgba($color-success, 0.48);
+    background: rgba($color-success, 0.12);
+  }
+}
+
+.token-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.combo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.combo-card {
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+
+  &.unlocked {
+    background: rgba($color-info, 0.12);
+    border-color: rgba($color-info, 0.48);
+  }
+
+  &.locked {
+    opacity: 0.62;
+  }
+}
+
+.combo-topline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+
+  strong {
+    color: $color-text-highlight;
+  }
+}
+
+.combo-badge {
+  padding: 4px 6px;
+  color: $color-bg-dark;
+  background: $color-success;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.combo-effect,
+.combo-ending-line {
+  margin: 0 0 8px;
+  color: $color-text-main;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.combo-ending-line {
+  color: $color-warning;
+}
+
+.combo-requirements {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+
+  span {
+    padding: 4px 6px;
+    color: $color-text-muted;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 4px;
+    font-size: 11px;
+
+    &.met {
+      color: $color-bg-dark;
+      background: $color-accent;
+      font-weight: 900;
+    }
+  }
+}
+
+.ending-badge-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 10px;
+  border-radius: 6px;
+  background: rgba($color-success, 0.12);
+  border: 1px solid rgba($color-success, 0.28);
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    color: $color-bg-dark;
+    background: $color-success;
+    border-radius: 4px;
+    font-weight: 900;
+  }
+
+  strong {
+    color: $color-text-highlight;
+  }
+
+  em {
+    color: $color-accent;
+    font-style: normal;
+    font-weight: 900;
+  }
+}
+
+.ending-badge-line.rank-fail {
+  background: rgba($color-danger, 0.12);
+  border-color: rgba($color-danger, 0.35);
+
+  span {
+    background: $color-danger;
+  }
+}
+
+@media (max-width: 820px) {
+  .board-header {
+    flex-direction: column;
+  }
+
+  .combo-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

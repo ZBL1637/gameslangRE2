@@ -1,4 +1,4 @@
-@import '@/styles/variables';
+﻿@use '@/styles/variables' as *;
 
 .profile-container {
   height: 100%;
@@ -175,6 +175,42 @@
         margin-top: 2rem;
         font-style: italic;
       }
+    }
+  }
+}
+
+@media (max-width: 700px) {
+  .profile-container {
+    padding: 1rem;
+    gap: 1rem;
+    overflow-y: auto;
+
+    .profile-content {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      min-height: auto;
+    }
+
+    .profile-card {
+      padding: 1.25rem;
+      gap: 1.25rem;
+    }
+
+    .stats-grid {
+      gap: 0.75rem;
+
+      .stat-box {
+        min-width: 0;
+        padding: 0.85rem 0.5rem;
+
+        .stat-val {
+          font-size: 1rem;
+        }
+      }
+    }
+
+    .profile-history {
+      min-height: 260px;
     }
   }
 }

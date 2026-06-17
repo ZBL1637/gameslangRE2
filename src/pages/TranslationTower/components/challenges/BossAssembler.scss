@@ -1,4 +1,5 @@
-@import '../../TranslationTower.scss';
+﻿@use 'sass:color';
+@use '../../TranslationTower.scss' as *;
 
 .boss-assembler {
   display: grid;
@@ -258,7 +259,7 @@
       }
 
       &:not(:disabled):hover {
-        background: lighten($accent-color, 5%);
+        background: color.adjust($accent-color, $lightness: 5%);
         transform: translateY(-2px);
       }
     }

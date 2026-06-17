@@ -17,6 +17,7 @@ export const QTEMinigame: React.FC<QTEMinigameProps> = ({ onComplete }) => {
   const [timeLeft, setTimeLeft] = useState(0);
   const [maxTime, setMaxTime] = useState(0);
   const [combo, setCombo] = useState(0);
+  const [, setMissCount] = useState(0);
   const [showFeedback, setShowFeedback] = useState<'hit' | 'miss' | null>(null);
   const [showKonamiTooltip, setShowKonamiTooltip] = useState(false);
   const [tooltipPos, setTooltipPos] = useState({ top: 0, left: 0 });
@@ -54,6 +55,7 @@ export const QTEMinigame: React.FC<QTEMinigameProps> = ({ onComplete }) => {
     setCurrentSequenceIndex(0);
     setCurrentKeyIndex(0);
     setCombo(0);
+    setMissCount(0);
     if (QTE_SEQUENCES[0] && QTE_SEQUENCES[0][0]) {
       setTimeLeft(QTE_SEQUENCES[0][0].timing);
       setMaxTime(QTE_SEQUENCES[0][0].timing);
@@ -85,8 +87,13 @@ export const QTEMinigame: React.FC<QTEMinigameProps> = ({ onComplete }) => {
   const handleMiss = useCallback(() => {
     setShowFeedback('miss');
     setCombo(0);
-    // Deduct time or score? User said "deduct 0.5s" (optional) or just fail.
-    // Let's keep it simple: visual feedback + shake.
+    setMissCount(prev => {
+      const next = prev + 1;
+      if (next >= 3) {
+        setStatus('failed');
+      }
+      return next;
+    });
     setTimeout(() => setShowFeedback(null), 250);
   }, []);
 
@@ -103,6 +110,7 @@ export const QTEMinigame: React.FC<QTEMinigameProps> = ({ onComplete }) => {
         // Hit
         setShowFeedback('hit');
         setCombo(prev => prev + 1);
+        setMissCount(0);
         setTimeout(() => setShowFeedback(null), 200);
 
         // Next Key
@@ -258,6 +266,16 @@ export const QTEMinigame: React.FC<QTEMinigameProps> = ({ onComplete }) => {
                </div>
                <button className="continue-btn" onClick={onComplete}>
                  领取奖励
+               </button>
+            </div>
+          )}
+
+          {status === 'failed' && (
+            <div className="failure-feedback">
+               <div className="failure-text">COMBO DROPPED</div>
+               <p>连续错过了 3 次输入。街机黑话的节奏感还需要再练一次。</p>
+               <button className="reset-btn" onClick={startGame}>
+                 <RotateCcw size={14} /> 重新投币
                </button>
             </div>
           )}

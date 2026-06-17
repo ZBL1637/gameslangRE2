@@ -1,4 +1,4 @@
-@import '../../TranslationTower.scss';
+﻿@use '../../TranslationTower.scss' as *;
 
 .notification-overlay-container {
   position: fixed;

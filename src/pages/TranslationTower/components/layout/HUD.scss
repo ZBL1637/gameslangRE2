@@ -1,5 +1,6 @@
+﻿@use 'sass:color';
 // HUD.scss
-@import '../../TranslationTower.scss';
+@use '../../TranslationTower.scss' as *;
 
 .chapter5-hud {
   position: absolute;
@@ -85,12 +86,12 @@
       }
 
       &.clarity {
-        .stat-bar { background: linear-gradient(90deg, $secondary-color, lighten($secondary-color, 10%)); }
+        .stat-bar { background: linear-gradient(90deg, $secondary-color, color.adjust($secondary-color, $lightness: 10%)); }
         .icon { color: $secondary-color; }
       }
 
       &.culture {
-        .stat-bar { background: linear-gradient(90deg, $primary-color, lighten($primary-color, 10%)); }
+        .stat-bar { background: linear-gradient(90deg, $primary-color, color.adjust($primary-color, $lightness: 10%)); }
         .icon { color: $primary-color; }
       }
     }

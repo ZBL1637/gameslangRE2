@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { SCRIPT } from '../../data';
 import { ArrowRight, RotateCcw, Trophy, Clock } from 'lucide-react';
-import librarianImg from '../../../../assets/images/npc_ai_librarian.png';
-import bgImage from '../../../../assets/images/chapter3_intro_bg.png';
+import librarianImg from '../../../../assets/images/npc_ai_librarian.webp';
+import bgImage from '../../../../assets/images/chapter3_intro_bg.webp';
 import './OutroSection.scss';
 
 interface OutroSectionProps {

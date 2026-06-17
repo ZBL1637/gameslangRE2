@@ -1,4 +1,5 @@
-@import '@/styles/variables';
+﻿@use 'sass:color';
+@use '@/styles/variables' as *;
 
 // 像素艺术风格变量
 $pixel-border-color: #6b5b95;
@@ -9,7 +10,8 @@ $pixel-bg-panel: #16213e;
 
 .battle-plain-page {
   // 游戏窗口框架样式 - 像素艺术风格
-  width: 85%;
+  width: min(96vw, calc((100dvh - 120px) * 16 / 9));
+  max-width: 1200px;
   margin: 0 auto;
   aspect-ratio: 16 / 9;
   height: auto;
@@ -95,11 +97,11 @@ $pixel-bg-panel: #16213e;
       border-left: 2px solid $pixel-border-color;
     }
     &::-webkit-scrollbar-thumb {
-      background: linear-gradient(to bottom, $pixel-glow-purple, darken($pixel-glow-purple, 20%));
+      background: linear-gradient(to bottom, $pixel-glow-purple, color.adjust($pixel-glow-purple, $lightness: -20%));
       border: 2px solid $pixel-border-color;
       
       &:hover {
-        background: linear-gradient(to bottom, lighten($pixel-glow-purple, 10%), $pixel-glow-purple);
+        background: linear-gradient(to bottom, color.adjust($pixel-glow-purple, $lightness: 10%), $pixel-glow-purple);
       }
     }
   }
@@ -129,7 +131,7 @@ $pixel-bg-panel: #16213e;
     pointer-events: none;
     
     .toast-content {
-      background: linear-gradient(135deg, $pixel-bg-panel, darken($pixel-bg-panel, 10%));
+      background: linear-gradient(135deg, $pixel-bg-panel, color.adjust($pixel-bg-panel, $lightness: -10%));
       color: $color-text-main;
       padding: 1rem;
       box-shadow: 
@@ -184,7 +186,7 @@ $pixel-bg-panel: #16213e;
     pointer-events: none;
     
     .toast-content {
-      background: linear-gradient(135deg, $pixel-bg-panel, darken($pixel-bg-panel, 10%));
+      background: linear-gradient(135deg, $pixel-bg-panel, color.adjust($pixel-bg-panel, $lightness: -10%));
       color: $color-text-main;
       padding: 1rem;
       box-shadow: 
@@ -238,6 +240,13 @@ $pixel-bg-panel: #16213e;
     bottom: 0;
     z-index: 100;
     animation: pixelFadeIn 0.5s ease-out;
+  }
+}
+
+@media (max-width: 768px) {
+  .battle-plain-page {
+    width: 100%;
+    aspect-ratio: 16 / 10;
   }
 }
 

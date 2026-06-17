@@ -1,3 +1,4 @@
+﻿@use 'sass:color';
 // Colors - JRPG Theme
 $color-bg-dark: #1a1b26; // 背景深色
 $color-bg-panel: #2d3436; // 面板背景
@@ -50,7 +51,7 @@ $font-main: 'Inter', system-ui, sans-serif;
   justify-content: center;
   background-color: $color-primary;
   color: $color-bg-dark;
-  border: 2px solid darken($color-primary, 10%);
+  border: 2px solid color.adjust($color-primary, $lightness: -10%);
   border-radius: $border-radius-sm;
   padding: 0.5rem 1rem;
   font-family: $font-main;
@@ -63,9 +64,9 @@ $font-main: 'Inter', system-ui, sans-serif;
   text-decoration: none;
 
   &:hover:not(:disabled) {
-    background-color: lighten($color-primary, 10%);
+    background-color: color.adjust($color-primary, $lightness: 10%);
     transform: translateY(-2px);
-    box-shadow: 0 4px 0 darken($color-primary, 20%);
+    box-shadow: 0 4px 0 color.adjust($color-primary, $lightness: -20%);
   }
 
   &:active:not(:disabled) {
@@ -75,7 +76,7 @@ $font-main: 'Inter', system-ui, sans-serif;
   
   &:disabled {
     background-color: $color-text-muted;
-    border-color: darken($color-text-muted, 10%);
+    border-color: color.adjust($color-text-muted, $lightness: -10%);
     cursor: not-allowed;
     transform: none;
     box-shadow: none;

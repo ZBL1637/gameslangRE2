@@ -1,10 +1,10 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { usePlayer } from '@/context/PlayerContext';
 import { useInput } from '@/hooks/useInput';
 import { SpriteCharacter, generatePlaceholderSpriteSheet, Direction, SPRITE_SIZE, SCALE } from '@/components/SpriteCharacter';
 import { Button } from '@/components/Button/Button';
-import worldMapPng from '@/assets/images/world_map.png';
+import worldMapPng from '@/assets/images/world_map.webp';
 import worldMapSvg from '@/assets/images/world_map.svg';
 import './WorldMap.scss';
 
@@ -16,8 +16,8 @@ const REGIONS = [
   { id: 1, name: '黑话起源之森', level: '1-15', desc: '术语基础、分类与历史', time: '3 min', x: 15, y: 69, pos: { left: '15%', top: '69%' } },     // 左下 (原位置)
   { id: 2, name: '战斗本体平原', level: '10-25', desc: '副本、RNG与机制黑话', time: '2 min', x: 38.5, y: 69, pos: { left: '38.5%', top: '69%' } },     // 左中下
   { id: 3, name: '玩家生态城镇', level: '20-35', desc: '社群称谓与行为标签', time: '4 min', x: 67, y: 72, pos: { left: '67%', top: '72%' } },    // 中心
-  { id: 4, name: '经济与氪金之都', level: '30-45', desc: '货币、交易与氪金术语', time: '3 min', x: 89, y: 55, pos: { left: '89%', top: '55%' } },    // 右下
-  { id: 5, name: '弹幕大峡谷', level: '40-60', desc: '直播弹幕与情绪黑话', time: '4 min', x: 74, y: 30, pos: { left: '74%', top: '30%' } },      // 右上
+  { id: 4, name: '数据洪流之都', level: '30-45', desc: '分类、情感与跨游戏通用语', time: '3 min', x: 89, y: 55, pos: { left: '89%', top: '55%' } },    // 右下
+  { id: 5, name: '译语通天塔', level: '40-60', desc: '跨语境翻译、语气与隐喻', time: '4 min', x: 74, y: 30, pos: { left: '74%', top: '30%' } },      // 右上
   { id: 6, name: '终章·魔王城', level: '60-100', desc: '算法推荐与平台生态', time: '5 min', x: 50, y: 15, pos: { left: '50%', top: '15%' } },     // 顶部正中
 ];
 
@@ -119,10 +119,12 @@ const WorldMap: React.FC = () => {
     return 'locked';
   }, [state.completedChapters, state.unlockedChapters]);
 
+  const hasPlayableRegion = REGIONS.some(region => getRegionStatus(region.id) !== 'locked');
+
   const enterRegion = useCallback((id: number) => {
     const status = getRegionStatus(id);
     if (status !== 'locked') {
-        navigate(`/chapter/${id}`);
+        navigate(id === 6 ? '/chapter/final' : `/chapter/${id}`);
     }
   }, [getRegionStatus, navigate]);
 
@@ -131,8 +133,16 @@ const WorldMap: React.FC = () => {
     if (status !== 'completed') return;
     if (!confirm('重新开始将清空本章已保存的进度（不重置已获得的经验与成就）。继续？')) return;
     restartChapter(id);
-    navigate(`/chapter/${id}`);
+    navigate(id === 6 ? '/chapter/final' : `/chapter/${id}`);
   }, [getRegionStatus, navigate, restartChapter]);
+
+  const selectRegion = useCallback((region: typeof REGIONS[0]) => {
+    const status = getRegionStatus(region.id);
+    setActiveRegion(region);
+    if (status !== 'locked') {
+      enterRegion(region.id);
+    }
+  }, [enterRegion, getRegionStatus]);
 
   // Game Loop
   useEffect(() => {
@@ -235,32 +245,63 @@ const WorldMap: React.FC = () => {
         {REGIONS.map(region => {
           const status = getRegionStatus(region.id);
           const isActive = activeRegion?.id === region.id;
-          
-          return (
-            <div 
-              key={region.id}
-              className={`map-node region-${region.id} status-${status} ${isActive ? 'active-target' : ''}`}
-              style={region.pos}
-            >
+          const nodeClassName = `map-node region-${region.id} status-${status} ${isActive ? 'active-target' : ''}`;
+          const nodeAriaLabel = `${region.name} ${status === 'locked' ? '未解锁' : '可进入'}`;
+          const nodeContent = (
+            <>
               <div className="node-icon">
                 {status === 'locked' && <span className="icon-lock">🔒</span>}
                 {status === 'completed' && <span className="icon-check">🚩</span>}
                 {status === 'unlocked' && <span className="icon-marker">📍</span>}
               </div>
-              
-              {/* Interaction Prompt */}
+
               {isActive && status !== 'locked' && (
                 <div className="interaction-prompt">
                     <span className="key">SPACE</span>
                     <span className="label">进入</span>
                 </div>
               )}
-               {isActive && status === 'locked' && (
+              {isActive && status === 'locked' && (
                 <div className="interaction-prompt locked">
                     <span className="label">未解锁</span>
                 </div>
               )}
-            </div>
+            </>
+          );
+
+          if (status !== 'locked') {
+            return (
+              <Link
+                key={region.id}
+                className={nodeClassName}
+                style={region.pos}
+                aria-label={nodeAriaLabel}
+                to={region.id === 6 ? '/chapter/final' : `/chapter/${region.id}`}
+              >
+                {nodeContent}
+              </Link>
+            );
+          }
+          
+          return (
+            <button
+              key={region.id}
+              className={nodeClassName}
+              style={region.pos}
+              type="button"
+              aria-label={nodeAriaLabel}
+              onClick={(e) => {
+                e.stopPropagation();
+                selectRegion(region);
+              }}
+              onKeyDown={(e) => {
+                if (e.key !== 'Enter' && e.key !== ' ') return;
+                e.preventDefault();
+                selectRegion(region);
+              }}
+            >
+              {nodeContent}
+            </button>
           );
         })}
 
@@ -290,6 +331,16 @@ const WorldMap: React.FC = () => {
                </div>
            )}
         </div>
+
+        {!hasPlayableRegion && (
+          <div className="map-locked-panel">
+            <h2>先完成新手村</h2>
+            <p>世界地图已经打开，但主线区域还没有解锁。回到新手村完成出村剧情后，第一章会点亮。</p>
+            <Button size="sm" onClick={() => navigate('/tutorial')}>
+              返回新手村
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
