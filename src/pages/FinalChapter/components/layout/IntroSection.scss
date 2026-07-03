@@ -32,6 +32,7 @@ $pixel-border: #333344;
 }
 
 .intro-section {
+  position: relative;
   width: 100%;
   min-height: 100%;
   display: flex;
@@ -39,6 +40,21 @@ $pixel-border: #333344;
   justify-content: center;
   cursor: pointer;
   padding: clamp(1rem, 3vw, 2rem);
+
+  .skip-intro-btn {
+    position: absolute;
+    top: clamp(12px, 2vw, 22px);
+    right: clamp(12px, 2vw, 22px);
+    z-index: 20;
+    padding: 0.7rem 1rem;
+    color: $pixel-bg-dark;
+    background: $pixel-accent-cyan;
+    border: 2px solid rgba(255, 255, 255, 0.78);
+    border-radius: 6px;
+    box-shadow: 0 0 18px rgba($pixel-accent-cyan, 0.42);
+    font-weight: 800;
+    cursor: pointer;
+  }
 
   .entrance-screen {
     text-align: center;

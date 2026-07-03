@@ -142,79 +142,11 @@ $pixel-border: #333344;
     padding: clamp(10px, 1.6vw, 18px);
   }
 
-  .final-side-panels {
-    position: absolute;
-    top: clamp(12px, 1.8vw, 24px);
-    right: clamp(12px, 1.8vw, 24px);
-    z-index: 30;
-    display: grid;
-    gap: 10px;
-    width: min(300px, calc(100vw - 24px));
-    max-height: calc(100% - 32px);
-    overflow: auto;
-    pointer-events: auto;
-
-    .chapter-compass,
-    .evidence-board {
-      width: 100%;
-      margin: 0;
-    }
-
-    .evidence-board {
-      padding: 12px;
-    }
-
-    .board-header {
-      margin-bottom: 8px;
-    }
-
-    .board-header h3 {
-      font-size: 14px;
-      line-height: 1.35;
-    }
-
-    .fragment-strip {
-      max-height: 88px;
-      overflow: auto;
-    }
-
-    .combo-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .combo-card {
-      padding: 10px;
-    }
-  }
-
-  .chapter-compass {
-    max-height: 220px;
-    overflow: auto;
-    padding: 12px;
-
-    h2 {
-      font-size: 13px;
-      line-height: 1.4;
-    }
-
-    .compass-objective,
-    .compass-evidence p,
-    .compass-source {
-      font-size: 11px;
-      line-height: 1.45;
-    }
-
-    .compass-progress {
-      padding: 6px 8px;
-      font-size: 11px;
-    }
-  }
-
   .battle-arena {
-    width: min(100%, calc(100vw - 350px));
+    width: 100%;
     height: 100%;
     max-height: 100%;
-    margin-right: 330px;
+    margin-right: 0;
   }
 }
 

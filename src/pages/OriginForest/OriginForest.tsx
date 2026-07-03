@@ -1,14 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePlayer } from '@/context/PlayerContext';
 import { Button } from '@/components/Button/Button';
 import { ChapterCompass } from '@/components/ChapterCompass/ChapterCompass';
 import { ChapterRewardOverlay } from '@/components/ChapterRewardOverlay/ChapterRewardOverlay';
-import { DataEvidencePanel } from '@/components/DataEvidencePanel/DataEvidencePanel';
 import { DialogBox } from '@/pages/TutorialVillage/components/DialogBox';
 import type { ChapterReward } from '@/data/chapterProgress';
-import { getDataProcessor } from '@/utils/dataProcessor';
-import type { Term } from '@/types';
 import forestBg from '@/assets/images/chapter1_forest_bg.webp';
 import npcForestKeeper from '@/assets/images/npc_forest_keeper.webp';
 import fragmentTaxonomy from '@/assets/images/fragment_taxonomy.webp';
@@ -116,7 +113,7 @@ const ZONES: Zone[] = [
       type: 'sunburst',
       title: '术语谱系探索',
       description: '通过旭日图探索术语的分类体系',
-      instructions: '点击最外层具体术语，弹出词典窗口查看解释。累计查看 3 个来自不同一级类的术语后完成。'
+      instructions: '点击最外层具体术语即可点亮分类。累计点亮 3 个来自不同一级类的术语后自动结算。'
     },
     fragment: { id: 'fragment_taxonomy', name: '分类碎片', keywords: ['玩法术语', '社交术语', '经济术语', '机制术语'], image: fragmentTaxonomy }
   },
@@ -129,7 +126,7 @@ const ZONES: Zone[] = [
       type: 'network',
       title: '共词关系探索',
       description: '通过网络图发现术语之间的共现关系',
-      instructions: '点击节点弹出词典窗口查看解释。找到一个连接较多的“桥接词”并查看后完成。'
+      instructions: '点击连接较多的节点即可锁定桥接词。找到合格桥接词后自动结算。'
     },
     fragment: { id: 'fragment_relation', name: '关系碎片', keywords: ['共现', '桥接', '语境', '搭配'], image: fragmentRelation }
   },
@@ -142,7 +139,7 @@ const ZONES: Zone[] = [
       type: 'heatmap',
       title: '术语迁徙追踪',
       description: '通过热力图了解术语在不同语境中的搭配强度',
-      instructions: '点击格子弹出词典窗口查看两词解释。找到一组强度 ≥ 200 的搭配并查看后完成。'
+      instructions: '点击热力图格子即可记录搭配。找到一组强度 ≥ 200 的搭配后自动结算。'
     },
     fragment: { id: 'fragment_migration', name: '迁徙碎片', keywords: ['破圈', '迁移', '通用化', '流行语'], image: fragmentMigration }
   }
@@ -225,6 +222,7 @@ const IntroSection: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   const [narrationIndex, setNarrationIndex] = useState(0);
   const [npcDialogueIndex, setNpcDialogueIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const completedRef = useRef(false);
   const bgLoaded = usePreloadImage(forestBg);
 
   useEffect(() => {
@@ -247,6 +245,13 @@ const IntroSection: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
     if (phase === 'npc_task') return SCRIPT.npcTask;
     return '';
   }, [narrationIndex, npcDialogueIndex, phase, selectedOption]);
+
+  const finishIntro = useCallback((delay = 180) => {
+    if (completedRef.current) return;
+    completedRef.current = true;
+    setFadeOut(true);
+    window.setTimeout(() => onComplete(), delay);
+  }, [onComplete]);
 
   const handleAdvance = () => {
     if (introStep !== 'dialogue') {
@@ -277,14 +282,24 @@ const IntroSection: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
     }
 
     if (phase === 'npc_task') {
-      setFadeOut(true);
-      window.setTimeout(() => onComplete(), 450);
+      finishIntro(450);
     }
   };
 
   return (
     <div className={`ch1-intro ${fadeOut ? 'is-fading-out' : ''}`} onClick={introStep === 'dialogue' ? undefined : handleAdvance}>
       <div className={`ch1-intro-bg ${bgLoaded ? 'is-loaded' : ''}`} style={{ backgroundImage: `url(${forestBg})` }} />
+
+      <button
+        type="button"
+        className="skip-intro-btn"
+        onClick={(e) => {
+          e.stopPropagation();
+          finishIntro();
+        }}
+      >
+        跳过动画
+      </button>
 
       {introStep === 'entrance' && (
         <div className="ch1-entrance-screen">
@@ -409,8 +424,10 @@ const ForestMap: React.FC<{
             <button
               key={z.id}
               className={`ch1-zone ${completed ? 'completed' : ''} ${locked ? 'locked' : ''}`}
-              disabled={locked}
-              onClick={() => onEnterZone(z.id)}
+              disabled={locked || completed}
+              onClick={() => {
+                if (!locked && !completed) onEnterZone(z.id);
+              }}
             >
               <div className="ch1-zone-icon">
                 <span className="emoji">{z.icon}</span>
@@ -424,7 +441,7 @@ const ForestMap: React.FC<{
                   <span className="label">挑战：</span>
                   <span className="value">{z.challenge.title}</span>
                 </div>
-                <div className="ch1-zone-cta">{locked ? '🔒 未解锁' : completed ? '🔄 重新探索' : '🌿 进入探索'}</div>
+                <div className="ch1-zone-cta">{locked ? '🔒 未解锁' : completed ? '✓ 已探索' : '🌿 进入探索'}</div>
               </div>
             </button>
           );
@@ -448,118 +465,35 @@ const ExplorationModal: React.FC<{
   const [selectedDetail, setSelectedDetail] = useState<string>('');
   const [showCompletion, setShowCompletion] = useState(false);
   const [completionArmed, setCompletionArmed] = useState(false);
-  const [termInfoOpen, setTermInfoOpen] = useState(false);
-  const [termInfoLoading, setTermInfoLoading] = useState(false);
-  const [termInfoError, setTermInfoError] = useState<string | null>(null);
-  const [termInfo, setTermInfo] = useState<Term | null>(null);
-  const [termInfoSecondary, setTermInfoSecondary] = useState<Term | null>(null);
-  const [pendingInfo, setPendingInfo] = useState<
-    | { kind: 'sunburst'; termId: string; l1Category: string }
-    | { kind: 'network'; termId: string; degree: number }
-    | { kind: 'heatmap'; a: string; b: string; value: number }
-    | null
-  >(null);
-
-  /** 触发布局变化后的图表重算尺寸，避免 ECharts 在模态框内出现空白 */
-  const scheduleChartResize = () => {
-    const fire = () => window.dispatchEvent(new Event('resize'));
-    requestAnimationFrame(fire);
-    window.setTimeout(fire, 120);
-  };
-
-  /** 从本地词典数据库中按术语 ID 解析出术语详情；不存在则返回 null */
-  const resolveTerm = async (termId: string): Promise<Term | null> => {
-    const dp = await getDataProcessor();
-    const term = dp.getTerm(termId);
-    return term ?? null;
-  };
-
-  /** 打开“术语信息”窗口并加载词典内容；用户确认后才计入任务进度 */
-  const openTermInfo = async (
-    next:
-      | { kind: 'sunburst'; termId: string; l1Category: string }
-      | { kind: 'network'; termId: string; degree: number }
-      | { kind: 'heatmap'; a: string; b: string; value: number }
-  ) => {
-    setPendingInfo(next);
-    setTermInfoOpen(true);
-    setTermInfoLoading(true);
-    setTermInfoError(null);
-    setTermInfo(null);
-    setTermInfoSecondary(null);
-
-    try {
-      if (next.kind === 'heatmap') {
-        const [a, b] = await Promise.all([resolveTerm(next.a), resolveTerm(next.b)]);
-        setTermInfo(a);
-        setTermInfoSecondary(b);
-      } else {
-        const term = await resolveTerm(next.termId);
-        setTermInfo(term);
-      }
-    } catch (e) {
-      setTermInfoError(e instanceof Error ? e.message : String(e));
-    } finally {
-      setTermInfoLoading(false);
-    }
-  };
-
-  /** 关闭术语信息窗口（不计入任务进度） */
-  const closeTermInfo = () => {
-    setTermInfoOpen(false);
-    setPendingInfo(null);
-    setTermInfo(null);
-    setTermInfoSecondary(null);
-    setTermInfoError(null);
-    setTermInfoLoading(false);
-    scheduleChartResize();
-  };
-
-  /** 用户确认已查看词典信息后，写入探索进度并触发可能的完成态 */
-  const confirmTermInfo = () => {
-    if (!pendingInfo) return;
-    let willComplete = false;
-
-    if (pendingInfo.kind === 'sunburst') {
-      const { termId, l1Category } = pendingInfo;
-      setSelectedTitle(termId);
-      setSelectedDetail(`「${termId}」属于「${l1Category}」分类`);
-      const nextCats = taxonomyCategories.includes(l1Category) ? taxonomyCategories : [...taxonomyCategories, l1Category];
-      willComplete = taxonomyCategories.length < 3 && nextCats.length >= 3;
-      onUpdate({ taxonomyCategories: nextCats });
-    } else if (pendingInfo.kind === 'network') {
-      const { termId, degree } = pendingInfo;
-      setSelectedTitle(termId);
-      setSelectedDetail(`「${termId}」与 ${degree} 个术语相关联`);
-      if (!bridgeTermId && degree >= 8) {
-        willComplete = true;
-        onUpdate({ bridgeTermId: termId });
-      }
-    } else if (pendingInfo.kind === 'heatmap') {
-      const { a, b, value } = pendingInfo;
-      setSelectedTitle(`${a} × ${b}`);
-      setSelectedDetail(`「${a}」与「${b}」的共现强度为 ${value}`);
-      if (!collocationUnlocked && value >= 200) {
-        willComplete = true;
-        onUpdate({ collocationUnlocked: true });
-      }
-    }
-
-    setInteractionCount((v) => v + 1);
-    if (willComplete) setCompletionArmed(true);
-    closeTermInfo();
-  };
 
   const handleSunburstSelect = (termId: string, l1Category: string) => {
-    void openTermInfo({ kind: 'sunburst', termId, l1Category });
+    setSelectedTitle(termId);
+    setSelectedDetail(`「${termId}」属于「${l1Category}」分类`);
+    setInteractionCount((v) => v + 1);
+
+    const nextCats = taxonomyCategories.includes(l1Category) ? taxonomyCategories : [...taxonomyCategories, l1Category];
+    onUpdate({ taxonomyCategories: nextCats });
+    if (nextCats.length >= 3) setCompletionArmed(true);
   };
 
   const handleGraphSelect = (meta: { termId: string; degree: number }) => {
-    void openTermInfo({ kind: 'network', termId: meta.termId, degree: meta.degree });
+    setSelectedTitle(meta.termId);
+    setSelectedDetail(`「${meta.termId}」与 ${meta.degree} 个术语相关联`);
+    setInteractionCount((v) => v + 1);
+    if (meta.degree >= 8) {
+      onUpdate({ bridgeTermId: meta.termId });
+      setCompletionArmed(true);
+    }
   };
 
   const handleHeatmapSelect = (pair: { a: string; b: string; value: number }) => {
-    void openTermInfo({ kind: 'heatmap', a: pair.a, b: pair.b, value: pair.value });
+    setSelectedTitle(`${pair.a} × ${pair.b}`);
+    setSelectedDetail(`「${pair.a}」与「${pair.b}」的共现强度为 ${pair.value}`);
+    setInteractionCount((v) => v + 1);
+    if (pair.value >= 200) {
+      onUpdate({ collocationUnlocked: true });
+      setCompletionArmed(true);
+    }
   };
 
   const completionHint = useMemo(() => {
@@ -574,51 +508,6 @@ const ExplorationModal: React.FC<{
     return Boolean(collocationUnlocked);
   }, [bridgeTermId, collocationUnlocked, taxonomyCategories.length, zone.challenge.type]);
 
-  const recommendedTargets = (() => {
-    if (zone.challenge.type === 'sunburst') {
-      return [
-        {
-          label: '动态难度',
-          meta: '游戏综合术语',
-          done: taxonomyCategories.includes('游戏综合术语'),
-          onClick: () => openTermInfo({ kind: 'sunburst' as const, termId: '动态难度', l1Category: '游戏综合术语' })
-        },
-        {
-          label: '动作冒险游戏（A-AVG）',
-          meta: '游戏分类相关',
-          done: taxonomyCategories.includes('游戏分类相关'),
-          onClick: () => openTermInfo({ kind: 'sunburst' as const, termId: '动作冒险游戏（A-AVG）', l1Category: '游戏分类相关' })
-        },
-        {
-          label: '玩家角色',
-          meta: '角色与职责',
-          done: taxonomyCategories.includes('角色与职责'),
-          onClick: () => openTermInfo({ kind: 'sunburst' as const, termId: '玩家角色', l1Category: '角色与职责' })
-        }
-      ];
-    }
-
-    if (zone.challenge.type === 'network') {
-      return [
-        {
-          label: '玩家',
-          meta: '连接 252 个术语',
-          done: Boolean(bridgeTermId),
-          onClick: () => openTermInfo({ kind: 'network' as const, termId: '玩家', degree: 252 })
-        }
-      ];
-    }
-
-    return [
-      {
-        label: '活动 × 玩家',
-        meta: '共现强度 948',
-        done: Boolean(collocationUnlocked),
-        onClick: () => openTermInfo({ kind: 'heatmap' as const, a: '活动', b: '玩家', value: 948 })
-      }
-    ];
-  })();
-
   useEffect(() => {
     if (completionArmed && canComplete) window.setTimeout(() => setShowCompletion(true), 280);
   }, [canComplete, completionArmed]);
@@ -629,12 +518,6 @@ const ExplorationModal: React.FC<{
     setSelectedDetail('');
     setShowCompletion(false);
     setCompletionArmed(false);
-    setTermInfoOpen(false);
-    setTermInfoLoading(false);
-    setTermInfoError(null);
-    setTermInfo(null);
-    setTermInfoSecondary(null);
-    setPendingInfo(null);
   }, [zone.id]);
 
   const renderChart = () => {
@@ -663,25 +546,6 @@ const ExplorationModal: React.FC<{
           <div className="inst">{zone.challenge.instructions}</div>
         </div>
 
-        <div className="ch1-recommended-targets">
-          <div className="ch1-recommended-title">推荐证据点</div>
-          <div className="ch1-recommended-actions">
-            {recommendedTargets.map((target) => (
-              <button
-                key={`${target.label}-${target.meta}`}
-                type="button"
-                className={`ch1-recommended-target ${target.done ? 'is-done' : ''}`}
-                onClick={() => {
-                  void target.onClick();
-                }}
-              >
-                <span className="name">{target.label}</span>
-                <span className="meta">{target.done ? '已计入' : target.meta}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
         <div className="ch1-modal-progress">
           <div className="text">{completionHint}</div>
           <div className="dots">
@@ -704,65 +568,6 @@ const ExplorationModal: React.FC<{
         <React.Suspense fallback={<div className="ch1-chart-loading">正在装载图表证据...</div>}>
           <div className="ch1-modal-chart">{renderChart()}</div>
         </React.Suspense>
-
-        {termInfoOpen && (
-          <div className="ch1-term-overlay" onClick={closeTermInfo}>
-            <div className="ch1-term-modal" onClick={(e) => e.stopPropagation()}>
-              <div className="ch1-term-header">
-                <div className="title">术语档案</div>
-                <button className="ch1-modal-close" onClick={closeTermInfo}>
-                  ✕
-                </button>
-              </div>
-
-              {termInfoLoading ? (
-                <div className="ch1-term-loading">正在从词典数据库读取…</div>
-              ) : termInfoError ? (
-                <div className="ch1-term-error">{termInfoError}</div>
-              ) : pendingInfo?.kind === 'heatmap' ? (
-                <div className="ch1-term-grid">
-                  <div className="ch1-term-card">
-                    <div className="name">{pendingInfo.a}</div>
-                    <div className="meta">{termInfo?.category?.l1 ? `${termInfo.category.l1} > ${termInfo.category.l2}` : '未收录分类'}</div>
-                    <div className="definition">{termInfo?.definition || '词典数据库中未找到该术语解释。'}</div>
-                  </div>
-                  <div className="ch1-term-card">
-                    <div className="name">{pendingInfo.b}</div>
-                    <div className="meta">
-                      {termInfoSecondary?.category?.l1 ? `${termInfoSecondary.category.l1} > ${termInfoSecondary.category.l2}` : '未收录分类'}
-                    </div>
-                    <div className="definition">{termInfoSecondary?.definition || '词典数据库中未找到该术语解释。'}</div>
-                  </div>
-                  <div className="ch1-term-relation">共现强度：{pendingInfo.value}</div>
-                </div>
-              ) : (
-                <div className="ch1-term-body">
-                  <div className="name">{pendingInfo?.kind === 'sunburst' || pendingInfo?.kind === 'network' ? pendingInfo.termId : ''}</div>
-                  <div className="meta">{termInfo?.category?.l1 ? `${termInfo.category.l1} > ${termInfo.category.l2}` : '未收录分类'}</div>
-                  {pendingInfo?.kind === 'sunburst' && <div className="extra">一级类：{pendingInfo.l1Category}</div>}
-                  {pendingInfo?.kind === 'network' && <div className="extra">连接数：{pendingInfo.degree}</div>}
-                  <div className="definition">{termInfo?.definition || '词典数据库中未找到该术语解释。'}</div>
-                </div>
-              )}
-
-              <div className="ch1-term-actions">
-                <Button
-                  size="sm"
-                  variant="primary"
-                  onClick={confirmTermInfo}
-                  disabled={
-                    termInfoLoading ||
-                    Boolean(termInfoError) ||
-                    (!termInfo && pendingInfo?.kind !== 'heatmap') ||
-                    (pendingInfo?.kind === 'heatmap' && !termInfo && !termInfoSecondary)
-                  }
-                >
-                  我已查看，计入任务并关闭
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
 
         {showCompletion && (
           <div className="ch1-complete-overlay">
@@ -945,7 +750,6 @@ const OriginForest: React.FC = () => {
                 objective="探索三个区域，收集分类、关系和迁徙碎片。"
                 progress={`已完成 ${progress.zonesCompleted.length} / 3 个区域`}
               />
-              <DataEvidencePanel chapterId={1} compact />
             </div>
             <div className="ch1-map-panel">
               <ForestMap zones={ZONES} completedZones={progress.zonesCompleted} onEnterZone={enterZone} />

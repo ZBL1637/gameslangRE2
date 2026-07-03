@@ -98,6 +98,22 @@ $bg-panel: rgba(44, 24, 16, 0.95);
     }
   }
 
+  .skip-intro-btn {
+    position: absolute;
+    top: clamp(12px, 2vw, 22px);
+    right: clamp(12px, 2vw, 22px);
+    z-index: 20;
+    padding: 0.65rem 0.95rem;
+    color: #2c1810;
+    background: $secondary-color;
+    border: 2px solid rgba(255, 255, 255, 0.78);
+    border-radius: 6px;
+    box-shadow: 0 0 18px rgba($secondary-color, 0.35);
+    font-size: 0.85rem;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
   .entrance-screen,
   .title-screen,
   .narration-screen,

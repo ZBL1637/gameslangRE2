@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePlayer } from '@/context/PlayerContext';
-import { ChapterCompass } from '@/components/ChapterCompass/ChapterCompass';
 import { ChapterRewardOverlay } from '@/components/ChapterRewardOverlay/ChapterRewardOverlay';
-import { DataEvidencePanel } from '@/components/DataEvidencePanel/DataEvidencePanel';
 import { Button } from '@/components/Button/Button';
 import type { ChapterReward } from '@/data/chapterProgress';
 import { IntroSection } from './components/layout/IntroSection';
@@ -157,14 +155,6 @@ const BattlePlain: React.FC = () => {
         {/* 2. 主内容区域 */}
         {introCompleted && (
           <div ref={contentRef} className="main-content">
-            <ChapterCompass
-              chapterId={2}
-              objective="沿时间之路完成四个时代挑战，收集时间碎片。"
-              progress={`已完成 ${gameState.minigamesCompleted.length} / ${TIMELINE_ERAS.length} 个时代`}
-            />
-            <DataEvidencePanel chapterId={2} />
-
-
             {/* 时间线地图 */}
             <TimelineMap 
               eras={TIMELINE_ERAS}

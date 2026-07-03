@@ -4,8 +4,6 @@
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { usePlayer } from '@/context/PlayerContext';
-import { ChapterCompass } from '@/components/ChapterCompass/ChapterCompass';
-import { EvidenceBoard } from '@/components/EvidenceBoard/EvidenceBoard';
 import {
   EvidenceBattleBonus,
   GameEnding,
@@ -216,16 +214,6 @@ const FinalChapter: React.FC = () => {
       </div>
       
       <div className={`chapter-content phase-${gameState.currentPhase}`}>
-        {gameState.currentPhase === 'battle' && (
-          <div className="final-side-panels">
-            <ChapterCompass
-              chapterId={6}
-              objective="使用已解锁技能击败算法霸主，查看你的数据新闻结局。"
-              progress={`已解锁技能 ${state.skillsUnlocked.length} / 4 · 已收集碎片 ${state.dataFragments.length}`}
-            />
-            <EvidenceBoard fragmentIds={state.dataFragments || []} compact />
-          </div>
-        )}
         {renderCurrentPhase()}
       </div>
     </div>

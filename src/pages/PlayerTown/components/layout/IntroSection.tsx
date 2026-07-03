@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { SCRIPT } from '../../data';
 import './IntroSection.scss';
 
@@ -16,6 +16,8 @@ export const IntroSection: React.FC<IntroSectionProps> = ({
   const [step, setStep] = useState<IntroStep>('entrance');
   const [fadeOut, setFadeOut] = useState(false);
   const [bgLoaded, setBgLoaded] = useState(false);
+  const timersRef = useRef<Array<ReturnType<typeof setTimeout>>>([]);
+  const completedRef = useRef(false);
 
   useEffect(() => {
     const img = new Image();
@@ -26,19 +28,25 @@ export const IntroSection: React.FC<IntroSectionProps> = ({
     };
   }, []);
 
+  const finishIntro = useCallback((delay = 240) => {
+    if (completedRef.current) return;
+    completedRef.current = true;
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current = [];
+    setFadeOut(true);
+    window.setTimeout(() => onComplete(), delay);
+  }, [onComplete]);
+
   // 入场动画序列
   useEffect(() => {
     const timers: Array<ReturnType<typeof setTimeout>> = [];
+    timersRef.current = timers;
     timers.push(setTimeout(() => setStep('title'), 1200));
-    timers.push(setTimeout(() => {
-      setFadeOut(true);
-    }, 2800));
-    timers.push(setTimeout(() => {
-      onComplete();
-    }, 3300));
+    timers.push(setTimeout(() => setFadeOut(true), 2800));
+    timers.push(setTimeout(() => finishIntro(0), 3300));
 
     return () => timers.forEach(clearTimeout);
-  }, [onComplete]);
+  }, [finishIntro]);
 
   return (
     <section className={`intro-section ${fadeOut ? 'fade-out' : ''}`}>
@@ -47,6 +55,17 @@ export const IntroSection: React.FC<IntroSectionProps> = ({
           className={`intro-bg ${bgLoaded ? 'loaded' : ''}`}
           style={{ backgroundImage: `url(${chapter3IntroBg})` }}
         />
+
+        <button
+          type="button"
+          className="skip-intro-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            finishIntro();
+          }}
+        >
+          跳过动画
+        </button>
 
         {step === 'entrance' && (
           <div className="entrance-screen">

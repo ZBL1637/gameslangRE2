@@ -140,6 +140,16 @@ const IntroSection: React.FC<IntroSectionProps> = ({ onComplete }) => {
 
   return (
     <div className="intro-section" onClick={phase !== 'ready' ? handleClick : undefined}>
+      <button
+        type="button"
+        className="skip-intro-btn"
+        onClick={(e) => {
+          e.stopPropagation();
+          onComplete();
+        }}
+      >
+        跳过动画
+      </button>
       {renderContent()}
     </div>
   );

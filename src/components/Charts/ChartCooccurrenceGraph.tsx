@@ -268,7 +268,7 @@ export const ChartCooccurrenceGraph: React.FC<ChartCooccurrenceGraphProps> = ({ 
   const options: EChartsCoreOption = useMemo(() => {
     const nodeCount = filteredData.nodes.length;
     const force = buildForceConfig(nodeCount, perfMode);
-    const layout = perfMode ? 'circular' : 'force';
+    const layout = 'force';
     const showSeriesAnimation = !(perfMode || nodeCount >= 260);
 
     const series = {
@@ -288,8 +288,7 @@ export const ChartCooccurrenceGraph: React.FC<ChartCooccurrenceGraphProps> = ({ 
         textBorderWidth: 2
       },
       labelLayout: { hideOverlap: true },
-      force: perfMode ? undefined : force,
-      circular: perfMode ? { rotateLabel: false } : undefined,
+      force,
       lineStyle: {
         color: 'rgba(169, 183, 214, 0.2)',
         curveness: 0.1,

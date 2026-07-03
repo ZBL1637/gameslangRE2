@@ -20,12 +20,13 @@ $text-secondary: $color-text-muted;
 
 .skill-panel {
   grid-column: 1;
-  background: rgba($background-medium, 0.9);
+  background: rgba(248, 250, 252, 0.95);
   min-height: 0;
   overflow: auto;
   padding: 0.75rem;
-  border-radius: 1rem;
-  border: 1px solid rgba($secondary-color, 0.3);
+  border-radius: 10px;
+  border: 4px solid #2f3142;
+  box-shadow: 7px 7px 0 rgba(0, 0, 0, 0.32);
 
   .action-prompt {
     text-align: center;
@@ -33,11 +34,11 @@ $text-secondary: $color-text-muted;
 
     .prompt-text {
       font-size: 1.1rem;
-      color: $success-color;
+      color: #0f766e;
       font-weight: bold;
 
       &.waiting {
-        color: $text-secondary;
+        color: #64748b;
       }
     }
   }
@@ -53,8 +54,8 @@ $text-secondary: $color-text-muted;
       gap: 1rem;
       padding: 0.75rem;
       background: linear-gradient(135deg, $primary-color, color.adjust($primary-color, $lightness: -10%));
-      border: none;
-      border-radius: 0.75rem;
+      border: 3px solid #2f3142;
+      border-radius: 8px;
       cursor: pointer;
       transition: all 0.3s ease;
 
@@ -106,8 +107,8 @@ $text-secondary: $color-text-muted;
         gap: 0.35rem;
         padding: 0.55rem;
         background: rgba($secondary-color, 0.1);
-        border: 2px solid rgba($secondary-color, 0.3);
-        border-radius: 0.75rem;
+        border: 3px solid rgba(47, 49, 66, 0.82);
+        border-radius: 8px;
         cursor: pointer;
         transition: all 0.3s ease;
 
@@ -184,7 +185,7 @@ $text-secondary: $color-text-muted;
 
         .skill-name {
           font-size: 0.78rem;
-          color: $text-primary;
+          color: #0f172a;
           text-align: center;
         }
       }

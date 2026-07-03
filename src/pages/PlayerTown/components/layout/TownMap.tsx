@@ -158,30 +158,6 @@ export const TownMap: React.FC<TownMapProps> = ({
           </div>
         </div>
 
-        <div className="quest-panel in-frame in-frame-left">
-          <div className="quest-header">
-            <span className="quest-icon">📋</span>
-            <span className="quest-label">当前任务</span>
-          </div>
-          <div className="quest-content">
-            <p className="quest-text">
-              {!dnaCompleted
-                ? '👉 步骤1：与艾琳娜对话，完成黑话DNA测试'
-                : queriedCount < 10
-                  ? `👉 步骤2：与梅林对话或点击漂浮词条，了解黑话 (${queriedCount}/10)`
-                  : '🎉 步骤3：任务完成！领取技能奖励'}
-            </p>
-            <div className="quest-progress">
-              <div
-                className="progress-fill"
-                style={{
-                  width: `${dnaCompleted ? (queriedCount >= 10 ? 100 : 50 + (queriedCount / 10) * 50) : 0}%`
-                }}
-              ></div>
-            </div>
-          </div>
-        </div>
-
         <div className="exploration-hint in-frame in-frame-right">
           <p>💡 点击NPC与他们对话，完成DNA测试后可解锁AI档案馆查询功能</p>
           <div className="hint-progress">

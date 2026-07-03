@@ -11,12 +11,11 @@
   background: $color-bg-dark;
   
   .layout-header {
-    position: absolute;
-    top: 0.75rem;
-    left: 0.75rem;
-    right: 0.75rem;
+    position: relative;
+    flex: 0 0 auto;
+    padding: 0.75rem 0.75rem 0;
     z-index: 200;
-    pointer-events: none;
+    pointer-events: auto;
 
     .hud-bar {
       margin-bottom: 0;
@@ -44,7 +43,7 @@
 
   .layout-main {
     flex: 1;
-    height: 100%;
+    height: auto;
     min-height: 0;
     overflow: hidden;
     position: relative;

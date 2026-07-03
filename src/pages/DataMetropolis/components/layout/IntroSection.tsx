@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { SCRIPT } from '../../data';
 import { PixelDialogBox } from '../ui/PixelDialogBox';
 import './IntroSection.scss';
@@ -17,6 +17,8 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ onComplete }) => {
   const [dialogIndex, setDialogIndex] = useState(0);
   const [fadeOut, setFadeOut] = useState(false);
   const [bgLoaded, setBgLoaded] = useState(false);
+  const timersRef = useRef<Array<ReturnType<typeof setTimeout>>>([]);
+  const completedRef = useRef(false);
 
   useEffect(() => {
     const img = new Image();
@@ -27,9 +29,19 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ onComplete }) => {
     };
   }, []);
 
+  const finishIntro = useCallback((delay = 240) => {
+    if (completedRef.current) return;
+    completedRef.current = true;
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current = [];
+    setFadeOut(true);
+    window.setTimeout(() => onComplete(), delay);
+  }, [onComplete]);
+
   // 入场动画序列
   useEffect(() => {
     const timers: Array<ReturnType<typeof setTimeout>> = [];
+    timersRef.current = timers;
     
     // 1.5秒后显示标题 (entrance -> title)
     timers.push(setTimeout(() => setStep('title'), 1500));
@@ -54,10 +66,7 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ onComplete }) => {
       if (dialogIndex === 0) {
         setDialogIndex(1);
       } else {
-        setFadeOut(true);
-        setTimeout(() => {
-          onComplete();
-        }, 1000);
+        finishIntro(1000);
       }
     }
   };
@@ -86,6 +95,17 @@ export const IntroSection: React.FC<IntroSectionProps> = ({ onComplete }) => {
           className={`intro-bg ${bgLoaded ? 'loaded' : ''}`}
           style={{ backgroundImage: `url(${chapter4DataBg})` }}
         />
+
+        <button
+          type="button"
+          className="skip-intro-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            finishIntro();
+          }}
+        >
+          跳过动画
+        </button>
         
         {/* 入场屏幕 */}
         {step === 'entrance' && (

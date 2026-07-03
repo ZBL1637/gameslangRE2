@@ -13,9 +13,10 @@ $text-secondary: #94a3b8;
 
 .battle-log {
   grid-area: log;
-  background: rgba($background-medium, 0.9);
-  border-radius: 1rem;
-  border: 1px solid rgba($text-secondary, 0.2);
+  background: rgba(248, 250, 252, 0.95);
+  border-radius: 10px;
+  border: 4px solid #2f3142;
+  box-shadow: 7px 7px 0 rgba(0, 0, 0, 0.32);
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -34,7 +35,7 @@ $text-secondary: #94a3b8;
 
     .log-title {
       font-weight: bold;
-      color: $text-primary;
+      color: #0f172a;
     }
   }
 
@@ -101,7 +102,7 @@ $text-secondary: #94a3b8;
         .action-name {
           display: block;
           font-weight: bold;
-          color: $text-primary;
+          color: #0f172a;
           font-size: 0.9rem;
           margin-bottom: 0.25rem;
         }

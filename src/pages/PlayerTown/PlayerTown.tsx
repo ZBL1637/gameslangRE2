@@ -8,7 +8,6 @@ import { Trophy } from 'lucide-react';
 import { usePlayer } from '@/context/PlayerContext';
 import { ChapterCompass } from '@/components/ChapterCompass/ChapterCompass';
 import { ChapterRewardOverlay } from '@/components/ChapterRewardOverlay/ChapterRewardOverlay';
-import { DataEvidencePanel } from '@/components/DataEvidencePanel/DataEvidencePanel';
 import { Button } from '@/components/Button/Button';
 import type { ChapterReward } from '@/data/chapterProgress';
 
@@ -193,10 +192,9 @@ export const PlayerTown: React.FC = () => {
           <div className="town-hud-panels">
             <ChapterCompass
               chapterId={3}
-              objective="完成玩家 DNA 测试，并在真言档案馆查询 10 个黑话。"
+              objective="步骤 1：完成玩家 DNA 测试。步骤 2：进入真言档案馆查询 10 个黑话。"
               progress={`DNA：${dnaCompleted ? '完成' : '未完成'} · 查询 ${queriedTerms.length} / 10`}
             />
-            <DataEvidencePanel chapterId={3} compact />
           </div>
           <TownMap
             dnaCompleted={dnaCompleted}

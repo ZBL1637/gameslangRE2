@@ -16,10 +16,11 @@ $text-secondary: #94a3b8;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba($background-medium, 0.9);
+  background: rgba(248, 250, 252, 0.95);
   padding: 0.65rem 1rem;
-  border-radius: 1rem;
-  border: 1px solid rgba($text-secondary, 0.2);
+  border-radius: 10px;
+  border: 4px solid #2f3142;
+  box-shadow: 7px 7px 0 rgba(0, 0, 0, 0.25);
 
   .turn-info {
     display: flex;
@@ -40,7 +41,7 @@ $text-secondary: #94a3b8;
       .value {
         font-size: 1.55rem;
         font-weight: bold;
-        color: $text-primary;
+        color: #0f172a;
       }
 
       .separator {

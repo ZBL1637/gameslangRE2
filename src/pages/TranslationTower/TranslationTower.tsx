@@ -8,7 +8,6 @@ import { usePlayer } from '@/context/PlayerContext';
 import { Button } from '@/components/Button/Button';
 import { ChapterCompass } from '@/components/ChapterCompass/ChapterCompass';
 import { ChapterRewardOverlay } from '@/components/ChapterRewardOverlay/ChapterRewardOverlay';
-import { DataEvidencePanel } from '@/components/DataEvidencePanel/DataEvidencePanel';
 import type { ChapterReward } from '@/data/chapterProgress';
 import { 
   Chapter5GlobalState, 
@@ -346,7 +345,6 @@ export const TranslationTower: React.FC = () => {
             objective="完成关键词、语气、隐喻与最终组装试炼。"
             progress={`已完成 ${completedChallengeCount} / 4 个试炼`}
           />
-          <DataEvidencePanel chapterId={5} compact />
         </div>
       )}
       

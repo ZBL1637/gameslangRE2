@@ -1,9 +1,7 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePlayer } from '@/context/PlayerContext';
-import { ChapterCompass } from '@/components/ChapterCompass/ChapterCompass';
 import { ChapterRewardOverlay } from '@/components/ChapterRewardOverlay/ChapterRewardOverlay';
-import { DataEvidencePanel } from '@/components/DataEvidencePanel/DataEvidencePanel';
 import { Button } from '@/components/Button/Button';
 import type { ChapterReward } from '@/data/chapterProgress';
 import { GamePhase, DataNode } from './types';
@@ -114,17 +112,6 @@ export const DataMetropolis: React.FC = () => {
   return (
     <div className="data-metropolis-page">
       <main className="main-content">
-        {phase !== 'intro' && (
-          <>
-            <ChapterCompass
-              chapterId={4}
-              objective="破解四个数据节点，读出黑话背后的分类与情绪结构。"
-              progress={`已破解 ${completedNodeIds.length} / ${DATA_NODES.length} 个节点`}
-            />
-            <DataEvidencePanel chapterId={4} compact />
-          </>
-        )}
-
         {/* 入场动画 */}
         {phase === 'intro' && (
           <IntroSection onComplete={handleIntroComplete} />
