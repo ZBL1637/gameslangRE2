@@ -5,7 +5,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { usePlayer } from '@/context/PlayerContext';
 import { ChapterCompass } from '@/components/ChapterCompass/ChapterCompass';
-import { DataEvidencePanel } from '@/components/DataEvidencePanel/DataEvidencePanel';
 import { EvidenceBoard } from '@/components/EvidenceBoard/EvidenceBoard';
 import {
   EvidenceBattleBonus,
@@ -216,22 +215,16 @@ const FinalChapter: React.FC = () => {
         </div>
       </div>
       
-      <div className="chapter-content">
-        {gameState.currentPhase !== 'intro' && (
-          <ChapterCompass
-            chapterId={6}
-            objective="使用已解锁技能击败算法霸主，查看你的数据新闻结局。"
-            progress={`已解锁技能 ${state.skillsUnlocked.length} / 4 · 已收集碎片 ${state.dataFragments.length}`}
-          />
-        )}
+      <div className={`chapter-content phase-${gameState.currentPhase}`}>
         {gameState.currentPhase === 'battle' && (
-          <>
-            <DataEvidencePanel chapterId={6} compact />
+          <div className="final-side-panels">
+            <ChapterCompass
+              chapterId={6}
+              objective="使用已解锁技能击败算法霸主，查看你的数据新闻结局。"
+              progress={`已解锁技能 ${state.skillsUnlocked.length} / 4 · 已收集碎片 ${state.dataFragments.length}`}
+            />
             <EvidenceBoard fragmentIds={state.dataFragments || []} compact />
-          </>
-        )}
-        {(gameState.currentPhase === 'victory' || gameState.currentPhase === 'defeat') && (
-          <EvidenceBoard fragmentIds={state.dataFragments || []} ending={ending} />
+          </div>
         )}
         {renderCurrentPhase()}
       </div>

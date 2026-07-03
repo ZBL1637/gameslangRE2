@@ -12,14 +12,14 @@ $text-primary: #f8fafc;
 $text-secondary: #94a3b8;
 
 .battle-log {
-  grid-column: 2;
-  grid-row: 2 / 5;
+  grid-area: log;
   background: rgba($background-medium, 0.9);
   border-radius: 1rem;
   border: 1px solid rgba($text-secondary, 0.2);
   display: flex;
   flex-direction: column;
-  max-height: 500px;
+  min-height: 0;
+  max-height: none;
 
   .log-header {
     display: flex;
@@ -58,7 +58,7 @@ $text-secondary: #94a3b8;
     }
 
     .log-entry {
-      padding: 0.75rem;
+      padding: 0.6rem 0.75rem;
       border-radius: 0.5rem;
       margin-bottom: 0.5rem;
       animation: fadeIn 0.3s ease-out;

@@ -3,7 +3,7 @@
 // ============================================================================
 
 import React, { useState } from 'react';
-import { NPC_DIALOGUES, NARRATION_TEXTS, BOSS_SKILLS } from '../../data';
+import { NPC_DIALOGUES, NARRATION_TEXTS } from '../../data';
 import './IntroSection.scss';
 
 interface IntroSectionProps {
@@ -114,40 +114,19 @@ const IntroSection: React.FC<IntroSectionProps> = ({ onComplete }) => {
                 在15回合内击败算法霸主<br/>
                 合理运用你在旅途中获得的技能
               </p>
-              <div className="skills-preview">
-                <h3>你的技能</h3>
-                <div className="skills-grid">
-                  <div className="skill-item">
-                    <span className="skill-icon">⏱️</span>
-                    <span className="skill-name">时之凝固</span>
-                  </div>
-                  <div className="skill-item">
-                    <span className="skill-icon">🔊</span>
-                    <span className="skill-name">共鸣之声</span>
-                  </div>
-                  <div className="skill-item">
-                    <span className="skill-icon">🎯</span>
-                    <span className="skill-name">弱点分析</span>
-                  </div>
-                  <div className="skill-item">
-                    <span className="skill-icon">🔮</span>
-                    <span className="skill-name">言灵·转化</span>
-                  </div>
+              <div className="battle-brief">
+                <div>
+                  <strong>核心目标</strong>
+                  <span>抓住充能窗口，打断终极过滤。</span>
                 </div>
-              </div>
-              <div className="skills-preview" style={{ marginTop: '1.5rem' }}>
-                <h3>Boss技能</h3>
-                <div className="skills-grid">
-                  {BOSS_SKILLS.map(s => (
-                    <div key={s.id} className="skill-item">
-                      <span className="skill-icon">{s.icon}</span>
-                      <span className="skill-name">{s.name}</span>
-                    </div>
-                  ))}
+                <div>
+                  <strong>战斗节奏</strong>
+                  <span>先清守门人，再集中攻击算法霸主。</span>
                 </div>
-                <p className="battle-info" style={{ marginTop: '0.75rem' }}>
-                  信息茧房仅降低10%伤害；每回合不回复生命；终极过滤需充能3回合。
-                </p>
+                <div>
+                  <strong>证据加成</strong>
+                  <span>已收集的数据碎片会自动转化为战斗优势。</span>
+                </div>
               </div>
               <button className="start-battle-btn" onClick={onComplete}>
                 <span className="btn-icon">⚔️</span>

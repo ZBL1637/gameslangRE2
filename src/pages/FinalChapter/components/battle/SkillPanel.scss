@@ -21,7 +21,9 @@ $text-secondary: $color-text-muted;
 .skill-panel {
   grid-column: 1;
   background: rgba($background-medium, 0.9);
-  padding: 0.85rem;
+  min-height: 0;
+  overflow: auto;
+  padding: 0.75rem;
   border-radius: 1rem;
   border: 1px solid rgba($secondary-color, 0.3);
 
@@ -102,7 +104,7 @@ $text-secondary: $color-text-muted;
         flex-direction: column;
         align-items: center;
         gap: 0.35rem;
-        padding: 0.65rem;
+        padding: 0.55rem;
         background: rgba($secondary-color, 0.1);
         border: 2px solid rgba($secondary-color, 0.3);
         border-radius: 0.75rem;
@@ -139,13 +141,14 @@ $text-secondary: $color-text-muted;
         .skill-icon-wrapper {
           position: relative;
           width: 38px;
-          height: 38px;
+          height: 34px;
           display: flex;
           align-items: center;
           justify-content: center;
 
           .skill-icon {
             font-size: 1.55rem;
+            line-height: 1;
           }
 
           .cooldown-overlay {

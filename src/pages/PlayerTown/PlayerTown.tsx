@@ -9,6 +9,7 @@ import { usePlayer } from '@/context/PlayerContext';
 import { ChapterCompass } from '@/components/ChapterCompass/ChapterCompass';
 import { ChapterRewardOverlay } from '@/components/ChapterRewardOverlay/ChapterRewardOverlay';
 import { DataEvidencePanel } from '@/components/DataEvidencePanel/DataEvidencePanel';
+import { Button } from '@/components/Button/Button';
 import type { ChapterReward } from '@/data/chapterProgress';
 
 import { IntroSection } from './components/layout/IntroSection';
@@ -29,11 +30,12 @@ const RECOMMENDED_ARCHIVE_TERMS = ['GG', 'YYDS', '欧皇', '氪金', '破防', '
 
 export const PlayerTown: React.FC = () => {
   const navigate = useNavigate();
-  const { state, completeChapterRun, updateChapterProgress } = usePlayer();
+  const { state, completeChapterRun, restartChapter, updateChapterProgress } = usePlayer();
+  const isChapterCompleted = state.completedChapters.includes(3);
   const savedProgress = state.chapterProgress?.chapter_3 || {};
   
   // 章节状态
-  const [phase, setPhase] = useState<Chapter3Phase>(savedProgress.phase || 'intro');
+  const [phase, setPhase] = useState<Chapter3Phase>(isChapterCompleted && savedProgress.phase === 'outro' ? 'exploration' : (savedProgress.phase || 'intro'));
   const [dnaCompleted, setDnaCompleted] = useState(Boolean(savedProgress.dnaCompleted));
   const [dnaResult, setDnaResult] = useState<DNAResult[] | null>(savedProgress.dnaResult || null);
   const [queriedTerms, setQueriedTerms] = useState<string[]>(savedProgress.queriedTerms || []);
@@ -163,6 +165,21 @@ export const PlayerTown: React.FC = () => {
     setReward(chapterReward);
   }, [completeChapterRun, dnaCompleted, queriedTerms.length, state.chapterProgress]);
 
+  const handleRestartChapter = useCallback(() => {
+    restartChapter(3);
+    setPhase('intro');
+    setDnaCompleted(false);
+    setDnaResult(null);
+    setQueriedTerms([]);
+    setExploredTerms([]);
+    setSkillUnlocked(false);
+    setShowAchievement(false);
+    setShowSkillToast(false);
+    setShowAIPanel(false);
+    setActiveBuilding(null);
+    setReward(null);
+  }, [restartChapter]);
+
   return (
     <div className="player-town-page">
       <div className="main-content">
@@ -173,12 +190,14 @@ export const PlayerTown: React.FC = () => {
         {/* 城镇地图 (作为背景在探索、测试、结果等阶段常驻) */}
         {phase !== 'intro' && (
           <>
-          <ChapterCompass
-            chapterId={3}
-            objective="完成玩家 DNA 测试，并在真言档案馆查询 10 个黑话。"
-            progress={`DNA：${dnaCompleted ? '完成' : '未完成'} · 查询 ${queriedTerms.length} / 10`}
-          />
-          <DataEvidencePanel chapterId={3} compact />
+          <div className="town-hud-panels">
+            <ChapterCompass
+              chapterId={3}
+              objective="完成玩家 DNA 测试，并在真言档案馆查询 10 个黑话。"
+              progress={`DNA：${dnaCompleted ? '完成' : '未完成'} · 查询 ${queriedTerms.length} / 10`}
+            />
+            <DataEvidencePanel chapterId={3} compact />
+          </div>
           <TownMap
             dnaCompleted={dnaCompleted}
             queriedCount={queriedTerms.length}
@@ -190,6 +209,22 @@ export const PlayerTown: React.FC = () => {
               exploredTerms={exploredTerms}
             />
           </TownMap>
+          {isChapterCompleted && skillUnlocked && phase === 'exploration' && (
+            <div className="ch3-return-panel">
+              <div>
+                <div className="title">玩家生态城镇已通关</div>
+                <div className="desc">本章结算已经完成，你可以返回世界地图，或重新游玩本章流程。</div>
+              </div>
+              <div className="actions">
+                <Button size="sm" onClick={() => navigate('/world-map', { state: { fromChapter: 3 } })}>
+                  返回世界地图
+                </Button>
+                <Button size="sm" variant="secondary" onClick={handleRestartChapter}>
+                  重新游玩本章
+                </Button>
+              </div>
+            </div>
+          )}
           </>
         )}
 
@@ -230,7 +265,7 @@ export const PlayerTown: React.FC = () => {
         {/* 结尾 */}
         {phase === 'outro' && (
           <div className="outro-overlay">
-            <OutroSection onComplete={handleChapterComplete} />
+            <OutroSection onComplete={handleChapterComplete} onRestart={handleRestartChapter} />
           </div>
         )}
 

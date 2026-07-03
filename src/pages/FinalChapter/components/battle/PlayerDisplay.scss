@@ -22,14 +22,15 @@ $text-secondary: $color-text-muted;
   grid-column: 1;
   display: flex;
   justify-content: flex-start;
-  padding: 1rem;
+  min-height: 0;
+  padding: 0.75rem;
 
   .player-entity {
     display: flex;
     align-items: center;
     gap: 1.5rem;
     background: rgba($background-medium, 0.8);
-    padding: 1.5rem;
+    padding: 1rem;
     border-radius: 1rem;
     border: 1px solid rgba($primary-color, 0.3);
 
@@ -39,8 +40,8 @@ $text-secondary: $color-text-muted;
 
     .player-avatar {
       position: relative;
-      width: 80px;
-      height: 80px;
+      width: 68px;
+      height: 68px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -54,7 +55,7 @@ $text-secondary: $color-text-muted;
       }
 
       .avatar-icon {
-        font-size: 3rem;
+        font-size: 2.5rem;
         z-index: 1;
       }
 

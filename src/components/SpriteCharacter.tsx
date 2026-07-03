@@ -165,7 +165,8 @@ export const SpriteCharacter: React.FC<SpriteCharProps> = ({
   const bgPosY = -(row * SPRITE_SIZE);
 
   return (
-    <div 
+    <div
+      className="sprite-character"
       style={{ 
         position: 'absolute', 
         top: 0, 
@@ -173,7 +174,7 @@ export const SpriteCharacter: React.FC<SpriteCharProps> = ({
         width: `${SPRITE_SIZE * SCALE}px`, 
         height: `${SPRITE_SIZE * SCALE}px`, 
         transform: `translate3d(${x}px, ${y}px, 0)`, 
-        zIndex: Math.floor(y), 
+        zIndex: 1080,
         transition: 'transform 0.1s linear', 
       }} 
     >

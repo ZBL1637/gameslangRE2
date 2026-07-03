@@ -61,14 +61,20 @@ $bg-panel: rgba(44, 24, 16, 0.95);
 }
 
 .town-map-section {
-  min-height: 100vh;
-  padding: 2rem;
+  min-height: 0;
+  height: 100%;
+  padding: 0;
   position: relative;
   z-index: 60;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 
   .section-header {
+    flex: 0 0 auto;
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0;
+    padding: 1rem 1rem 0.75rem;
     position: relative;
     z-index: 10;
 
@@ -92,16 +98,16 @@ $bg-panel: rgba(44, 24, 16, 0.95);
   // 城镇容器 - 像素艺术风格
   .town-container.pixel-style {
     position: relative;
-    width: min(96vw, calc((100dvh - 140px) * 16 / 9));
-    max-width: 1200px;
-    margin: 0 auto;
-    aspect-ratio: 16 / 9;
-    border-radius: 0.5rem;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    aspect-ratio: auto;
+    border-radius: 0;
     overflow: hidden;
-    border: 4px solid $primary-color;
-    box-shadow: 
-      0 0 0 2px $secondary-color,
-      0 10px 40px rgba(0, 0, 0, 0.5);
+    border: 0;
+    box-shadow: none;
 
     .quest-panel.in-frame {
       position: absolute;
@@ -691,11 +697,12 @@ $bg-panel: rgba(44, 24, 16, 0.95);
 
 @media (max-width: 768px) {
   .town-map-section {
-    padding: 1rem 0.75rem;
+    padding: 0;
 
     .town-container.pixel-style {
       width: 100%;
-      aspect-ratio: 16 / 10;
+      height: auto;
+      aspect-ratio: auto;
     }
   }
 }
@@ -703,14 +710,14 @@ $bg-panel: rgba(44, 24, 16, 0.95);
 // 响应式调整
 @media (max-width: 768px) {
   .town-map-section {
-    padding: 1rem;
+    padding: 0;
 
     .section-header h2 {
       font-size: 1.5rem;
     }
 
     .town-container.pixel-style {
-      aspect-ratio: 4 / 3;
+      aspect-ratio: auto;
 
       .npc-zone {
         flex-direction: column;

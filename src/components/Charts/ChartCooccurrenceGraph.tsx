@@ -32,10 +32,10 @@ const PALETTE = [
   '#95A5A6'
 ];
 
-const DEFAULT_WEIGHT_THRESHOLD = 18;
-const DEFAULT_TOP_K = 2;
+const DEFAULT_WEIGHT_THRESHOLD = 24;
+const DEFAULT_TOP_K = 1;
 const DEFAULT_SHOW_TOP_K_ONLY = true;
-const DEFAULT_NODE_VALUE_THRESHOLD = 90;
+const DEFAULT_NODE_VALUE_THRESHOLD = 140;
 const DEFAULT_PERF_MODE = true;
 
 export type ChartCooccurrenceGraphProps = {
@@ -136,8 +136,8 @@ export const ChartCooccurrenceGraph: React.FC<ChartCooccurrenceGraphProps> = ({ 
   const { ref: containerRef, inView } = useInViewOnce();
   const [rawData, setRawData] = useState<GraphRawData | null>(null);
   const perfMode = DEFAULT_PERF_MODE;
-  const maxNodes = perfMode ? 180 : 2000;
-  const maxEdges = perfMode ? 360 : 20000;
+  const maxNodes = perfMode ? 96 : 2000;
+  const maxEdges = perfMode ? 140 : 20000;
 
   useEffect(() => {
     if (!inView) return;
@@ -268,11 +268,12 @@ export const ChartCooccurrenceGraph: React.FC<ChartCooccurrenceGraphProps> = ({ 
   const options: EChartsCoreOption = useMemo(() => {
     const nodeCount = filteredData.nodes.length;
     const force = buildForceConfig(nodeCount, perfMode);
+    const layout = perfMode ? 'circular' : 'force';
     const showSeriesAnimation = !(perfMode || nodeCount >= 260);
 
     const series = {
       type: 'graph',
-      layout: 'force',
+      layout,
       data: filteredData.nodes,
       links: filteredData.links,
       roam: true,
@@ -287,7 +288,8 @@ export const ChartCooccurrenceGraph: React.FC<ChartCooccurrenceGraphProps> = ({ 
         textBorderWidth: 2
       },
       labelLayout: { hideOverlap: true },
-      force,
+      force: perfMode ? undefined : force,
+      circular: perfMode ? { rotateLabel: false } : undefined,
       lineStyle: {
         color: 'rgba(169, 183, 214, 0.2)',
         curveness: 0.1,

@@ -151,6 +151,14 @@ const ZONES: Zone[] = [
 const asArray = <T,>(v: unknown, fallback: T[]): T[] => (Array.isArray(v) ? (v as T[]) : fallback);
 const asBool = (v: unknown): boolean => Boolean(v);
 const asString = (v: unknown): string | null => (typeof v === 'string' ? v : null);
+const createEmptyForestProgress = (): ForestProgress => ({
+  introCompleted: false,
+  zonesCompleted: [],
+  fragmentsCollected: [],
+  bridgeTermId: undefined,
+  collocationUnlocked: false,
+  taxonomyCategories: [],
+});
 
 /**
  * 预加载图片资源，并返回是否已完成尝试加载（成功或失败都会返回 true）。
@@ -831,18 +839,20 @@ const OutroOverlay: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
 
 const OriginForest: React.FC = () => {
   const navigate = useNavigate();
-  const { state, addExp, completeQuest, completeChapterRun, updateChapterProgress } = usePlayer();
+  const { state, addExp, completeQuest, completeChapterRun, restartChapter, updateChapterProgress } = usePlayer();
 
   const saved = (state.chapterProgress?.ch1 as Record<string, unknown> | undefined)?.forest as Record<string, unknown> | undefined;
   const initialProgress: ForestProgress = useMemo(() => {
+    const emptyProgress = createEmptyForestProgress();
     const introCompleted = asBool(saved?.introCompleted);
     const zonesCompleted = asArray<ZoneId>(saved?.zonesCompleted, []);
     const fragmentsCollected = asArray<string>(saved?.fragmentsCollected, []);
     const bridgeTermId = asString(saved?.bridgeTermId) ?? undefined;
     const collocationUnlocked = Boolean(saved?.collocationUnlocked);
     const taxonomyCategories = asArray<string>(saved?.taxonomyCategories, []);
-    return { introCompleted, zonesCompleted, fragmentsCollected, bridgeTermId, collocationUnlocked, taxonomyCategories };
+    return { ...emptyProgress, introCompleted, zonesCompleted, fragmentsCollected, bridgeTermId, collocationUnlocked, taxonomyCategories };
   }, [saved]);
+  const isChapterCompleted = state.completedChapters.includes(1);
 
   const [progress, setProgress] = useState<ForestProgress>(initialProgress);
   const [stage, setStage] = useState<Stage>(initialProgress.introCompleted ? 'map' : 'intro');
@@ -868,13 +878,13 @@ const OriginForest: React.FC = () => {
   }, [completeQuest, progress.zonesCompleted.length]);
 
   useEffect(() => {
-    if (progress.zonesCompleted.length === 3 && stage !== 'outro') {
+    if (!isChapterCompleted && progress.zonesCompleted.length === 3 && stage !== 'outro') {
       const t = window.setTimeout(() => {
         setStage('outro');
       }, 650);
       return () => window.clearTimeout(t);
     }
-  }, [progress.zonesCompleted.length, stage]);
+  }, [isChapterCompleted, progress.zonesCompleted.length, stage]);
 
   const enterZone = (zoneId: ZoneId) => {
     setActiveZoneId(zoneId);
@@ -905,6 +915,14 @@ const OriginForest: React.FC = () => {
     setReward(chapterReward);
   };
 
+  const replayChapter = () => {
+    restartChapter(1);
+    setProgress(createEmptyForestProgress());
+    setStage('intro');
+    setActiveZoneId(null);
+    setReward(null);
+  };
+
   return (
     <div className="origin-forest-page">
       <div className="ch1-global-bg" style={{ backgroundImage: `url(${forestBg})` }} />
@@ -931,6 +949,22 @@ const OriginForest: React.FC = () => {
             </div>
             <div className="ch1-map-panel">
               <ForestMap zones={ZONES} completedZones={progress.zonesCompleted} onEnterZone={enterZone} />
+              {isChapterCompleted && progress.zonesCompleted.length >= 3 && stage === 'map' && (
+                <div className="ch1-return-panel">
+                  <div>
+                    <div className="title">黑话起源之森已通关</div>
+                    <div className="desc">本章结算已经完成，你可以直接返回世界地图，或重新游玩本章流程。</div>
+                  </div>
+                  <div className="actions">
+                    <Button size="sm" variant="primary" onClick={() => navigate('/world-map', { state: { fromChapter: 1 } })}>
+                      返回世界地图
+                    </Button>
+                    <Button size="sm" variant="secondary" onClick={replayChapter}>
+                      重新游玩本章
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

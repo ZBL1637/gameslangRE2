@@ -5,6 +5,7 @@
 import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePlayer } from '@/context/PlayerContext';
+import { Button } from '@/components/Button/Button';
 import { ChapterCompass } from '@/components/ChapterCompass/ChapterCompass';
 import { ChapterRewardOverlay } from '@/components/ChapterRewardOverlay/ChapterRewardOverlay';
 import { DataEvidencePanel } from '@/components/DataEvidencePanel/DataEvidencePanel';
@@ -42,32 +43,38 @@ import { BossAssembler } from './components/challenges/BossAssembler';
 
 import './TranslationTower.scss';
 
+const createInitialTowerState = (): Chapter5GlobalState => ({
+  currentFloor: FloorType.F0_BAZAAR,
+  comms: 100,
+  clarity: 50,
+  culture: 50,
+  runes: [],
+  hintTickets: 0,
+  ticketsUsed: 0,
+  phrasebook: [],
+  floorProgress: {
+    [FloorType.F0_BAZAAR]: true,
+    [FloorType.F1_KEYWORD]: false,
+    [FloorType.F2_STYLE]: false,
+    [FloorType.F3_METAPHOR]: false,
+    [FloorType.F4_BOSS]: false
+  }
+});
+
 export const TranslationTower: React.FC = () => {
   const navigate = useNavigate();
-  const { state, completeChapterRun, updateChapterProgress } = usePlayer();
+  const { state, completeChapterRun, restartChapter, updateChapterProgress } = usePlayer();
   const savedProgress = state.chapterProgress?.chapter_5 || {};
+  const isChapterCompleted = state.completedChapters.includes(5);
 
   // 初始状态
-  const [gameState, setGameState] = useState<Chapter5GlobalState>(() => savedProgress.gameState || {
-    currentFloor: FloorType.F0_BAZAAR, // 初始在集市，但在 Intro 阶段会被隐藏
-    comms: 100,
-    clarity: 50,
-    culture: 50,
-    runes: [],
-    hintTickets: 0,
-    ticketsUsed: 0,
-    phrasebook: [],
-    floorProgress: {
-      [FloorType.F0_BAZAAR]: true,
-      [FloorType.F1_KEYWORD]: false,
-      [FloorType.F2_STYLE]: false,
-      [FloorType.F3_METAPHOR]: false,
-      [FloorType.F4_BOSS]: false
-    }
-  });
+  const [gameState, setGameState] = useState<Chapter5GlobalState>(() => savedProgress.gameState || createInitialTowerState());
 
   // 流程控制状态
-  const [phase, setPhase] = useState<'intro' | 'game' | 'skill' | 'outro'>(savedProgress.phase || 'intro');
+  const [phase, setPhase] = useState<'intro' | 'game' | 'skill' | 'outro'>(() => {
+    if (isChapterCompleted) return 'game';
+    return savedProgress.phase || 'intro';
+  });
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [failureMessage, setFailureMessage] = useState<string | null>(null);
   const [reward, setReward] = useState<ChapterReward | null>(null);
@@ -77,6 +84,8 @@ export const TranslationTower: React.FC = () => {
     return [FloorType.F1_KEYWORD, FloorType.F2_STYLE, FloorType.F3_METAPHOR, FloorType.F4_BOSS]
       .filter(floor => gameState.floorProgress[floor]).length;
   }, [gameState.floorProgress]);
+
+  const allTrialsComplete = completedChallengeCount >= 4;
 
   useEffect(() => {
     updateChapterProgress('chapter_5', {
@@ -172,6 +181,10 @@ export const TranslationTower: React.FC = () => {
     setPhase('game');
   };
 
+  const handleSkipIntro = () => {
+    setPhase('game');
+  };
+
   // Boss 战完成
   const handleBossComplete = () => {
     markFloorComplete(FloorType.F4_BOSS);
@@ -199,6 +212,18 @@ export const TranslationTower: React.FC = () => {
     setPhase('game');
   };
 
+  const handleRestartChapter = () => {
+    restartChapter(5);
+    setGameState(createInitialTowerState());
+    setFailureMessage(null);
+    setReward(null);
+    setPhase('intro');
+  };
+
+  const handleReturnToMap = () => {
+    navigate('/world-map', { state: { fromChapter: 5 } });
+  };
+
   // 渲染主内容
   const renderContent = () => {
     if (phase === 'intro') {
@@ -207,6 +232,7 @@ export const TranslationTower: React.FC = () => {
           dialogues={NPC_DIALOGUES.intro}
           narrationText={NARRATION_TEXTS.intro}
           onComplete={handleIntroComplete}
+          onSkip={handleSkipIntro}
         />
       );
     }
@@ -314,20 +340,36 @@ export const TranslationTower: React.FC = () => {
         <HUD state={gameState} title={CHAPTER_META.title} />
       )}
       {phase === 'game' && (
-        <ChapterCompass
-          chapterId={5}
-          objective="完成关键词、语气、隐喻与最终组装试炼。"
-          progress={`已完成 ${completedChallengeCount} / 4 个试炼`}
-        />
+        <div className="translation-side-panels">
+          <ChapterCompass
+            chapterId={5}
+            objective="完成关键词、语气、隐喻与最终组装试炼。"
+            progress={`已完成 ${completedChallengeCount} / 4 个试炼`}
+          />
+          <DataEvidencePanel chapterId={5} compact />
+        </div>
       )}
       
       <NotificationOverlay notifications={notifications} onRemove={removeNotification} />
 
       {/* 主内容 */}
-      <main className="main-content" style={{ paddingTop: phase === 'game' ? '0' : '0' }}>
-        {phase === 'game' && <DataEvidencePanel chapterId={5} compact />}
+      <main className={`main-content phase-${phase}`}>
         {renderContent()}
       </main>
+
+      {phase === 'game' && isChapterCompleted && allTrialsComplete && (
+        <div className="ch5-return-panel">
+          <p>译语通天塔已通关。你可以回到世界地图，或重新游玩本章。</p>
+          <div className="return-actions">
+            <Button type="button" variant="primary" onClick={handleReturnToMap}>
+              返回世界地图
+            </Button>
+            <Button type="button" variant="secondary" onClick={handleRestartChapter}>
+              重新游玩本章
+            </Button>
+          </div>
+        </div>
+      )}
 
       {failureMessage && (
         <div className="translation-failure-panel" role="dialog" aria-modal="true">

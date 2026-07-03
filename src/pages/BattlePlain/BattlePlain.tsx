@@ -4,6 +4,7 @@ import { usePlayer } from '@/context/PlayerContext';
 import { ChapterCompass } from '@/components/ChapterCompass/ChapterCompass';
 import { ChapterRewardOverlay } from '@/components/ChapterRewardOverlay/ChapterRewardOverlay';
 import { DataEvidencePanel } from '@/components/DataEvidencePanel/DataEvidencePanel';
+import { Button } from '@/components/Button/Button';
 import type { ChapterReward } from '@/data/chapterProgress';
 import { IntroSection } from './components/layout/IntroSection';
 import { OutroSection } from './components/layout/OutroSection';
@@ -18,7 +19,8 @@ import './BattlePlain.scss';
 
 const BattlePlain: React.FC = () => {
   const navigate = useNavigate();
-  const { state, addExp, completeChapterRun, updateChapterProgress } = usePlayer();
+  const { state, addExp, completeChapterRun, restartChapter, updateChapterProgress } = usePlayer();
+  const isChapterCompleted = state.completedChapters.includes(2);
   
   const savedProgress = state.chapterProgress?.['chapter_2'] || {};
 
@@ -34,7 +36,7 @@ const BattlePlain: React.FC = () => {
   const [introCompleted, setIntroCompleted] = useState(savedProgress.introCompleted || false);
   const [showEraExplorer, setShowEraExplorer] = useState(false);
   const [showSkillUnlock, setShowSkillUnlock] = useState(false);
-  const [showOutro, setShowOutro] = useState(savedProgress.showOutro || false);
+  const [showOutro, setShowOutro] = useState(!isChapterCompleted && (savedProgress.showOutro || false));
   const [reward, setReward] = useState<ChapterReward | null>(null);
   
   const contentRef = useRef<HTMLDivElement>(null);
@@ -120,6 +122,21 @@ const BattlePlain: React.FC = () => {
     setReward(chapterReward);
   };
 
+  const handleRestartChapter = () => {
+    restartChapter(2);
+    setGameState({
+      currentEra: null,
+      fragmentsCollected: [],
+      minigamesCompleted: [],
+      skillUnlocked: false,
+    });
+    setIntroCompleted(false);
+    setShowEraExplorer(false);
+    setShowSkillUnlock(false);
+    setShowOutro(false);
+    setReward(null);
+  };
+
   // 获取当前时代数据
   const currentEraData = TIMELINE_ERAS.find(era => era.id === gameState.currentEra);
 
@@ -155,6 +172,23 @@ const BattlePlain: React.FC = () => {
               onEnterEra={handleEnterEra}
             />
 
+            {isChapterCompleted && gameState.minigamesCompleted.length >= TIMELINE_ERAS.length && !showOutro && (
+              <div className="ch2-return-panel">
+                <div>
+                  <div className="title">战斗本体平原已通关</div>
+                  <div className="desc">本章结算已经完成，你可以返回世界地图，也可以清空本章保存进度后重新游玩。</div>
+                </div>
+                <div className="actions">
+                  <Button size="sm" onClick={() => navigate('/world-map', { state: { fromChapter: 2 } })}>
+                    返回世界地图
+                  </Button>
+                  <Button size="sm" variant="secondary" onClick={handleRestartChapter}>
+                    重新游玩本章
+                  </Button>
+                </div>
+              </div>
+            )}
+
 
 
           </div>
@@ -182,7 +216,7 @@ const BattlePlain: React.FC = () => {
       {/* 7. 结尾章节 */}
       {showOutro && (
         <div className="outro-overlay">
-          <OutroSection onComplete={handleComplete} />
+          <OutroSection onComplete={handleComplete} onRestart={handleRestartChapter} />
         </div>
       )}
 

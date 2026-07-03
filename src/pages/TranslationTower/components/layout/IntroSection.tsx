@@ -11,6 +11,7 @@ interface IntroSectionProps {
   dialogues: NPCDialogue[];
   narrationText: string;
   onComplete: () => void;
+  onSkip?: () => void;
 }
 
 type IntroStep = 'entrance' | 'title' | 'narration' | 'npc';
@@ -18,7 +19,8 @@ type IntroStep = 'entrance' | 'title' | 'narration' | 'npc';
 export const IntroSection: React.FC<IntroSectionProps> = ({
   dialogues,
   narrationText,
-  onComplete
+  onComplete,
+  onSkip
 }) => {
   const [step, setStep] = useState<IntroStep>('entrance');
   const [dialogIndex, setDialogIndex] = useState(0);
@@ -129,6 +131,19 @@ export const IntroSection: React.FC<IntroSectionProps> = ({
               onComplete={step === 'npc' && dialogIndex === dialogues.length - 1 ? undefined : undefined} 
             />
           </div>
+        )}
+
+        {onSkip && (
+          <button
+            type="button"
+            className="skip-intro-btn"
+            onClick={(event) => {
+              event.stopPropagation();
+              onSkip();
+            }}
+          >
+            跳过动画
+          </button>
         )}
       </div>
     </section>

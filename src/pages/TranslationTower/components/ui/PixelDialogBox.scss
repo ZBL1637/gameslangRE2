@@ -15,6 +15,8 @@ $ch5-secondary: #06b6d4; // Cyan
   font-family: 'Microsoft YaHei', sans-serif; // 保持原有字体偏好，或改为像素字体
   cursor: pointer;
   user-select: none;
+  max-height: 38vh;
+  overflow: visible;
 
   .pixel-dialog-border {
     background: rgba(15, 23, 42, 0.95); // Darker background for Ch5
@@ -55,6 +57,8 @@ $ch5-secondary: #06b6d4; // Cyan
     display: flex;
     gap: 1.5rem;
     align-items: flex-start;
+    max-height: inherit;
+    overflow-y: auto;
   }
 
   .pixel-dialog-body {
@@ -108,6 +112,29 @@ $ch5-secondary: #06b6d4; // Cyan
     color: $ch5-secondary;
     animation: bounce 1s infinite;
     font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 720px) {
+  .pixel-dialog-box {
+    bottom: 0.75rem;
+    width: calc(100% - 20px);
+    max-height: 44vh;
+
+    .pixel-dialog-content {
+      min-height: 96px;
+      padding: 1rem;
+    }
+
+    .pixel-dialog-speaker {
+      top: -2.35rem;
+      font-size: 0.95rem;
+    }
+
+    .pixel-dialog-text {
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
   }
 }
 

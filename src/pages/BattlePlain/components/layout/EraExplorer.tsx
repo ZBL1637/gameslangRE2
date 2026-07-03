@@ -22,7 +22,7 @@ type ExplorerPhase = 'intro' | 'history' | 'minigame' | 'reward';
 export const EraExplorer: React.FC<EraExplorerProps> = ({ era, onComplete, onExit }) => {
   const [phase, setPhase] = useState<ExplorerPhase>('intro');
   const [currentEventIndex, setCurrentEventIndex] = useState(0);
-  const [, setMinigameCompleted] = useState(false);
+  const [playSessionId, setPlaySessionId] = useState(0);
 
   // 处理历史事件导航
   const handleNextEvent = () => {
@@ -41,21 +41,25 @@ export const EraExplorer: React.FC<EraExplorerProps> = ({ era, onComplete, onExi
 
   // 处理小游戏完成
   const handleMinigameComplete = () => {
-    setMinigameCompleted(true);
     setPhase('reward');
+  };
+
+  const handleReplayMinigame = () => {
+    setPlaySessionId(prev => prev + 1);
+    setPhase('minigame');
   };
 
   // 渲染对应的小游戏
   const renderMinigame = () => {
     switch (era.minigame.type) {
       case 'qte':
-        return <QTEMinigame onComplete={handleMinigameComplete} />;
+        return <QTEMinigame key={playSessionId} onComplete={handleMinigameComplete} />;
       case 'card_placement':
-        return <CardPlacementMinigame onComplete={handleMinigameComplete} />;
+        return <CardPlacementMinigame key={playSessionId} onComplete={handleMinigameComplete} />;
       case 'gacha':
-        return <GachaMinigame onComplete={handleMinigameComplete} />;
+        return <GachaMinigame key={playSessionId} onComplete={handleMinigameComplete} />;
       case 'bullet_catch':
-        return <BulletCatchMinigame onComplete={handleMinigameComplete} />;
+        return <BulletCatchMinigame key={playSessionId} onComplete={handleMinigameComplete} />;
       default:
         return null;
     }
@@ -75,7 +79,7 @@ export const EraExplorer: React.FC<EraExplorerProps> = ({ era, onComplete, onExi
     <div className="era-explorer-overlay">
       <div className="era-explorer-modal">
         {/* 关闭按钮 */}
-        <button className="close-btn" onClick={onExit}>
+        <button type="button" className="close-btn" onClick={onExit}>
           <X size={24} />
         </button>
 
@@ -115,7 +119,7 @@ export const EraExplorer: React.FC<EraExplorerProps> = ({ era, onComplete, onExi
             <div className="intro-phase">
               <p className="era-description">{era.description}</p>
               <div className="action-area">
-                <button className="primary-btn" onClick={() => setPhase('history')}>
+                <button type="button" className="primary-btn" onClick={() => setPhase('history')}>
                   探索历史事件 →
                 </button>
               </div>
@@ -146,6 +150,7 @@ export const EraExplorer: React.FC<EraExplorerProps> = ({ era, onComplete, onExi
               
               <div className="navigation">
                 <button 
+                  type="button"
                   className="nav-btn"
                   onClick={handlePrevEvent}
                   disabled={currentEventIndex === 0}
@@ -156,6 +161,7 @@ export const EraExplorer: React.FC<EraExplorerProps> = ({ era, onComplete, onExi
                   {currentEventIndex + 1} / {era.events.length}
                 </span>
                 <button 
+                  type="button"
                   className="nav-btn primary"
                   onClick={handleNextEvent}
                 >
@@ -177,6 +183,12 @@ export const EraExplorer: React.FC<EraExplorerProps> = ({ era, onComplete, onExi
               
               <div className={`minigame-container ${era.minigame.type}`}>
                 {renderMinigame()}
+              </div>
+
+              <div className="minigame-actions">
+                <button type="button" className="secondary-btn" onClick={handleMinigameComplete}>
+                  跳过小游戏
+                </button>
               </div>
             </div>
           )}
@@ -204,9 +216,14 @@ export const EraExplorer: React.FC<EraExplorerProps> = ({ era, onComplete, onExi
                 </div>
               </div>
               
-              <button className="primary-btn" onClick={onComplete}>
-                收下碎片，继续探索 →
-              </button>
+              <div className="reward-actions">
+                <button type="button" className="secondary-btn" onClick={handleReplayMinigame}>
+                  重新游玩小游戏
+                </button>
+                <button type="button" className="primary-btn" onClick={onComplete}>
+                  收下碎片，继续探索 →
+                </button>
+              </div>
             </div>
           )}
 

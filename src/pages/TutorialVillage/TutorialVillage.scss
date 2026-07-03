@@ -1,37 +1,35 @@
 ﻿@use '@/styles/variables' as *;
 
 .tutorial-village-page {
-  // Center horizontally
-  margin: 0 auto;
-  // Match World Map viewport width (85%)
-  width: min(96vw, calc((100dvh - 120px) * 16 / 9));
-  max-width: 1200px;
-  // Maintain 16:9 aspect ratio based on width
-  aspect-ratio: 16 / 9;
-  // Reset height to auto since aspect-ratio handles it
-  height: auto; 
+  margin: 0;
+  width: 100%;
+  max-width: none;
+  aspect-ratio: auto;
+  height: 100%;
+  min-height: 0;
   
   position: relative;
   background-color: #5c7a4c;
   overflow: hidden;
   
-  border-radius: $border-radius-md;
-  border: $border-gold;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-radius: 0;
+  border: 0;
+  box-shadow: none;
 
   // Background Layer
   .bg-layer {
     position: absolute;
     inset: 0;
     opacity: 1;
-    background-image: none;
+    background-image: url('../../assets/images/village_poster.webp');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    image-rendering: auto;
     z-index: 0;
 
     &.is-loaded {
-      background-image: url('../../assets/images/village_poster.webp');
+      background-image: url('../../assets/images/village.gif');
     }
   }
 
@@ -706,7 +704,8 @@
 @media (max-width: 768px) {
   .tutorial-village-page {
     width: 100%;
-    aspect-ratio: 16 / 10;
+    height: 100%;
+    aspect-ratio: auto;
 
     .exploration-ui {
       top: 0.5rem;

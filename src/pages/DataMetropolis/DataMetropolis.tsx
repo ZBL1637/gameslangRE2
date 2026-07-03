@@ -4,6 +4,7 @@ import { usePlayer } from '@/context/PlayerContext';
 import { ChapterCompass } from '@/components/ChapterCompass/ChapterCompass';
 import { ChapterRewardOverlay } from '@/components/ChapterRewardOverlay/ChapterRewardOverlay';
 import { DataEvidencePanel } from '@/components/DataEvidencePanel/DataEvidencePanel';
+import { Button } from '@/components/Button/Button';
 import type { ChapterReward } from '@/data/chapterProgress';
 import { GamePhase, DataNode } from './types';
 import { DATA_NODES } from './data';
@@ -16,11 +17,12 @@ import './DataMetropolis.scss';
 
 export const DataMetropolis: React.FC = () => {
   const navigate = useNavigate();
-  const { state, completeChapterRun, updateChapterProgress } = usePlayer();
+  const { state, completeChapterRun, restartChapter, updateChapterProgress } = usePlayer();
+  const isChapterCompleted = state.completedChapters.includes(4);
   const savedProgress = state.chapterProgress?.chapter_4 || {};
   
   // 游戏状态
-  const [phase, setPhase] = useState<GamePhase>(savedProgress.phase || 'intro');
+  const [phase, setPhase] = useState<GamePhase>(isChapterCompleted && savedProgress.phase === 'outro' ? 'city_overview' : (savedProgress.phase || 'intro'));
   const [nodes, setNodes] = useState<DataNode[]>(() => {
     const completedNodeIds = new Set<string>(savedProgress.completedNodeIds || []);
     return DATA_NODES.map(node => ({ ...node, completed: completedNodeIds.has(node.id) }));
@@ -94,6 +96,15 @@ export const DataMetropolis: React.FC = () => {
     });
     setReward(chapterReward);
   }, [completeChapterRun, completedNodeIds.length, state.chapterProgress]);
+
+  const handleRestartChapter = useCallback(() => {
+    restartChapter(4);
+    setPhase('intro');
+    setNodes(DATA_NODES.map(node => ({ ...node, completed: false })));
+    setCurrentNodeId(null);
+    setSkillUnlocked(false);
+    setReward(null);
+  }, [restartChapter]);
   
   // 获取当前节点
   const currentNode = currentNodeId 
@@ -127,6 +138,23 @@ export const DataMetropolis: React.FC = () => {
             allCompleted={allNodesCompleted}
           />
         )}
+
+        {isChapterCompleted && allNodesCompleted && phase === 'city_overview' && (
+          <div className="ch4-return-panel">
+            <div>
+              <div className="title">数据洪流之都已通关</div>
+              <div className="desc">本章结算已经完成，你可以返回世界地图，或重新游玩本章流程。</div>
+            </div>
+            <div className="actions">
+              <Button size="sm" onClick={() => navigate('/world-map', { state: { fromChapter: 4 } })}>
+                返回世界地图
+              </Button>
+              <Button size="sm" variant="secondary" onClick={handleRestartChapter}>
+                重新游玩本章
+              </Button>
+            </div>
+          </div>
+        )}
         
         {/* 数据节点探索 */}
         {currentNode && (
@@ -144,7 +172,7 @@ export const DataMetropolis: React.FC = () => {
         
         {/* 结尾 */}
       {phase === 'outro' && (
-        <div className="outro-overlay">
+        <div className="data-outro-overlay">
           <OutroSection onComplete={handleChapterComplete} />
         </div>
       )}

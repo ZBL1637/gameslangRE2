@@ -42,13 +42,16 @@ $text-secondary: $color-text-muted;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2rem;
+  justify-content: center;
+  min-height: 0;
+  overflow: hidden;
+  padding: clamp(0.75rem, 1.6vw, 1.25rem);
 
   .boss-entity {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.5rem;
+    gap: 0.9rem;
 
     &.stunned {
       .boss-visual .boss-core {
@@ -64,8 +67,8 @@ $text-secondary: $color-text-muted;
 
     .boss-visual {
       position: relative;
-      width: 180px;
-      height: 180px;
+      width: clamp(132px, 16vw, 170px);
+      height: clamp(132px, 16vw, 170px);
 
       .data-streams {
         position: absolute;
@@ -216,11 +219,11 @@ $text-secondary: $color-text-muted;
       max-width: 400px;
 
       .boss-name {
-        margin-bottom: 1rem;
+        margin-bottom: 0.65rem;
 
         .name-text {
           display: block;
-          font-size: 1.75rem;
+          font-size: clamp(1.35rem, 2.5vw, 1.65rem);
           font-weight: bold;
           color: $primary-color;
         }
@@ -287,7 +290,7 @@ $text-secondary: $color-text-muted;
 
   // 小怪显示
   .minions-container {
-    margin-top: 2rem;
+    margin-top: 0.9rem;
     text-align: center;
 
     .minions-label {

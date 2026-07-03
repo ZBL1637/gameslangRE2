@@ -30,6 +30,20 @@ const VictoryScreen: React.FC<VictoryScreenProps> = ({ gameState, ending, onRest
     });
   }, [phase]);
 
+  useEffect(() => {
+    if (phase !== 'summary') return;
+
+    const timer = window.setTimeout(() => {
+      navigate('/world-map', { state: { fromChapter: 6 } });
+    }, 12000);
+
+    return () => window.clearTimeout(timer);
+  }, [navigate, phase]);
+
+  const returnToWorldMap = () => {
+    navigate('/world-map', { state: { fromChapter: 6 } });
+  };
+
   const handleClick = () => {
     switch (phase) {
       case 'boss_defeat':
@@ -163,14 +177,11 @@ const VictoryScreen: React.FC<VictoryScreenProps> = ({ gameState, ending, onRest
               </div>
 
               <div className="action-buttons">
+                <button className="gallery-btn primary-return" onClick={returnToWorldMap}>
+                  返回世界地图
+                </button>
                 <button className="restart-btn" onClick={onRestart}>
                   重新挑战
-                </button>
-                <button className="gallery-btn" onClick={() => navigate('/') }>
-                  返回主页
-                </button>
-                <button className="gallery-btn" onClick={() => navigate('/world-map', { state: { fromChapter: 6 } })}>
-                  世界地图
                 </button>
               </div>
             </div>

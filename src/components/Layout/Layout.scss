@@ -5,13 +5,23 @@
   flex-direction: column;
   height: 100%;
   width: 100%;
-  padding: 1rem;
-  position: relative; // Ensure absolute positioning works for children
+  min-height: 0;
+  padding: 0;
+  position: relative;
+  background: $color-bg-dark;
   
   .layout-header {
-    flex: 0 0 auto;
-    margin-bottom: 1rem;
-    z-index: 20; // Ensure header is above content if needed
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    right: 0.75rem;
+    z-index: 200;
+    pointer-events: none;
+
+    .hud-bar {
+      margin-bottom: 0;
+      pointer-events: auto;
+    }
 
     .header-panel {
       padding: 0.5rem 1rem;
@@ -34,12 +44,10 @@
 
   .layout-main {
     flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden; // Prevent horizontal scrollbar
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
     position: relative;
-    // padding-bottom: 4rem; // Removed extra padding since footer is gone/moved
-    /* 隐藏滚动条但保留功能 */
-    &::-webkit-scrollbar { width: 0px; background: transparent; }
   }
 
   .layout-footer {

@@ -36,15 +36,20 @@ $pixel-border: #333344;
 
 .victory-screen-container {
   width: min(1120px, calc(100vw - 32px));
+  height: 100%;
   margin: 0 auto;
   color: $pixel-text;
+  display: grid;
+  place-items: center;
+  min-height: 0;
 }
 
 .boss-defeat-screen,
 .narration-screen,
 .ending-screen {
   position: relative;
-  min-height: 360px;
+  width: 100%;
+  min-height: min(360px, 100%);
   display: grid;
   place-items: center;
   padding: 2rem;
@@ -117,14 +122,19 @@ $pixel-border: #333344;
 
 .summary-screen {
   width: 100%;
+  height: 100%;
   display: flex;
+  align-items: center;
   justify-content: center;
-  padding: 2rem 0 4rem;
+  padding: 1rem 0;
   scroll-margin-top: 92px;
+  overflow: hidden;
 }
 
 .summary-card {
   width: min(800px, 100%);
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
   padding: clamp(1.25rem, 3vw, 2rem);
   background:
     linear-gradient(180deg, rgba($pixel-bg-dark, 0.96), rgba(#14091d, 0.92)),
@@ -265,6 +275,12 @@ $pixel-border: #333344;
     color: $pixel-bg-dark;
     background: linear-gradient(180deg, $pixel-accent-gold 0%, color.adjust($pixel-accent-gold, $lightness: -18%) 100%);
     border-color: rgba($pixel-accent-gold, 0.9);
+  }
+
+  .primary-return {
+    color: $pixel-bg-dark;
+    background: linear-gradient(180deg, $pixel-accent-cyan 0%, color.adjust($pixel-accent-cyan, $lightness: -18%) 100%);
+    border-color: rgba($pixel-accent-cyan, 0.9);
   }
 }
 

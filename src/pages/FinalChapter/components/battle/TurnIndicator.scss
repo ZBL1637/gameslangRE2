@@ -17,7 +17,7 @@ $text-secondary: #94a3b8;
   justify-content: space-between;
   align-items: center;
   background: rgba($background-medium, 0.9);
-  padding: 1rem 1.5rem;
+  padding: 0.65rem 1rem;
   border-radius: 1rem;
   border: 1px solid rgba($text-secondary, 0.2);
 
@@ -38,18 +38,18 @@ $text-secondary: #94a3b8;
       }
 
       .value {
-        font-size: 2rem;
+        font-size: 1.55rem;
         font-weight: bold;
         color: $text-primary;
       }
 
       .separator {
-        font-size: 1.5rem;
+        font-size: 1.15rem;
         color: $text-secondary;
       }
 
       .max {
-        font-size: 1.25rem;
+        font-size: 1rem;
         color: $text-secondary;
       }
     }
