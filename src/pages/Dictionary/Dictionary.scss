@@ -97,6 +97,8 @@
         flex-wrap: wrap;
         gap: 0.5rem;
         margin-bottom: 1rem;
+        max-height: 96px;
+        overflow-y: auto;
         
         .filter-tag {
           font-size: 0.75rem;
@@ -129,7 +131,8 @@
           display: flex;
           justify-content: space-between;
           align-items: flex-start; // 顶部对齐
-          transition: background 0.2s;
+          transition: background 0.2s, border-color 0.2s;
+          contain: layout paint;
 
           &.viewed {
             .term-main .term-name {
@@ -184,7 +187,6 @@
           
           &:hover {
             background: rgba(255,255,255,0.05);
-            padding-left: 1.2rem;
           }
           
           &.active {
@@ -199,6 +201,15 @@
           text-align: center;
           color: $color-text-muted;
           font-style: italic;
+        }
+
+        .result-limit {
+          padding: 0.9rem 1rem;
+          color: $color-text-muted;
+          font-size: 0.8rem;
+          text-align: center;
+          border-top: 1px solid rgba(255,255,255,0.08);
+          background: rgba(255,255,255,0.03);
         }
       }
     }
@@ -297,6 +308,29 @@
             }
           }
         }
+      }
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .dictionary-container {
+    padding: 1rem;
+    gap: 1rem;
+
+    .dict-content {
+      flex-direction: column;
+      gap: 1rem;
+
+      .dict-sidebar {
+        width: 100%;
+        flex: 0 0 min(58%, 390px);
+        min-height: 260px;
+      }
+
+      .dict-details {
+        width: 100%;
+        min-height: 0;
       }
     }
   }

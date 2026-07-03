@@ -4,13 +4,25 @@ import { getDataProcessor } from '@/utils/dataProcessor';
 import { Term } from '@/types';
 import './BulletCatchMinigame.scss';
 
-const GAME_DURATION_SECONDS = 15;
-const SPAWN_INTERVAL_MS = 850;
-const MAX_BULLETS_ON_SCREEN = 12;
+const GAME_DURATION_SECONDS = 22;
+const SPAWN_INTERVAL_MS = 700;
+const MAX_BULLETS_ON_SCREEN = 14;
 const BULLET_SPEED_MIN_PX_PER_SEC = 70;
 const BULLET_SPEED_MAX_PX_PER_SEC = 130;
 const TARGET_TERMS_COUNT = 4;
 const DECOY_TERMS_COUNT = 16;
+const TARGET_SPAWN_CHANCE = 0.65;
+
+const shuffleStrings = (items: string[]) => {
+  const copy = items.slice();
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = copy[i];
+    copy[i] = copy[j];
+    copy[j] = tmp;
+  }
+  return copy;
+};
 
 interface BulletCatchMinigameProps {
   onComplete: () => void;
@@ -47,6 +59,9 @@ export const BulletCatchMinigame: React.FC<BulletCatchMinigameProps> = ({ onComp
   const lastSpawnTimeRef = useRef(0);
   const lastFrameTimeRef = useRef<number | null>(null);
   const bulletPoolRef = useRef<BulletPoolItem[]>([]);
+  const targetSpawnQueueRef = useRef<string[]>([]);
+  const targetTermsRef = useRef<string[]>([]);
+  const targetsCaughtRef = useRef<string[]>([]);
 
   const buildFallbackPool = useCallback(() => {
     const fallbackTargets = BULLET_COMMENTS_POOL.filter((i) => i.isTarget).map((i) => i.text);
@@ -55,13 +70,7 @@ export const BulletCatchMinigame: React.FC<BulletCatchMinigameProps> = ({ onComp
   }, []);
 
   const pickUnique = useCallback((items: string[], count: number) => {
-    const copy = items.slice();
-    for (let i = copy.length - 1; i > 0; i -= 1) {
-      const j = Math.floor(Math.random() * (i + 1));
-      const tmp = copy[i];
-      copy[i] = copy[j];
-      copy[j] = tmp;
-    }
+    const copy = shuffleStrings(items);
     return copy.slice(0, Math.max(0, Math.min(count, copy.length)));
   }, []);
 
@@ -87,8 +96,13 @@ export const BulletCatchMinigame: React.FC<BulletCatchMinigameProps> = ({ onComp
 
       if (uniqCandidates.length < TARGET_TERMS_COUNT) {
         const { fallbackTargets, fallbackPool } = buildFallbackPool();
-        setTargetTerms(fallbackTargets);
-        bulletPoolRef.current = fallbackPool;
+        const targets = pickUnique(fallbackTargets, TARGET_TERMS_COUNT);
+        setTargetTerms(targets);
+        targetSpawnQueueRef.current = shuffleStrings(targets);
+        bulletPoolRef.current = fallbackPool.map((item) => ({
+          ...item,
+          isTarget: targets.includes(item.text)
+        }));
         return;
       }
 
@@ -101,11 +115,17 @@ export const BulletCatchMinigame: React.FC<BulletCatchMinigameProps> = ({ onComp
       ];
 
       setTargetTerms(targets);
+      targetSpawnQueueRef.current = shuffleStrings(targets);
       bulletPoolRef.current = pool.length > 0 ? pool : targets.map((t) => ({ text: t, isTarget: true }));
     } catch {
       const { fallbackTargets, fallbackPool } = buildFallbackPool();
-      setTargetTerms(fallbackTargets);
-      bulletPoolRef.current = fallbackPool;
+      const targets = pickUnique(fallbackTargets, TARGET_TERMS_COUNT);
+      setTargetTerms(targets);
+      targetSpawnQueueRef.current = shuffleStrings(targets);
+      bulletPoolRef.current = fallbackPool.map((item) => ({
+        ...item,
+        isTarget: targets.includes(item.text)
+      }));
     } finally {
       setIsPreparing(false);
     }
@@ -116,10 +136,37 @@ export const BulletCatchMinigame: React.FC<BulletCatchMinigameProps> = ({ onComp
     void prepareTargetsAndPool();
   }, [gameStatus, prepareTargetsAndPool]);
 
+  useEffect(() => {
+    targetTermsRef.current = targetTerms;
+  }, [targetTerms]);
+
+  useEffect(() => {
+    targetsCaughtRef.current = targetsCaught;
+  }, [targetsCaught]);
+
   // 生成新弹幕
   const spawnBullet = useCallback(() => {
     const pool = bulletPoolRef.current.length > 0 ? bulletPoolRef.current : BULLET_COMMENTS_POOL;
-    const randomItem = pool[Math.floor(Math.random() * pool.length)];
+    const caughtSet = new Set(targetsCaughtRef.current);
+    const uncaughtTargets = targetTermsRef.current.filter(term => !caughtSet.has(term));
+
+    let item: BulletPoolItem | null = null;
+    if (uncaughtTargets.length > 0 && (targetSpawnQueueRef.current.length > 0 || Math.random() < TARGET_SPAWN_CHANCE)) {
+      while (targetSpawnQueueRef.current.length > 0 && !item) {
+        const nextTarget = targetSpawnQueueRef.current.shift();
+        if (nextTarget && !caughtSet.has(nextTarget)) {
+          item = { text: nextTarget, isTarget: true };
+        }
+      }
+
+      if (!item) {
+        targetSpawnQueueRef.current = shuffleStrings(uncaughtTargets);
+        const nextTarget = targetSpawnQueueRef.current.shift();
+        if (nextTarget) item = { text: nextTarget, isTarget: true };
+      }
+    }
+
+    const randomItem = item ?? pool[Math.floor(Math.random() * pool.length)];
     const baseSpeed =
       BULLET_SPEED_MIN_PX_PER_SEC +
       Math.random() * (BULLET_SPEED_MAX_PX_PER_SEC - BULLET_SPEED_MIN_PX_PER_SEC);
@@ -208,7 +255,7 @@ export const BulletCatchMinigame: React.FC<BulletCatchMinigameProps> = ({ onComp
       setScore(prev => prev + 100 + combo * 20);
       setCombo(prev => prev + 1);
       
-      if (!targetsCaught.includes(bullet.text)) {
+      if (!targetsCaught.includes(bullet.text) && targetTermsRef.current.includes(bullet.text)) {
         setTargetsCaught(prev => [...prev, bullet.text]);
       }
     } else {
@@ -227,6 +274,7 @@ export const BulletCatchMinigame: React.FC<BulletCatchMinigameProps> = ({ onComp
     setTargetsCaught([]);
     setTimeLeft(GAME_DURATION_SECONDS);
     setCombo(0);
+    targetSpawnQueueRef.current = shuffleStrings(targetTerms);
     bulletIdRef.current = 0;
     lastSpawnTimeRef.current = 0;
     lastFrameTimeRef.current = null;
@@ -237,6 +285,12 @@ export const BulletCatchMinigame: React.FC<BulletCatchMinigameProps> = ({ onComp
     targetTerms.length > 0 && targetTerms.every(term => targetsCaught.includes(term));
   const passedTargetCount = targetsCaught.length >= 2;
   const unlockedTerms = Array.from(new Set(targetsCaught));
+
+  useEffect(() => {
+    if (gameStatus !== 'playing' || !allTargetsCaught) return;
+    const timer = setTimeout(() => setGameStatus('ended'), 350);
+    return () => clearTimeout(timer);
+  }, [allTargetsCaught, gameStatus]);
 
   return (
     <div className="bullet-catch-minigame">
@@ -304,9 +358,9 @@ export const BulletCatchMinigame: React.FC<BulletCatchMinigameProps> = ({ onComp
                 key={bullet.id}
                 className={`bullet ${bullet.isTarget ? 'target' : 'normal'} ${bullet.caught ? 'caught' : ''}`}
                 style={{
-                  left: bullet.x,
-                  top: bullet.y
-                }}
+                  '--bullet-x': `${bullet.x}px`,
+                  '--bullet-y': `${bullet.y}px`
+                } as React.CSSProperties}
                 onClick={() => handleBulletClick(bullet)}
               >
                 {bullet.text}

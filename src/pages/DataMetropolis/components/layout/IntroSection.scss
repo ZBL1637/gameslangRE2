@@ -195,7 +195,12 @@ $pixel-border: #6b5b95;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding-bottom: 2rem;
+    padding: 0 clamp(0.75rem, 2vw, 2rem) clamp(0.75rem, 2vh, 1.25rem);
+
+    .pixel-dialog-box {
+      bottom: clamp(0.75rem, 2vh, 1.25rem);
+      width: min(90%, 800px);
+    }
     
     // NPC容器
     .npc-container {
@@ -203,8 +208,8 @@ $pixel-border: #6b5b95;
       bottom: 0;
       left: 5%;
       width: auto;
-      height: 75vh;
-      max-height: 700px;
+      height: clamp(220px, 68%, 560px);
+      max-height: calc(100% - 150px);
       z-index: 5;
       pointer-events: none;
 

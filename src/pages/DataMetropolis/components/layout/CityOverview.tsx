@@ -163,7 +163,15 @@ export const CityOverview: React.FC<CityOverviewProps> = ({
                   {node.completed ? (
                     <span className="status completed">已完成</span>
                   ) : isAvailable ? (
-                    <button className="enter-btn" style={{ background: `linear-gradient(135deg, ${node.color}, ${node.color}cc)` }}>
+                    <button
+                      type="button"
+                      className="enter-btn"
+                      style={{ background: `linear-gradient(135deg, ${node.color}, ${node.color}cc)` }}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        onNodeSelect(node.id);
+                      }}
+                    >
                       进入探索
                       <ChevronRight size={16} />
                     </button>

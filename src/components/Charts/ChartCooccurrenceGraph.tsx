@@ -32,11 +32,11 @@ const PALETTE = [
   '#95A5A6'
 ];
 
-const DEFAULT_WEIGHT_THRESHOLD = 12;
-const DEFAULT_TOP_K = 3;
+const DEFAULT_WEIGHT_THRESHOLD = 18;
+const DEFAULT_TOP_K = 2;
 const DEFAULT_SHOW_TOP_K_ONLY = true;
-const DEFAULT_NODE_VALUE_THRESHOLD = 50;
-const DEFAULT_PERF_MODE = false;
+const DEFAULT_NODE_VALUE_THRESHOLD = 90;
+const DEFAULT_PERF_MODE = true;
 
 export type ChartCooccurrenceGraphProps = {
   onSelectTerm?: (termId: string) => void;
@@ -136,8 +136,8 @@ export const ChartCooccurrenceGraph: React.FC<ChartCooccurrenceGraphProps> = ({ 
   const { ref: containerRef, inView } = useInViewOnce();
   const [rawData, setRawData] = useState<GraphRawData | null>(null);
   const perfMode = DEFAULT_PERF_MODE;
-  const maxNodes = perfMode ? 220 : 2000;
-  const maxEdges = perfMode ? 520 : 20000;
+  const maxNodes = perfMode ? 180 : 2000;
+  const maxEdges = perfMode ? 360 : 20000;
 
   useEffect(() => {
     if (!inView) return;
@@ -371,7 +371,7 @@ export const ChartCooccurrenceGraph: React.FC<ChartCooccurrenceGraphProps> = ({ 
               当前固定过滤条件下没有可显示的节点。如需调整展示范围，请修改本组件内的默认常量后重新构建。
             </div>
           )}
-          <BaseChart options={options} style={{ height: '560px' }} onInit={handleInit} />
+          <BaseChart options={options} style={{ height: '500px' }} onInit={handleInit} />
         </>
       )}
     </div>

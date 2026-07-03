@@ -3,11 +3,16 @@
 @use '../../TranslationTower.scss' as *;
 
 .style-challenge {
+  max-width: 760px;
+
   .original-section {
     background: rgba($background-dark, 0.5);
-    padding: 1.5rem;
-    border-radius: 1rem;
-    margin-bottom: 2rem;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 1rem;
 
     .label {
       display: block;
@@ -17,16 +22,16 @@
     }
 
     .text {
-      font-size: 1.1rem;
+      font-size: 1rem;
       color: $text-primary;
       line-height: 1.6;
+      margin: 0;
     }
 
     .chinese-text .text {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       color: $primary-color;
       font-weight: bold;
-      margin-bottom: 1rem;
     }
   }
 
@@ -34,13 +39,13 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 
     .style-btn {
-      padding: 1.5rem;
+      padding: 1rem;
       background: rgba($background-dark, 0.5);
       border: 2px solid rgba($primary-color, 0.3);
-      border-radius: 1rem;
+      border-radius: 0.75rem;
       cursor: pointer;
       transition: all 0.3s ease;
       text-align: center;
@@ -93,10 +98,10 @@
       align-items: center;
       justify-content: center;
       gap: 1rem;
-      padding: 1rem;
+      padding: 0.75rem 1rem;
       background: rgba($background-dark, 0.5);
       border-radius: 0.75rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
 
       .merchant-emoji {
         font-size: 2.5rem;
@@ -112,9 +117,9 @@
     .translation-display {
       background: rgba($primary-color, 0.1);
       border: 1px solid rgba($primary-color, 0.3);
-      padding: 1.5rem;
-      border-radius: 1rem;
-      margin-bottom: 1.5rem;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      margin-bottom: 1rem;
       position: relative;
 
       .final-text {
@@ -147,7 +152,7 @@
     }
 
     .dual-feedback-bar {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
       
       .bar-container {
         height: 24px;
@@ -200,11 +205,14 @@
       border-radius: 0.5rem;
       color: $text-secondary;
       font-size: 0.95rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
       border-left: 3px solid $text-secondary;
     }
 
     .next-btn {
+      position: sticky;
+      bottom: 0;
+      z-index: 10;
       width: 100%;
       background: linear-gradient(135deg, $primary-color, $secondary-color);
       color: white;
@@ -256,6 +264,15 @@
       &:hover {
         transform: scale(1.05);
       }
+    }
+  }
+}
+
+@media (max-width: 720px) {
+  .style-challenge {
+    .original-section,
+    .style-buttons {
+      grid-template-columns: 1fr;
     }
   }
 }

@@ -110,7 +110,7 @@ export const StyleChallenge: React.FC<StyleChallengeProps> = ({
   return (
     <div className="challenge-overlay">
       <div className="challenge-modal style-challenge">
-        <button className="close-btn" onClick={onExit}>✕</button>
+        <button type="button" className="close-btn" onClick={onExit}>✕</button>
 
         <div className="challenge-header">
           <span className="challenge-icon">🔥</span>
@@ -143,6 +143,7 @@ export const StyleChallenge: React.FC<StyleChallengeProps> = ({
             {/* 风格选择 */}
             <div className="style-buttons">
               <button
+                type="button"
                 className={`style-btn foreignization ${selectedStyle === 'foreignization' ? 'selected' : ''}`}
                 onClick={() => handleSelectStyle('foreignization')}
                 disabled={showComparison}
@@ -152,6 +153,7 @@ export const StyleChallenge: React.FC<StyleChallengeProps> = ({
                 <span className="style-desc">保留源语文化特色</span>
               </button>
               <button
+                type="button"
                 className={`style-btn domestication ${selectedStyle === 'domestication' ? 'selected' : ''}`}
                 onClick={() => handleSelectStyle('domestication')}
                 disabled={showComparison}
@@ -178,6 +180,7 @@ export const StyleChallenge: React.FC<StyleChallengeProps> = ({
                   {/* 注释按钮 */}
                   {currentItem.gloss && !isGlossApplied && (
                     <button 
+                      type="button"
                       className="gloss-btn"
                       onClick={handleAddGloss}
                       disabled={glossUsedCount >= 2}
@@ -221,7 +224,7 @@ export const StyleChallenge: React.FC<StyleChallengeProps> = ({
                   <p>{selectedStyle === 'foreignization' ? currentItem.foreignization.explanation : currentItem.domestication.explanation}</p>
                 </div>
 
-                <button className="next-btn" onClick={handleNext}>
+                <button type="button" className="next-btn" onClick={handleNext}>
                   {currentIndex < items.length - 1 ? '下一题 →' : '完成挑战'}
                 </button>
               </div>
@@ -233,7 +236,7 @@ export const StyleChallenge: React.FC<StyleChallengeProps> = ({
             <span className="complete-icon">⚖️</span>
             <h3>熔炼完成！</h3>
             <p>你已领悟如何在不同语境下权衡翻译策略。</p>
-            <button className="finish-btn" onClick={onComplete}>
+            <button type="button" className="finish-btn" onClick={onComplete}>
               领取奖励
             </button>
           </div>

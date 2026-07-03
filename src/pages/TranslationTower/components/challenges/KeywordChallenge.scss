@@ -1,29 +1,28 @@
 ﻿@use '../../TranslationTower.scss' as *;
 
 .challenge-overlay {
-  position: absolute; // 修改为 absolute 以适应容器
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  position: fixed;
+  inset: 0;
   background: rgba($background-dark, 0.9);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   z-index: 1000;
-  padding: 2rem;
+  padding: clamp(12px, 3vh, 24px);
+  overflow-y: auto;
 }
 
 .challenge-modal {
   background: rgba($background-medium, 0.95);
-  border-radius: 1.5rem;
+  border-radius: 0.75rem;
   border: 2px solid rgba($primary-color, 0.3);
-  width: 90%;
-  max-width: 500px;
-  max-height: 80vh;
+  width: min(92vw, 720px);
+  max-width: 720px;
+  max-height: calc(100dvh - 48px);
   overflow-y: auto;
   padding: 1.25rem;
   position: relative;
+  scrollbar-gutter: stable;
 
   .close-btn {
     position: absolute;
@@ -117,6 +116,8 @@
 }
 
 .keyword-challenge {
+  max-width: 560px;
+
   .question-area {
     text-align: center;
     margin-bottom: 1rem;

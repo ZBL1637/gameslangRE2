@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useEffect, useRef, useDeferredValue } from 'react';
 import { Panel } from '@/components/Panel/Panel';
 import { Button } from '@/components/Button/Button';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -21,6 +21,8 @@ const SOURCE_MAP: Record<string, string> = {
   'unknown': '未知'
 };
 
+const MAX_VISIBLE_TERMS = 160;
+
 const Dictionary: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -35,6 +37,7 @@ const Dictionary: React.FC = () => {
   const [games, setGames] = useState<string[]>(['all']);
   const [isLoading, setIsLoading] = useState(true);
   const dpRef = useRef<DataProcessorLike | null>(null);
+  const deferredSearchTerm = useDeferredValue(searchTerm);
 
   useEffect(() => {
     if (!state.dictionaryUnlocked) {
@@ -101,12 +104,15 @@ const Dictionary: React.FC = () => {
 
   const filteredTerms = useMemo(() => {
     if (!state.dictionaryUnlocked) return [];
+    const normalizedSearch = deferredSearchTerm.trim().toLowerCase();
     return terms.filter(t => {
       if (!t) return false;
       const termName = String(t.term || '');
       const tags = t.tags || [];
-      const matchSearch = termName.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          tags.some(tag => tag && tag.includes(searchTerm));
+      const matchSearch =
+        normalizedSearch.length === 0 ||
+        termName.toLowerCase().includes(normalizedSearch) ||
+        tags.some(tag => String(tag || '').toLowerCase().includes(normalizedSearch));
       
       const categoryL1 = t.category?.l1 || 'Uncategorized';
       const matchCategory = selectedCategory === 'all' || categoryL1 === selectedCategory;
@@ -119,7 +125,10 @@ const Dictionary: React.FC = () => {
       
       return matchSearch && matchCategory && matchGame && matchSource;
     });
-  }, [state.dictionaryUnlocked, terms, searchTerm, selectedCategory, selectedGame, selectedSource]);
+  }, [state.dictionaryUnlocked, terms, deferredSearchTerm, selectedCategory, selectedGame, selectedSource]);
+
+  const visibleTerms = useMemo(() => filteredTerms.slice(0, MAX_VISIBLE_TERMS), [filteredTerms]);
+  const hiddenResultCount = Math.max(0, filteredTerms.length - visibleTerms.length);
 
   return (
     <div className="dictionary-container">
@@ -195,7 +204,7 @@ const Dictionary: React.FC = () => {
             {isLoading && (
               <div className="empty-state">加载中...</div>
             )}
-            {filteredTerms.map(term => {
+            {visibleTerms.map(term => {
               const isViewed = (state.viewedTerms || []).includes(term.id);
               const isUnlocked = (state.unlockedTerms || []).includes(term.id);
               return (
@@ -216,6 +225,11 @@ const Dictionary: React.FC = () => {
                 </div>
               );
             })}
+            {!isLoading && hiddenResultCount > 0 && (
+              <div className="result-limit">
+                已显示前 {MAX_VISIBLE_TERMS} 条，继续输入关键词可缩小范围。
+              </div>
+            )}
             {!isLoading && filteredTerms.length === 0 && (
               <div className="empty-state">未找到相关术语</div>
             )}

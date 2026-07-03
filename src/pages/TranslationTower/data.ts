@@ -118,10 +118,10 @@ export const BAZAAR_MISTRANSLATIONS: MistranslationCard[] = [
       },
       {
         id: 'opt3',
-        text: 'Charge Money (充钱)',
+        text: 'Top up / Spend Money (充值/花钱)',
         isCorrect: false,
-        explanation: '虽然没错，但没有表达出"氪金"那种为了变强而大量投入的意味。',
-        reaction: '阿里：充话费吗？这谁都知道要充钱啊。',
+        explanation: '"氪金"确实包含充值、花钱的意思；这道题要表达的是游戏语境里的"花钱变强/重度付费"，所以 Pay-to-Win 更贴切。',
+        reaction: '阿里：懂了，是充值花钱；但我还想知道这会不会让付费玩家明显变强。',
         reward: { comms: -5 }
       }
     ]

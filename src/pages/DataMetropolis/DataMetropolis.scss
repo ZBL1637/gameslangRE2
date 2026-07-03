@@ -116,10 +116,9 @@ $text-muted: #9ca3af;
   max-width: 1400px;
   margin: 0 auto;
   aspect-ratio: 16 / 9;
-  // 确保有最小高度，防止高度塌陷
-  min-height: min(600px, calc(100dvh - 120px));
-  // 如果父容器高度不够，允许自动扩展
-  height: auto;
+  height: min(760px, calc(100dvh - 96px), calc(96vw * 9 / 16));
+  min-height: min(520px, calc(100dvh - 96px));
+  max-height: calc(100dvh - 96px);
   
   // 像素边框效果
   border: 4px solid $pixel-border;
@@ -206,11 +205,13 @@ $text-muted: #9ca3af;
     z-index: 1;
     flex: 1;
     height: 100%;
+    min-height: 0;
     width: 100%;
     margin: 0;
     padding: 0;
     overflow-y: auto;
     overflow-x: hidden;
+    overscroll-behavior: contain;
 
     // 像素风格滚动条
     &::-webkit-scrollbar {

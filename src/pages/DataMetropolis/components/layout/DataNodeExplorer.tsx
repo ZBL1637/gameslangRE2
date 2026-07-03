@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { X, Check, AlertCircle, HelpCircle } from 'lucide-react';
 import { DataNode } from '../../types';
 import { SCRIPT } from '../../data';
@@ -34,6 +34,11 @@ export const DataNodeExplorer: React.FC<DataNodeExplorerProps> = ({
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [showHint, setShowHint] = useState(false);
+  const modalRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    modalRef.current?.scrollTo({ top: 0, behavior: 'auto' });
+  }, [node.id, step]);
 
   // 获取NPC介绍文本
   const getNpcIntro = () => {
@@ -96,9 +101,9 @@ export const DataNodeExplorer: React.FC<DataNodeExplorerProps> = ({
 
   return (
     <div className="data-node-explorer-overlay">
-      <div className="explorer-modal">
+      <div className="explorer-modal" ref={modalRef}>
         {/* 关闭按钮 */}
-        <button className="close-btn" onClick={onClose}>
+        <button type="button" className="close-btn" onClick={onClose}>
           <X size={20} />
         </button>
 
@@ -120,7 +125,7 @@ export const DataNodeExplorer: React.FC<DataNodeExplorerProps> = ({
                 <p>{getNpcIntro()}</p>
               </div>
             </div>
-            <button className="action-btn primary" onClick={handleStartExplore}>
+            <button type="button" className="action-btn primary" onClick={handleStartExplore}>
               开始探索
             </button>
           </div>
@@ -136,7 +141,7 @@ export const DataNodeExplorer: React.FC<DataNodeExplorerProps> = ({
             </div>
             <div className="chart-actions">
               <p className="instruction">仔细观察图表，找出其中的规律</p>
-              <button className="action-btn primary" onClick={handleReadyToAnswer}>
+              <button type="button" className="action-btn primary" onClick={handleReadyToAnswer}>
                 我准备好回答问题了
               </button>
             </div>
@@ -152,6 +157,7 @@ export const DataNodeExplorer: React.FC<DataNodeExplorerProps> = ({
               {/* 提示 */}
               <div className="hint-section">
                 <button 
+                  type="button"
                   className="hint-btn"
                   onClick={() => setShowHint(!showHint)}
                 >
@@ -167,6 +173,7 @@ export const DataNodeExplorer: React.FC<DataNodeExplorerProps> = ({
               <div className="options-list">
                 {node.question.options.map((option, index) => (
                   <button
+                    type="button"
                     key={option.value}
                     className={`option-btn ${selectedOption === index ? 'selected' : ''}`}
                     onClick={() => setSelectedOption(index)}
@@ -179,10 +186,11 @@ export const DataNodeExplorer: React.FC<DataNodeExplorerProps> = ({
             </div>
 
             <div className="question-actions">
-              <button className="action-btn secondary" onClick={() => setStep('chart')}>
+              <button type="button" className="action-btn secondary" onClick={() => setStep('chart')}>
                 返回查看图表
               </button>
               <button 
+                type="button"
                 className="action-btn primary" 
                 onClick={handleSubmitAnswer}
                 disabled={selectedOption === null}
@@ -210,15 +218,15 @@ export const DataNodeExplorer: React.FC<DataNodeExplorerProps> = ({
 
             <div className="result-actions">
               {isCorrect ? (
-                <button className="action-btn primary" onClick={handleComplete}>
+                <button type="button" className="action-btn primary" onClick={handleComplete}>
                   完成节点
                 </button>
               ) : (
                 <>
-                  <button className="action-btn secondary" onClick={handleRetry}>
+                  <button type="button" className="action-btn secondary" onClick={handleRetry}>
                     重新尝试
                   </button>
-                  <button className="action-btn primary" onClick={handleComplete}>
+                  <button type="button" className="action-btn primary" onClick={handleComplete}>
                     继续（跳过）
                   </button>
                 </>
