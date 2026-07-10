@@ -290,8 +290,13 @@ $glow-cyan: rgba(6, 182, 212, 0.5);
   width: 100%;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
   overflow: hidden;
   overscroll-behavior: contain;
+
+  &.phase-game {
+    padding-left: min(354px, 36vw);
+  }
 
   // 移除 flex 布局，因为子元素现在是 absolute 覆盖
   // display: flex; 
@@ -471,6 +476,12 @@ button {
 
 // 响应式
 @media (max-width: 768px) {
+  .translation-tower-page .main-content.phase-game {
+    padding-top: 306px;
+    padding-left: 0;
+    overflow-y: auto;
+  }
+
   .translation-side-panels {
     top: 86px;
     left: 10px;

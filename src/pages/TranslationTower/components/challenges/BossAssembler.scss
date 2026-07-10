@@ -47,7 +47,11 @@
       gap: 1rem;
 
       .source-item {
+        width: 100%;
         background: rgba(0,0,0,0.3);
+        color: inherit;
+        font: inherit;
+        text-align: left;
         padding: 1rem;
         border-radius: 0.5rem;
         cursor: pointer;
@@ -137,6 +141,9 @@
         align-items: center;
 
         .assembly-slot {
+          appearance: none;
+          background-color: transparent;
+          font: inherit;
           min-width: 100px;
           padding: 0.5rem 1rem;
           border-bottom: 2px solid $text-secondary;

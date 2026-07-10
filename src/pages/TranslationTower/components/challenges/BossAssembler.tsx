@@ -82,14 +82,17 @@ export const BossAssembler: React.FC<BossAssemblerProps> = ({
         <h3>原文碎片 (Source)</h3>
         <div className="source-list">
           {slots.map((slot, index) => (
-            <div 
+            <button
+              type="button"
               key={slot.id} 
               className={`source-item ${activeSlotId === slot.id ? 'active' : ''}`}
+              onPointerDown={() => setActiveSlotId(slot.id)}
               onClick={() => setActiveSlotId(slot.id)}
+              aria-pressed={activeSlotId === slot.id}
             >
               <span className="index">{index + 1}</span>
               <span className="text">{slot.originalText}</span>
-            </div>
+            </button>
           ))}
         </div>
       </div>
@@ -115,13 +118,17 @@ export const BossAssembler: React.FC<BossAssemblerProps> = ({
             {slots.map((slot) => {
               const selectedOption = slot.options.find(o => o.id === selectedOptions[slot.id]);
               return (
-                <div 
+                <button
+                  type="button"
                   key={slot.id}
                   className={`assembly-slot ${activeSlotId === slot.id ? 'active' : ''} ${selectedOption ? 'filled' : ''}`}
+                  onPointerDown={() => setActiveSlotId(slot.id)}
                   onClick={() => setActiveSlotId(slot.id)}
+                  aria-label={`译文槽位 ${slot.id}：${selectedOption?.text ?? '未选择'}`}
+                  aria-pressed={activeSlotId === slot.id}
                 >
                   {selectedOption ? selectedOption.text : "_______"}
-                </div>
+                </button>
               );
             })}
           </div>
