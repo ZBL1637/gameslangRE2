@@ -17,6 +17,8 @@ import {
   MINION_TEMPLATE
 } from '../../data';
 import type { EvidenceBattleBonus } from '@/data/chapterProgress';
+import { createBattleTimerRegistry, type BattleTimerRegistry } from '../../battleTimers';
+import { advancePlayerStatusEffects } from '../../battleState';
 
 import BossDisplay from './BossDisplay';
 import PlayerDisplay from './PlayerDisplay';
@@ -43,6 +45,23 @@ const BattleArena: React.FC<BattleArenaProps> = ({
   const [isAnimating, setIsAnimating] = useState(false);
   const [currentAnimation, setCurrentAnimation] = useState<string | null>(null);
   const [showTip, setShowTip] = useState<string | null>(null);
+  const battleTimersRef = useRef<BattleTimerRegistry<number> | null>(null);
+
+  useEffect(() => {
+    battleTimersRef.current = createBattleTimerRegistry(
+      (callback, delay) => window.setTimeout(callback, delay),
+      timer => window.clearTimeout(timer),
+    );
+
+    return () => {
+      battleTimersRef.current?.dispose();
+      battleTimersRef.current = null;
+    };
+  }, []);
+
+  const scheduleBattleTimer = useCallback((callback: () => void, delay: number) => {
+    battleTimersRef.current?.schedule(callback, delay);
+  }, []);
 
   // 添加战斗日志
   const addLog = useCallback((entry: Omit<BattleLogEntry, 'timestamp'>) => {
@@ -57,10 +76,13 @@ const BattleArena: React.FC<BattleArenaProps> = ({
   // 检查战斗结束条件
   useEffect(() => {
     if (gameState.boss.currentHp <= 0) {
+      battleTimersRef.current?.dispose();
       setPhase('victory');
     } else if (gameState.player.currentHp <= 0) {
+      battleTimersRef.current?.dispose();
       setPhase('defeat');
     } else if (gameState.currentTurn > gameState.maxTurns) {
+      battleTimersRef.current?.dispose();
       setPhase('defeat');
     }
   }, [gameState.boss.currentHp, gameState.player.currentHp, gameState.currentTurn, gameState.maxTurns, setPhase]);
@@ -131,12 +153,12 @@ const BattleArena: React.FC<BattleArenaProps> = ({
       });
     }
 
-    setTimeout(() => {
+    scheduleBattleTimer(() => {
       setIsAnimating(false);
       setCurrentAnimation(null);
       endPlayerTurn();
     }, 1000);
-  }, [isAnimating, gameState, checkCrit, calculateDamage, addLog, updateGameState, evidenceBonus.attackBonus]);
+  }, [isAnimating, gameState, checkCrit, calculateDamage, addLog, updateGameState, evidenceBonus.attackBonus, scheduleBattleTimer]);
 
   // 使用玩家技能
   const handleUseSkill = useCallback((skill: PlayerSkill) => {
@@ -241,22 +263,22 @@ const BattleArena: React.FC<BattleArenaProps> = ({
       boss: newBossState
     });
 
-    setTimeout(() => {
+    scheduleBattleTimer(() => {
       setIsAnimating(false);
       setCurrentAnimation(null);
       endPlayerTurn();
     }, 1500);
-  }, [isAnimating, gameState, addLog, updateGameState]);
+  }, [isAnimating, gameState, addLog, updateGameState, scheduleBattleTimer]);
 
   // 结束玩家回合
   const endPlayerTurn = useCallback(() => {
     updateGameState({ isPlayerTurn: false });
     
     // 延迟后执行Boss回合
-    setTimeout(() => {
+    scheduleBattleTimer(() => {
       executeBossTurnRef.current();
     }, 500);
-  }, [updateGameState]);
+  }, [updateGameState, scheduleBattleTimer]);
 
   // 执行Boss回合
   const executeBossTurn = useCallback(() => {
@@ -499,9 +521,10 @@ const BattleArena: React.FC<BattleArenaProps> = ({
       .map(e => ({ ...e, remainingTurns: e.remainingTurns - 1 }))
       .filter(e => e.remainingTurns > 0);
 
-    newPlayerState.statusEffects = newPlayerState.statusEffects
-      .map(e => ({ ...e, remainingTurns: e.remainingTurns - 1 }))
-      .filter(e => e.remainingTurns > 0);
+    newPlayerState.statusEffects = advancePlayerStatusEffects(
+      newPlayerState.statusEffects,
+      newPlayerState.damageConvert,
+    );
 
     // 检查护盾是否过期
     if (!newBossState.statusEffects.find(e => e.type === 'shield')) {
