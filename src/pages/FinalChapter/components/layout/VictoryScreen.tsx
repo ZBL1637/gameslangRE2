@@ -26,19 +26,10 @@ const VictoryScreen: React.FC<VictoryScreenProps> = ({ gameState, ending, onRest
     if (phase !== 'summary') return;
 
     window.requestAnimationFrame(() => {
+      summaryRef.current?.focus({ preventScroll: true });
       summaryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }, [phase]);
-
-  useEffect(() => {
-    if (phase !== 'summary') return;
-
-    const timer = window.setTimeout(() => {
-      navigate('/world-map', { state: { fromChapter: 6 } });
-    }, 12000);
-
-    return () => window.clearTimeout(timer);
-  }, [navigate, phase]);
 
   const returnToWorldMap = () => {
     navigate('/world-map', { state: { fromChapter: 6 } });
@@ -131,14 +122,20 @@ const VictoryScreen: React.FC<VictoryScreenProps> = ({ gameState, ending, onRest
 
       case 'summary':
         return (
-          <div className="summary-screen" ref={summaryRef}>
+          <div
+            className="summary-screen"
+            ref={summaryRef}
+            role="region"
+            aria-labelledby="victory-summary-title"
+            tabIndex={-1}
+          >
             <div className="summary-card">
               <div className="victory-badge">
                 <span className="badge-icon">🏆</span>
                 <span className="badge-text">{ending ? `${ending.rank} · ${ending.title}` : '游戏通关'}</span>
               </div>
               
-              <h2>战斗总结</h2>
+              <h2 id="victory-summary-title">战斗总结</h2>
               {ending && (
                 <div className="ending-summary-card">
                   <strong>最终评分：{ending.score}</strong>
