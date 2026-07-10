@@ -374,45 +374,45 @@ export const BOSS_ASSEMBLER_DATA: BossSlot[] = [
     id: 1,
     originalText: "兄弟们，",
     options: [
-      { id: '1a', text: "Brothers,", tags: ['foreignization'], stats: { clarity: 80, culture: 90 } },
-      { id: '1b', text: "Guys,", tags: ['domestication'], stats: { clarity: 95, culture: 40 } },
-      { id: '1c', text: "Everyone,", tags: ['neutral'], stats: { clarity: 90, culture: 50 } }
+      { id: '1a', text: "Brothers,", tags: ['foreignization'], stats: { clarity: 80, culture: 90, comms: 80 } },
+      { id: '1b', text: "Guys,", tags: ['domestication'], stats: { clarity: 95, culture: 40, comms: 95 } },
+      { id: '1c', text: "Everyone,", tags: ['neutral'], stats: { clarity: 90, culture: 50, comms: 95 } }
     ]
   },
   {
     id: 2,
     originalText: "这波团战",
     options: [
-      { id: '2a', text: "this team fight", tags: ['neutral'], stats: { clarity: 90, culture: 60 } },
-      { id: '2b', text: "this clash", tags: ['domestication'], stats: { clarity: 85, culture: 50 } },
-      { id: '2c', text: "this wave", tags: ['foreignization'], stats: { clarity: 70, culture: 80 } }
+      { id: '2a', text: "in this team fight,", tags: ['neutral'], stats: { clarity: 95, culture: 60, comms: 95 } },
+      { id: '2b', text: "during this clash,", tags: ['domestication'], stats: { clarity: 90, culture: 50, comms: 90 } },
+      { id: '2c', text: "in this wave,", tags: ['foreignization'], stats: { clarity: 75, culture: 80, comms: 75 } }
     ]
   },
   {
     id: 3,
     originalText: "别上头，",
     options: [
-      { id: '3a', text: "don't get overheaded,", tags: ['foreignization'], stats: { clarity: 30, culture: 90 } },
-      { id: '3b', text: "don't get greedy,", tags: ['domestication'], stats: { clarity: 95, culture: 40 } },
-      { id: '3c', text: "stay cool,", tags: ['neutral'], stats: { clarity: 90, culture: 50 } }
+      { id: '3a', text: "don't get overheaded,", tags: ['foreignization'], stats: { clarity: 25, culture: 90, comms: 45 }, issue: '`overheaded` 不是自然英语表达，可改用 `get greedy` 或 `stay cool`。' },
+      { id: '3b', text: "don't get greedy,", tags: ['domestication'], stats: { clarity: 95, culture: 40, comms: 95 } },
+      { id: '3c', text: "stay cool,", tags: ['neutral'], stats: { clarity: 90, culture: 50, comms: 90 } }
     ]
   },
   {
     id: 4,
     originalText: "我们要猥琐发育，",
     options: [
-      { id: '4a', text: "develop wretchedly,", tags: ['foreignization'], stats: { clarity: 20, culture: 100 } },
-      { id: '4b', text: "play safe and farm,", tags: ['domestication'], stats: { clarity: 95, culture: 30 } },
-      { id: '4c', text: "turtle up,", tags: ['neutral'], stats: { clarity: 90, culture: 40 } }
+      { id: '4a', text: "develop wretchedly,", tags: ['foreignization'], stats: { clarity: 20, culture: 100, comms: 35 }, issue: '`develop wretchedly` 是逐字拼接，无法自然传达“稳健发育”的策略。' },
+      { id: '4b', text: "play safe and farm,", tags: ['domestication'], stats: { clarity: 95, culture: 30, comms: 95 } },
+      { id: '4c', text: "turtle up,", tags: ['neutral'], stats: { clarity: 90, culture: 40, comms: 85 } }
     ]
   },
   {
     id: 5,
     originalText: "等后期。",
     options: [
-      { id: '5a', text: "wait for late game.", tags: ['neutral'], stats: { clarity: 95, culture: 60 } },
-      { id: '5b', text: "wait for later period.", tags: ['foreignization'], stats: { clarity: 60, culture: 70 } },
-      { id: '5c', text: "scale for late.", tags: ['domestication'], stats: { clarity: 90, culture: 40 } }
+      { id: '5a', text: "and wait for late game.", tags: ['neutral'], stats: { clarity: 95, culture: 60, comms: 95 } },
+      { id: '5b', text: "and wait for the later period.", tags: ['foreignization'], stats: { clarity: 60, culture: 70, comms: 60 }, issue: '`later period` 不符合此处的游戏语境，通常使用 `late game`。' },
+      { id: '5c', text: "and scale for late game.", tags: ['domestication'], stats: { clarity: 90, culture: 40, comms: 90 } }
     ]
   }
 ];

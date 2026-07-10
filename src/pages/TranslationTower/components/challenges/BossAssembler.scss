@@ -287,6 +287,35 @@
       .analysis {
         margin-bottom: 2rem;
         p { margin: 0.5rem 0; color: $text-secondary; strong { color: $text-primary; } }
+
+        .score-breakdown {
+          display: flex;
+          justify-content: center;
+          gap: 0.75rem;
+          flex-wrap: wrap;
+          margin-bottom: 1rem;
+
+          span {
+            padding: 0.35rem 0.65rem;
+            border: 1px solid $pixel-border;
+            border-radius: 0.35rem;
+            color: $text-primary;
+          }
+        }
+
+        .issue-report {
+          margin-top: 1rem;
+          padding: 0.85rem 1rem;
+          border-left: 3px solid #f59e0b;
+          background: rgba(#f59e0b, 0.1);
+          color: $text-primary;
+          text-align: left;
+
+          ul { margin: 0.5rem 0 0 1.25rem; }
+          li { margin-top: 0.35rem; }
+        }
+
+        .success-feedback { color: $success-color; }
       }
 
       .complete-btn {

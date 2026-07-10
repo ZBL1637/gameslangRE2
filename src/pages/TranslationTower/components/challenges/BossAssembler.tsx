@@ -1,6 +1,7 @@
 // BossAssembler - 挑战四：翻译拼装台
 import React, { useState, useMemo } from 'react';
 import { BossSlot, Chapter5GlobalState } from '../../types';
+import { scoreBossAssembly, type BossAssemblyScores } from '../../bossAssemblerScoring';
 import './BossAssembler.scss';
 
 interface BossAssemblerProps {
@@ -8,41 +9,25 @@ interface BossAssemblerProps {
   globalState: Chapter5GlobalState;
   onComplete: () => void;
   onUpdateState: (delta: Partial<Chapter5GlobalState>) => void;
+  onSetScores: (scores: BossAssemblyScores) => void;
 }
 
 export const BossAssembler: React.FC<BossAssemblerProps> = ({
   slots,
   globalState,
   onComplete,
-  onUpdateState
+  onUpdateState,
+  onSetScores,
 }) => {
   const [selectedOptions, setSelectedOptions] = useState<Record<number, string>>({});
   const [activeSlotId, setActiveSlotId] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [hintUsedSlots, setHintUsedSlots] = useState<number[]>([]);
 
-  // 计算当前属性
-  const currentStats = useMemo(() => {
-    let totalClarity = 0;
-    let totalCulture = 0;
-    let count = 0;
-
-    Object.entries(selectedOptions).forEach(([slotId, optionId]) => {
-      const slot = slots.find(s => s.id === Number(slotId));
-      const option = slot?.options.find(o => o.id === optionId);
-      if (option) {
-        totalClarity += option.stats.clarity;
-        totalCulture += option.stats.culture;
-        count++;
-      }
-    });
-
-    if (count === 0) return { clarity: 0, culture: 0 };
-    return {
-      clarity: Math.round(totalClarity / count),
-      culture: Math.round(totalCulture / count)
-    };
-  }, [selectedOptions, slots]);
+  const assessment = useMemo(
+    () => scoreBossAssembly(slots, selectedOptions),
+    [selectedOptions, slots],
+  );
 
   // 计算策略倾向
   const strategyBias = useMemo(() => {
@@ -76,26 +61,10 @@ export const BossAssembler: React.FC<BossAssemblerProps> = ({
   // 提交逻辑
   const handleSubmit = () => {
     setShowResult(true);
-    const { clarity, culture } = currentStats;
-    // 简单的结算：更新全局数值
-    onUpdateState({
-      clarity,
-      culture,
-      comms: 20 // 成功奖励
-    });
+    onSetScores(assessment.scores);
   };
 
   const isAllSelected = slots.every(s => selectedOptions[s.id]);
-  const assembledTranslation = useMemo(() => {
-    return slots
-      .map((slot) => slot.options.find((option) => option.id === selectedOptions[slot.id])?.text)
-      .filter((text): text is string => Boolean(text))
-      .join(' ')
-      .replace(/\s+([,.;:!?])/g, '$1')
-      .replace(/\s+/g, ' ')
-      .trim();
-  }, [selectedOptions, slots]);
-
   // 获取显示的选项（如果使用了提示券，过滤掉一些低分选项）
   const getDisplayOptions = (slot: BossSlot) => {
     if (!hintUsedSlots.includes(slot.id)) return slot.options;
@@ -130,13 +99,13 @@ export const BossAssembler: React.FC<BossAssemblerProps> = ({
         <div className="stats-preview">
           <div className="stat-item">
             <label>预计清晰度</label>
-            <div className="bar-bg"><div className="bar-fill clarity" style={{width: `${currentStats.clarity}%`}}></div></div>
-            <span>{currentStats.clarity}</span>
+            <div className="bar-bg"><div className="bar-fill clarity" style={{width: `${assessment.scores.clarity}%`}}></div></div>
+            <span>{assessment.scores.clarity}</span>
           </div>
           <div className="stat-item">
             <label>预计文化度</label>
-            <div className="bar-bg"><div className="bar-fill culture" style={{width: `${currentStats.culture}%`}}></div></div>
-            <span>{currentStats.culture}</span>
+            <div className="bar-bg"><div className="bar-fill culture" style={{width: `${assessment.scores.culture}%`}}></div></div>
+            <span>{assessment.scores.culture}</span>
           </div>
         </div>
 
@@ -199,12 +168,27 @@ export const BossAssembler: React.FC<BossAssemblerProps> = ({
         ) : (
           <div className="result-panel animate-fade-in">
             <div className="final-text">
-              {assembledTranslation}
+              {assessment.translation}
             </div>
             <div className="analysis">
               <h4>分析报告</h4>
+              <div className="score-breakdown" aria-label="组装评分">
+                <span>清晰度 {assessment.scores.clarity}</span>
+                <span>文化度 {assessment.scores.culture}</span>
+                <span>传播值 {assessment.scores.comms}</span>
+              </div>
               <p><strong>策略倾向：</strong>{strategyBias.text}</p>
               <p>{strategyBias.desc}</p>
+              {assessment.issues.length > 0 ? (
+                <div className="issue-report" role="alert">
+                  <strong>需要修改：</strong>
+                  <ul>
+                    {assessment.issues.map(issue => <li key={issue}>{issue}</li>)}
+                  </ul>
+                </div>
+              ) : (
+                <p className="success-feedback">句子结构完整，片段顺序和表达均可成立。</p>
+              )}
             </div>
             <button className="complete-btn" onClick={onComplete}>前往结算 →</button>
           </div>

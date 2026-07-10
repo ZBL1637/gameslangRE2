@@ -39,6 +39,7 @@ import { KeywordChallenge } from './components/challenges/KeywordChallenge';
 import { StyleChallenge } from './components/challenges/StyleChallenge';
 import { MetaphorChallenge } from './components/challenges/MetaphorChallenge';
 import { BossAssembler } from './components/challenges/BossAssembler';
+import type { BossAssemblyScores } from './bossAssemblerScoring';
 
 import './TranslationTower.scss';
 
@@ -131,6 +132,15 @@ export const TranslationTower: React.FC = () => {
       }
       return nextState;
     });
+  }, []);
+
+  const setBossScores = useCallback((scores: BossAssemblyScores) => {
+    setGameState(prev => ({
+      ...prev,
+      clarity: clampStat(scores.clarity),
+      culture: clampStat(scores.culture),
+      comms: clampStat(scores.comms),
+    }));
   }, []);
 
   // 导航
@@ -305,6 +315,7 @@ export const TranslationTower: React.FC = () => {
             globalState={gameState}
             onComplete={handleBossComplete}
             onUpdateState={updateState}
+            onSetScores={setBossScores}
           />
         );
       default:
