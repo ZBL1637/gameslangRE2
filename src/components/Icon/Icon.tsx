@@ -9,19 +9,25 @@ interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 const icons: Record<IconName, React.ReactNode> = {
-  lock: <span role="img" aria-label="lock">🔒</span>,
-  check: <span role="img" aria-label="check">✅</span>,
-  star: <span role="img" aria-label="star">⭐</span>,
-  exp: <span role="img" aria-label="exp">💎</span>,
-  flag: <span role="img" aria-label="flag">🚩</span>,
-  'arrow-right': <span role="img" aria-label="arrow">▶</span>,
-  'arrow-down': <span role="img" aria-label="arrow">▼</span>,
-  skull: <span role="img" aria-label="skull">💀</span>,
+  lock: '🔒',
+  check: '✅',
+  star: '⭐',
+  exp: '💎',
+  flag: '🚩',
+  'arrow-right': '▶',
+  'arrow-down': '▼',
+  skull: '💀',
 };
 
-export const Icon: React.FC<IconProps> = ({ name, size = 'md', className = '', ...props }) => {
+export const Icon: React.FC<IconProps> = ({ name, size = 'md', className = '', 'aria-label': ariaLabel, ...props }) => {
   return (
-    <span className={`rpg-icon size-${size} ${className}`} {...props}>
+    <span
+      className={`rpg-icon size-${size} ${className}`}
+      role={ariaLabel ? 'img' : undefined}
+      aria-label={ariaLabel}
+      aria-hidden={ariaLabel ? undefined : true}
+      {...props}
+    >
       {icons[name]}
     </span>
   );

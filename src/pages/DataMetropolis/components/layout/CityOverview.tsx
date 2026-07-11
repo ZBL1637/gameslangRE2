@@ -53,10 +53,10 @@ export const CityOverview: React.FC<CityOverviewProps> = ({
 
   return (
     <section className="city-overview-section">
-      <div className="chapter-bg" style={{ backgroundImage: `url(${chapter4Bg})` }} />
-      <div className="chapter-bg-overlay" />
+      <div className="chapter-bg" style={{ backgroundImage: `url(${chapter4Bg})` }} aria-hidden="true" />
+      <div className="chapter-bg-overlay" aria-hidden="true" />
       {/* 背景效果 */}
-      <div className="city-background">
+      <div className="city-background" aria-hidden="true">
         {/* 数据流 */}
         <div className="data-streams">
           {dataStreams.map(stream => (
@@ -95,7 +95,7 @@ export const CityOverview: React.FC<CityOverviewProps> = ({
       {/* 任务面板 - 左上角 */}
       <div className="mission-panel">
         <div className="mission-header">
-          <span className="mission-icon">📋</span>
+          <span className="mission-icon" aria-hidden="true">📋</span>
           <div className="mission-title">
             <h4>当前任务协议</h4>
             <span className="mission-progress">
@@ -140,16 +140,16 @@ export const CityOverview: React.FC<CityOverviewProps> = ({
                 onClick={() => isAvailable && onNodeSelect(node.id)}
               >
                 {/* 节点光效 */}
-                <div className="node-glow" style={{ background: `radial-gradient(circle, ${node.color}40, transparent)` }}></div>
+                <div className="node-glow" style={{ background: `radial-gradient(circle, ${node.color}40, transparent)` }} aria-hidden="true"></div>
 
                 {/* 节点图标 */}
-                <div className="node-icon" style={{ borderColor: node.color }}>
+                <div className="node-icon" style={{ borderColor: node.color }} aria-hidden="true">
                   {node.completed ? (
                     <Check size={32} className="check-icon" />
                   ) : !isAvailable ? (
                     <Lock size={24} className="lock-icon" />
                   ) : nodeIcon ? (
-                    <img src={nodeIcon} alt={node.name} className="node-icon-image" />
+                    <img src={nodeIcon} alt="" className="node-icon-image" />
                   ) : (
                     <span className="icon-emoji">{node.icon}</span>
                   )}

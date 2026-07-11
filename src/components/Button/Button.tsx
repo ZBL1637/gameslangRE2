@@ -20,7 +20,7 @@ export const Button: React.FC<ButtonProps> = ({
       {...props}
     >
       <span className="btn-content">
-        <span className="pixel-arrow">▶</span>
+        <span className="pixel-arrow" aria-hidden="true">▶</span>
         {children}
       </span>
     </button>

@@ -46,10 +46,10 @@ export const HUDBar: React.FC<HUDBarProps> = ({
                disabled={!canOpenWorldMap}
                title={!canOpenWorldMap ? '完成新手村后解锁世界地图' : '打开世界地图'}
              >
-               <span style={{ marginRight: '4px' }}>🗺️</span> 地图
+               <span style={{ marginRight: '4px' }} aria-hidden="true">🗺️</span> 地图
              </Button>
              <Button size="sm" onClick={() => navigate('/quests')}>
-               <span style={{ marginRight: '4px' }}>📜</span> 任务
+               <span style={{ marginRight: '4px' }} aria-hidden="true">📜</span> 任务
              </Button>
              <Button size="sm" onClick={() => navigate('/dictionary')} disabled={!state.dictionaryUnlocked}>
                {!state.dictionaryUnlocked ? (
@@ -58,12 +58,12 @@ export const HUDBar: React.FC<HUDBarProps> = ({
                  </>
                ) : (
                  <>
-                   <span style={{ marginRight: '4px' }}>📖</span> 图鉴
+                   <span style={{ marginRight: '4px' }} aria-hidden="true">📖</span> 图鉴
                  </>
                )}
              </Button>
              <Button size="sm" onClick={() => navigate('/achievements')}>
-               <span style={{ marginRight: '4px' }}>🏆</span> 成就
+               <span style={{ marginRight: '4px' }} aria-hidden="true">🏆</span> 成就
              </Button>
           </div>
 
@@ -73,7 +73,7 @@ export const HUDBar: React.FC<HUDBarProps> = ({
                onClick={() => navigate('/profile')}
                title="点击查看玩家档案"
              >
-               <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=Felix" alt="Avatar" />
+               <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=Felix" alt="玩家头像" />
              </div>
 
              <div className="status-group">

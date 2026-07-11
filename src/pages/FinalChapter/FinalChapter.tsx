@@ -181,7 +181,7 @@ const FinalChapter: React.FC = () => {
 
   return (
     <div className="final-chapter">
-      <div className="chapter-background">
+      <div className="chapter-background" aria-hidden="true">
         <div className="data-storm">
           {[...Array(30)].map((_, i) => (
             <div

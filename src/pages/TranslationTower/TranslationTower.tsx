@@ -331,7 +331,7 @@ export const TranslationTower: React.FC = () => {
   return (
     <div className="translation-tower-page">
       {/* 背景效果 */}
-      <div className="tower-background">
+      <div className="tower-background" aria-hidden="true">
         <div className="language-streams">
           {Array.from({ length: 20 }).map((_, i) => (
             <div
