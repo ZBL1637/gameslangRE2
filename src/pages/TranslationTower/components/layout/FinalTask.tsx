@@ -32,6 +32,12 @@ export const FinalTask: React.FC<FinalTaskProps> = ({
     }
   };
 
+  const handleIntroKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    handleDialogueClick();
+  };
+
   // 显示提示
   const toggleHint = (index: number) => {
     setShowHints(prev => {
@@ -69,7 +75,14 @@ export const FinalTask: React.FC<FinalTaskProps> = ({
     <section className="final-task-section">
       {/* 介绍阶段 */}
       {phase === 'intro' && (
-        <div className="intro-phase" onClick={handleDialogueClick}>
+        <div
+          className="intro-phase"
+          role="button"
+          tabIndex={0}
+          aria-label="继续对话"
+          onClick={handleDialogueClick}
+          onKeyDown={handleIntroKeyDown}
+        >
           <div className="npc-dialogue">
             <div className="npc-avatar">🧙‍♂️</div>
             <div className="dialogue-box">
@@ -118,16 +131,18 @@ export const FinalTask: React.FC<FinalTaskProps> = ({
               <h4>翻译提示（点击展开）</h4>
               <div className="hints-list">
                 {FINAL_TASK.hints.map((hint: string, index: number) => (
-                  <div 
+                  <button
+                    type="button"
                     key={index} 
                     className={`hint-item ${showHints[index] ? 'expanded' : ''}`}
+                    aria-expanded={showHints[index]}
                     onClick={() => toggleHint(index)}
                   >
                     <span className="hint-icon">{showHints[index] ? '📖' : '❓'}</span>
                     <span className="hint-text">
                       {showHints[index] ? hint : `提示 ${index + 1}`}
                     </span>
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>
@@ -137,14 +152,16 @@ export const FinalTask: React.FC<FinalTaskProps> = ({
               <h4>选择最合适的翻译：</h4>
               <div className="options-list">
                 {translationOptions.map(option => (
-                  <div
+                  <button
+                    type="button"
                     key={option.id}
                     className={`option-item ${selectedOptions.includes(option.id) ? 'selected' : ''}`}
+                    aria-pressed={selectedOptions.includes(option.id)}
                     onClick={() => handleSelectOption(option.id)}
                   >
                     <span className="option-letter">{option.id.toUpperCase()}</span>
                     <p className="option-text">{option.text}</p>
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>

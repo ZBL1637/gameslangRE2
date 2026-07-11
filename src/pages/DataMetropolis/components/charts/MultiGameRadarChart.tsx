@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { TERM_DISTRIBUTION_DATA, TERM_CATEGORIES } from '../../data';
+import { AccessibleChartTable } from './AccessibleChartTable';
 import './MultiGameRadarChart.scss';
 
 declare global {
@@ -86,6 +87,10 @@ export const MultiGameRadarChart: React.FC = () => {
       }));
 
       const option = {
+        aria: {
+          enabled: true,
+          description: `${gameData.game}的本章示意术语分类雷达图，完整数值见图后数据表。`,
+        },
         title: {
           text: gameData.game,
           left: 'center',
@@ -180,10 +185,24 @@ export const MultiGameRadarChart: React.FC = () => {
       {/* 说明文字 */}
       <div className="chart-intro">
         <p>
-          理解社交中的黑话，不只是"懂梗"，更是掌握群体沟通的关键。
-          每款游戏都有自己独特的术语"指纹"，反映了其玩法特点和社区文化。
+          本章把不同游戏的预设术语分类画成"指纹"，用于比较分布差异。
+          这些静态数值不能单独证明玩法或社群文化的成因。
         </p>
       </div>
+      <p className="chart-text-summary">
+        文本摘要：本章示意数据中，三角洲行动的“跨游戏通用语”预设占比最高，为30.8%。
+      </p>
+      <AccessibleChartTable
+        title="多游戏术语分类分布"
+        columns={TERM_CATEGORIES}
+        rows={TERM_DISTRIBUTION_DATA.map(game => ({
+          id: game.game,
+          label: game.game,
+          values: TERM_CATEGORIES.map(category => `${((game.categories[category] || 0) * 100).toFixed(1)}%`),
+        }))}
+        selectedId={selectedGame}
+        onSelect={setSelectedGame}
+      />
 
       {/* 雷达图网格 */}
       <div className="radar-grid">
@@ -192,6 +211,16 @@ export const MultiGameRadarChart: React.FC = () => {
             key={gameData.game}
             className="radar-chart-container"
             id={`multi-radar-${index}`}
+            role="button"
+            tabIndex={0}
+            aria-label={`查看${gameData.game}术语分布`}
+            aria-pressed={selectedGame === gameData.game}
+            onClick={() => setSelectedGame(gameData.game)}
+            onKeyDown={(event) => {
+              if (event.key !== 'Enter' && event.key !== ' ') return;
+              event.preventDefault();
+              setSelectedGame(gameData.game);
+            }}
             ref={(el) => { chartRefs.current[index] = el; }}
           />
         ))}

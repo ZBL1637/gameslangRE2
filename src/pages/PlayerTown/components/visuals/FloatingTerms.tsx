@@ -2,6 +2,12 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { X } from 'lucide-react';
 import { FloatingTerm } from '../../types';
 import rawWordsData from '@/data/words_sort_data.json';
+import { useModalDialog } from '@/hooks/useModalDialog';
+import {
+  buildFramePositions,
+  type PercentRect,
+  type TermPosition,
+} from '../../floatingTermLayout';
 import './FloatingTerms.scss';
 
 interface FloatingTermsProps {
@@ -18,15 +24,6 @@ interface RawWordData {
 }
 
 type TermTone = 'cyan' | 'purple' | 'pink' | 'gold';
-
-interface TermPosition {
-  id: string;
-  x: number;
-  y: number;
-  speed: number;
-  delay: number;
-  direction: number;
-}
 
 /**
  * 将词汇映射到 4 色霓虹主题，用于统一标签配色与高亮。
@@ -84,48 +81,6 @@ const pickFloatingTermsFromJSON = (allTerms: RawWordData[], count: number): Floa
   }));
 };
 
-/**
- * 在章节画框内部生成点位，避免压住顶部任务面板区域。
- */
-const buildFramePositions = (terms: FloatingTerm[]): TermPosition[] => {
-  const safe = { left: 8, right: 92, top: 18, bottom: 88 };
-  const blocked = [
-    { left: 0, right: 58, top: 0, bottom: 30 },
-    { left: 42, right: 100, top: 0, bottom: 26 }
-  ];
-
-  const rand01 = () => (Math.random() + Math.random()) / 2;
-
-  const pick = () => {
-    let attempts = 0;
-    let x = safe.left + rand01() * (safe.right - safe.left);
-    let y = safe.top + rand01() * (safe.bottom - safe.top);
-
-    const isBlocked = () =>
-      blocked.some((r) => x >= r.left && x <= r.right && y >= r.top && y <= r.bottom);
-
-    while (isBlocked() && attempts < 100) {
-      x = safe.left + rand01() * (safe.right - safe.left);
-      y = safe.top + rand01() * (safe.bottom - safe.top);
-      attempts++;
-    }
-
-    return { x, y };
-  };
-
-  return terms.map((term, index) => {
-    const { x, y } = pick();
-    return {
-      id: term.id,
-      x,
-      y,
-      speed: 0.5 + Math.random() * 1.5,
-      delay: index * 0.12,
-      direction: Math.random() > 0.5 ? 1 : -1
-    };
-  });
-};
-
 export const FloatingTerms: React.FC<FloatingTermsProps> = ({
   onTermClick,
   exploredTerms
@@ -134,18 +89,64 @@ export const FloatingTerms: React.FC<FloatingTermsProps> = ({
   const [selectedTerm, setSelectedTerm] = useState<FloatingTerm | null>(null);
   const [visibleTerms, setVisibleTerms] = useState<FloatingTerm[]>([]);
   const visibleTermsRef = useRef<FloatingTerm[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const measureLayoutBounds = useCallback((): {
+    blockedAreas: PercentRect[];
+    minimumSpacing: { x: number; y: number };
+  } => {
+    const container = containerRef.current;
+    if (!container) return { blockedAreas: [], minimumSpacing: { x: 12, y: 8 } };
+
+    const root = container.getBoundingClientRect();
+    if (root.width <= 0 || root.height <= 0) {
+      return { blockedAreas: [], minimumSpacing: { x: 12, y: 8 } };
+    }
+
+    const termRects = Array.from(container.querySelectorAll<HTMLElement>('.floating-term'))
+      .map(element => element.getBoundingClientRect());
+    const maxTermWidth = Math.max(160, ...termRects.map(rect => rect.width));
+    const maxTermHeight = Math.max(44, ...termRects.map(rect => rect.height));
+    const xPadding = (maxTermWidth / 2 / root.width) * 100 + 2;
+    const yPadding = (maxTermHeight / 2 / root.height) * 100 + 2;
+
+    const blockedAreas = Array.from(document.querySelectorAll<HTMLElement>('.town-hud-panels, .ch3-return-panel'))
+      .filter(element => element.getClientRects().length > 0)
+      .map(element => {
+        const rect = element.getBoundingClientRect();
+        return {
+          left: Math.max(0, ((rect.left - root.left) / root.width) * 100 - xPadding),
+          right: Math.min(100, ((rect.right - root.left) / root.width) * 100 + xPadding),
+          top: Math.max(0, ((rect.top - root.top) / root.height) * 100 - yPadding),
+          bottom: Math.min(100, ((rect.bottom - root.top) / root.height) * 100 + yPadding),
+        };
+      });
+
+    return {
+      blockedAreas,
+      minimumSpacing: {
+        x: (maxTermWidth / root.width) * 100 + 2,
+        y: (maxTermHeight / root.height) * 100 + 2,
+      },
+    };
+  }, []);
+
+  const createPositions = useCallback((terms: FloatingTerm[]) => {
+    const { blockedAreas, minimumSpacing } = measureLayoutBounds();
+    return buildFramePositions(terms, blockedAreas, Math.random, minimumSpacing);
+  }, [measureLayoutBounds]);
 
   // 初始化漂浮词汇位置
   useEffect(() => {
     const applyTerms = (terms: FloatingTerm[]) => {
       visibleTermsRef.current = terms;
       setVisibleTerms(terms);
-      setPositions(buildFramePositions(terms));
+      setPositions(createPositions(terms));
     };
 
     const handleResize = () => {
       if (!visibleTermsRef.current.length) return;
-      setPositions(buildFramePositions(visibleTermsRef.current));
+      setPositions(createPositions(visibleTermsRef.current));
     };
     window.addEventListener('resize', handleResize);
 
@@ -162,7 +163,12 @@ export const FloatingTerms: React.FC<FloatingTermsProps> = ({
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [createPositions]);
+
+  useEffect(() => {
+    if (!visibleTermsRef.current.length) return;
+    setPositions(createPositions(visibleTermsRef.current));
+  }, [exploredTerms.length, visibleTerms.length, createPositions]);
 
   /**
    * 点击词汇：打开详情弹窗，并触发对应高亮/激活态。
@@ -180,6 +186,10 @@ export const FloatingTerms: React.FC<FloatingTermsProps> = ({
     }
     setSelectedTerm(null);
   }, [selectedTerm, onTermClick]);
+  const detailDialogRef = useModalDialog<HTMLDivElement>({
+    active: Boolean(selectedTerm),
+    onClose: handleCloseDetail,
+  });
 
   /**
    * 获取霓虹主题色，用于详情弹窗的分类边框提示。
@@ -194,7 +204,7 @@ export const FloatingTerms: React.FC<FloatingTermsProps> = ({
   };
 
   return (
-    <div className={`floating-terms-container ${selectedTerm ? 'has-detail' : ''}`}>
+    <div ref={containerRef} className={`floating-terms-container ${selectedTerm ? 'has-detail' : ''}`}>
       {/* 漂浮词汇 */}
       {visibleTerms.map((term, _index) => {
         const pos = positions.find(p => p.id === term.id);
@@ -213,7 +223,8 @@ export const FloatingTerms: React.FC<FloatingTermsProps> = ({
         };
 
         return (
-          <div
+          <button
+            type="button"
             key={term.id}
             className={[
               'floating-term',
@@ -223,25 +234,40 @@ export const FloatingTerms: React.FC<FloatingTermsProps> = ({
             ].filter(Boolean).join(' ')}
             style={style}
             onClick={() => handleTermClick(term)}
+            onKeyDown={(event) => {
+              if (event.key !== 'Enter' && event.key !== ' ') return;
+              event.preventDefault();
+              handleTermClick(term);
+            }}
+            aria-label={`查看黑话：${term.term}`}
+            aria-pressed={isActive}
           >
             <span className="term-icon" aria-hidden="true" />
             <span className="term-text">{term.term}</span>
             {isExplored ? <span className="explored-mark">✓</span> : <span className="term-lock" aria-hidden="true" />}
             <span className="term-arrow" aria-hidden="true" />
-          </div>
+          </button>
         );
       })}
 
       {/* 词汇详情弹窗 */}
       {selectedTerm && (
         <div className="term-detail-overlay" onClick={handleCloseDetail}>
-          <div className="term-detail-card" onClick={e => e.stopPropagation()}>
-            <button className="close-btn" onClick={handleCloseDetail}>
+          <div
+            className="term-detail-card"
+            ref={detailDialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="term-detail-title"
+            tabIndex={-1}
+            onClick={e => e.stopPropagation()}
+          >
+            <button className="close-btn" aria-label="关闭词条详情" onClick={handleCloseDetail}>
               <X size={20} />
             </button>
 
             <div className="term-header">
-              <h3 className="term-name">{selectedTerm.term}</h3>
+              <h3 id="term-detail-title" className="term-name">{selectedTerm.term}</h3>
               <span 
                 className="term-category"
                 style={{ borderColor: getToneColor(getTermTone(selectedTerm)) }}

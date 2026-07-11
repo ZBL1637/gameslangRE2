@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { X, Share2, RotateCcw } from 'lucide-react';
+import { useModalDialog } from '@/hooks/useModalDialog';
 import { DNAResult, GameGenre, QuizGameConfig } from '../../types';
 import { DNA_THEMES, JARGON_BY_GENRE, PLAYER_TYPE_TAGS } from '../../data';
 import './DNAReport.scss';
@@ -39,6 +40,12 @@ export const DNAReport: React.FC<DNAReportProps> = ({ results, onClose, onRetake
   const [traitModal, setTraitModal] = useState<{ show: boolean; title: string; reason: string; slang: string } | null>(null);
   const [donutSize, setDonutSize] = useState(220);
   const [notice, setNotice] = useState('');
+  const closeTrait = useCallback(() => setTraitModal(null), []);
+  const reportDialogRef = useModalDialog<HTMLDivElement>({ active: !traitModal, onClose });
+  const traitDialogRef = useModalDialog<HTMLDivElement>({
+    active: Boolean(traitModal?.show),
+    onClose: closeTrait,
+  });
 
   const topGenre = results[0];
   const theme = DNA_THEMES[topGenre.genre];
@@ -208,13 +215,20 @@ export const DNAReport: React.FC<DNAReportProps> = ({ results, onClose, onRetake
 
   return (
     <div className="dna-report-overlay">
-      <div className="dna-report-modal">
+      <div
+        className="dna-report-modal"
+        ref={reportDialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="dna-report-title"
+        tabIndex={-1}
+      >
         {/* 关闭按钮 */}
-        <button className="close-btn" onClick={onClose}>
+        <button className="close-btn" aria-label="关闭 DNA 报告" onClick={onClose}>
           <X size={24} />
         </button>
 
-        <h2 className="report-title">你的黑话 DNA 报告</h2>
+        <h2 id="dna-report-title" className="report-title">你的黑话 DNA 报告</h2>
         {/* 职业称号与一句话结论 */}
         {quizConfig && (
           <div className="profile-summary">
@@ -318,12 +332,19 @@ export const DNAReport: React.FC<DNAReportProps> = ({ results, onClose, onRetake
         {/* Trait 解释弹卡 */}
         {traitModal?.show && (
           <div className="trait-modal">
-            <div className="trait-card">
-              <h4>{traitModal.title}</h4>
+            <div
+              className="trait-card"
+              ref={traitDialogRef}
+              role="alertdialog"
+              aria-modal="true"
+              aria-labelledby="dna-trait-title"
+              tabIndex={-1}
+            >
+              <h4 id="dna-trait-title">{traitModal.title}</h4>
               <p>{traitModal.reason}</p>
               <p>{traitModal.slang}</p>
               <div className="trait-actions">
-                <button className="action-btn outline" onClick={() => setTraitModal(null)}>关闭</button>
+                <button className="action-btn outline" onClick={closeTrait}>关闭</button>
               </div>
             </div>
           </div>

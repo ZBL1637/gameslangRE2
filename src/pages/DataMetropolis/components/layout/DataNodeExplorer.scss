@@ -55,6 +55,26 @@ $pixel-border: #6b5b95;
   scrollbar-gutter: stable;
 }
 
+.data-provenance-note {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(255, 215, 0, 0.55);
+  background: rgba(58, 42, 0, 0.72);
+  color: #fff7cc;
+  font-size: 0.78rem;
+  line-height: 1.55;
+
+  strong {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: #ffd966;
+  }
+
+  p {
+    margin: 0.2rem 0 0;
+  }
+}
+
 .close-btn {
   position: absolute;
   top: 16px;

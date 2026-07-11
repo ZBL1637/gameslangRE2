@@ -102,9 +102,13 @@ $glow-cyan: rgba(6, 182, 212, 0.5);
       gap: 1.5rem;
 
       .challenge-level {
+        width: 100%;
         background: rgba($background-dark, 0.95);
         padding: 1.5rem;
         border: 4px solid $pixel-border;
+        color: inherit;
+        font: inherit;
+        text-align: left;
         box-shadow: 
           inset 0 0 0 2px rgba($secondary-color, 0.2),
           0 0 20px rgba($primary-color, 0.1);
@@ -114,6 +118,15 @@ $glow-cyan: rgba(6, 182, 212, 0.5);
         transition: all 0.2s ease;
         cursor: pointer;
         position: relative;
+
+        &:focus-visible {
+          outline: 3px solid #fff;
+          outline-offset: 4px;
+        }
+
+        &:disabled {
+          cursor: not-allowed;
+        }
 
         &::before {
           content: '';

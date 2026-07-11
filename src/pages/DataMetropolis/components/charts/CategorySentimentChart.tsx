@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { CATEGORY_SENTIMENT_DATA, CHART_COLORS } from '../../data';
+import { AccessibleChartTable } from './AccessibleChartTable';
 import './CategorySentimentChart.scss';
 
 declare global {
@@ -59,6 +60,10 @@ export const CategorySentimentChart: React.FC = () => {
     const negativeData = CATEGORY_SENTIMENT_DATA.map(item => item.negative.toFixed(3));
 
     const option = {
+      aria: {
+        enabled: true,
+        description: '本章示意的十类术语情感标签分布雷达图，三组数据同时使用线型和点形区分。',
+      },
       title: {
         text: '术语类别情感分布',
         left: 'center',
@@ -152,7 +157,7 @@ export const CategorySentimentChart: React.FC = () => {
             value: positiveData,
             name: '正面',
             itemStyle: { color: CHART_COLORS.positive },
-            lineStyle: { color: CHART_COLORS.positive, width: 3 },
+            lineStyle: { color: CHART_COLORS.positive, width: 3, type: 'dashed' },
             areaStyle: { color: 'rgba(166, 0, 107, 0.2)' }
           }],
           symbol: 'diamond',
@@ -165,7 +170,7 @@ export const CategorySentimentChart: React.FC = () => {
             value: negativeData,
             name: '负面',
             itemStyle: { color: CHART_COLORS.negative },
-            lineStyle: { color: CHART_COLORS.negative, width: 3 },
+            lineStyle: { color: CHART_COLORS.negative, width: 3, type: 'dotted' },
             areaStyle: { color: 'rgba(90, 0, 61, 0.2)' }
           }],
           symbol: 'triangle',
@@ -207,6 +212,21 @@ export const CategorySentimentChart: React.FC = () => {
   return (
     <div className="category-sentiment-chart">
       <div ref={chartRef} className="chart-canvas"></div>
+      <p className="chart-text-summary">
+        文本摘要：本章示意数据中，“机制类”的负面情感标签预设占比最高，约为30.5%。
+      </p>
+      <AccessibleChartTable
+        title="术语类别情感标签分布"
+        columns={['中性', '正面', '负面']}
+        rows={CATEGORY_SENTIMENT_DATA.map(category => ({
+          id: category.category,
+          label: category.category,
+          values: [category.neutral, category.positive, category.negative]
+            .map(value => `${(value * 100).toFixed(1)}%`),
+        }))}
+        selectedId={selectedCategory}
+        onSelect={setSelectedCategory}
+      />
 
       {/* 选中类别详情 */}
       {categoryDetail && (

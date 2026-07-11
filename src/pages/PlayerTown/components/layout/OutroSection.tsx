@@ -28,8 +28,22 @@ export const OutroSection: React.FC<OutroSectionProps> = ({ onComplete, onRestar
     }
   };
 
+  const handleAdvanceKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    handleClick();
+  };
+
   return (
-    <div className="outro-section" onClick={!showButton ? handleClick : undefined} style={{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+    <div
+      className="outro-section"
+      role={!showButton ? 'button' : undefined}
+      tabIndex={!showButton ? 0 : undefined}
+      aria-label={!showButton ? '继续章节结语' : undefined}
+      onClick={!showButton ? handleClick : undefined}
+      onKeyDown={!showButton ? handleAdvanceKeyDown : undefined}
+      style={{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+    >
       {/* 背景特效 */}
       <div className="background-effects">
         <div className="cyber-grid" />

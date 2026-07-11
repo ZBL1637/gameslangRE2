@@ -8,6 +8,7 @@ import { usePlayer } from '@/context/PlayerContext';
 import { Button } from '@/components/Button/Button';
 import { ChapterCompass } from '@/components/ChapterCompass/ChapterCompass';
 import { ChapterRewardOverlay } from '@/components/ChapterRewardOverlay/ChapterRewardOverlay';
+import { useModalDialog } from '@/hooks/useModalDialog';
 import type { ChapterReward } from '@/data/chapterProgress';
 import { 
   Chapter5GlobalState, 
@@ -39,6 +40,7 @@ import { KeywordChallenge } from './components/challenges/KeywordChallenge';
 import { StyleChallenge } from './components/challenges/StyleChallenge';
 import { MetaphorChallenge } from './components/challenges/MetaphorChallenge';
 import { BossAssembler } from './components/challenges/BossAssembler';
+import type { BossAssemblyScores } from './bossAssemblerScoring';
 
 import './TranslationTower.scss';
 
@@ -133,6 +135,15 @@ export const TranslationTower: React.FC = () => {
     });
   }, []);
 
+  const setBossScores = useCallback((scores: BossAssemblyScores) => {
+    setGameState(prev => ({
+      ...prev,
+      clarity: clampStat(scores.clarity),
+      culture: clampStat(scores.culture),
+      comms: clampStat(scores.comms),
+    }));
+  }, []);
+
   // 导航
   const handleNavigate = useCallback((floor: FloorType) => {
     setGameState(prev => ({ ...prev, currentFloor: floor }));
@@ -210,6 +221,10 @@ export const TranslationTower: React.FC = () => {
     setGameState(prev => ({ ...prev, comms: 50, currentFloor: FloorType.F0_BAZAAR }));
     setPhase('game');
   };
+  const failureDialogRef = useModalDialog<HTMLDivElement>({
+    active: Boolean(failureMessage),
+    onClose: handleRecoverFromFailure,
+  });
 
   const handleRestartChapter = () => {
     restartChapter(5);
@@ -305,6 +320,7 @@ export const TranslationTower: React.FC = () => {
             globalState={gameState}
             onComplete={handleBossComplete}
             onUpdateState={updateState}
+            onSetScores={setBossScores}
           />
         );
       default:
@@ -315,7 +331,7 @@ export const TranslationTower: React.FC = () => {
   return (
     <div className="translation-tower-page">
       {/* 背景效果 */}
-      <div className="tower-background">
+      <div className="tower-background" aria-hidden="true">
         <div className="language-streams">
           {Array.from({ length: 20 }).map((_, i) => (
             <div
@@ -370,9 +386,16 @@ export const TranslationTower: React.FC = () => {
       )}
 
       {failureMessage && (
-        <div className="translation-failure-panel" role="dialog" aria-modal="true">
+        <div
+          className="translation-failure-panel"
+          ref={failureDialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="translation-failure-title"
+          tabIndex={-1}
+        >
           <div className="failure-card">
-            <h2>沟通断裂</h2>
+            <h2 id="translation-failure-title">沟通断裂</h2>
             <p>{failureMessage}</p>
             <button onClick={handleRecoverFromFailure}>返回集市重试</button>
           </div>

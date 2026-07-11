@@ -33,8 +33,8 @@ export const TownMap: React.FC<TownMapProps> = ({
       {/* 城镇地图 - 像素艺术风格 */}
       <div className="town-container pixel-style">
         {/* 像素艺术背景 */}
-        <div className="pixel-bg">
-          <img src={chapter3Bg} alt="玩家小镇" className="bg-image" />
+        <div className="pixel-bg" aria-hidden="true">
+          <img src={chapter3Bg} alt="" className="bg-image" />
           <div className="pixel-overlay"></div>
         </div>
 
@@ -43,47 +43,42 @@ export const TownMap: React.FC<TownMapProps> = ({
         {/* NPC区域 */}
         <div className="npc-zone">
           {/* DNA测试NPC - 炼金术士 */}
-          <div 
+          <button
+            type="button"
             className={`npc-wrapper dna-npc ${dnaCompleted ? 'completed' : 'active'}`}
+            aria-label={dnaCompleted ? '艾琳娜 · 基因学者，DNA测试已完成' : '艾琳娜 · 基因学者，开始DNA测试'}
             onClick={onEnterDNATest}
             onMouseEnter={() => setHoveredNpc('dna')}
             onMouseLeave={() => setHoveredNpc(null)}
           >
-            <div className="npc-glow"></div>
+            <div className="npc-glow" aria-hidden="true"></div>
             <div className="npc-sprite">
-              <img src={npcDnaScientist} alt="DNA测试员" />
+              <img src={npcDnaScientist} alt="" aria-hidden="true" />
             </div>
-            <div className="npc-marker">
+            <div className="npc-marker" aria-hidden="true">
               {dnaCompleted ? '✓' : '!'}
             </div>
             
             {/* NPC对话气泡 */}
-            <div className={`npc-bubble ${hoveredNpc === 'dna' ? 'show' : ''}`}>
+            <div className={`npc-bubble ${hoveredNpc === 'dna' ? 'show' : ''}`} aria-hidden="true">
               <div className="bubble-content">
                 <h4>艾琳娜 · 基因学者</h4>
                 <p>{dnaCompleted 
                   ? '你的DNA测试已完成！去档案馆探索更多吧~' 
                   : '来测试一下你的游戏DNA吧！我能分析出你的玩家类型~'
                 }</p>
-                {!dnaCompleted && (
-                  <button
-                    className="interact-btn"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      onEnterDNATest();
-                    }}
-                  >
-                    开始测试
-                  </button>
-                )}
+                {!dnaCompleted && <span className="interact-btn">开始测试</span>}
               </div>
               <div className="bubble-arrow"></div>
             </div>
-          </div>
+          </button>
 
           {/* AI查询NPC - 智者图书管理员 */}
-          <div 
+          <button
+            type="button"
             className={`npc-wrapper ai-npc ${archiveUnlocked ? 'active' : 'locked'}`}
+            aria-disabled={!archiveUnlocked}
+            aria-label={archiveUnlocked ? '梅林 · 真言守护者，进入档案馆' : '梅林 · 真言守护者，档案馆未解锁'}
             onClick={() => {
               if (archiveUnlocked) {
                 onEnterArchive();
@@ -97,46 +92,36 @@ export const TownMap: React.FC<TownMapProps> = ({
             onMouseEnter={() => setHoveredNpc('ai')}
             onMouseLeave={() => setHoveredNpc(null)}
           >
-            <div className="npc-glow"></div>
+            <div className="npc-glow" aria-hidden="true"></div>
             <div className="npc-sprite">
-              <img src={npcAiLibrarian} alt="AI档案管理员" />
+              <img src={npcAiLibrarian} alt="" aria-hidden="true" />
               {!archiveUnlocked && (
                 <div className="lock-overlay">
                   <Lock size={32} />
                 </div>
               )}
             </div>
-            <div className="npc-marker">
+            <div className="npc-marker" aria-hidden="true">
               {archiveUnlocked ? '?' : '🔒'}
             </div>
             
             {/* NPC对话气泡 */}
-            <div className={`npc-bubble ${hoveredNpc === 'ai' ? 'show' : ''}`}>
+            <div className={`npc-bubble ${hoveredNpc === 'ai' ? 'show' : ''}`} aria-hidden="true">
               <div className="bubble-content">
                 <h4>梅林 · 真言守护者</h4>
                 <p>{archiveUnlocked 
                   ? '欢迎来到真言档案馆！我可以解答任何游戏黑话的奥秘。' 
                   : '完成DNA测试后，我才能为你开启档案馆的大门...'
                 }</p>
-                {archiveUnlocked && (
-                  <button
-                    className="interact-btn"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      onEnterArchive();
-                    }}
-                  >
-                    进入档案馆
-                  </button>
-                )}
+                {archiveUnlocked && <span className="interact-btn">进入档案馆</span>}
               </div>
               <div className="bubble-arrow"></div>
             </div>
-          </div>
+          </button>
         </div>
 
         {/* 装饰性NPC群众 */}
-        <div className="crowd-npcs">
+        <div className="crowd-npcs" aria-hidden="true">
           <div className="crowd-npc" style={{ left: '10%', bottom: '15%' }}>
             <span className="chat-bubble">GG!</span>
           </div>

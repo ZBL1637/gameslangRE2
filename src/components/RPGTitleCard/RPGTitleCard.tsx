@@ -6,7 +6,7 @@ export const RPGTitleCard: React.FC = () => {
     <div className="rpg-title-card-container">
       <div className="rpg-title-card-content">
         {/* Icon Header */}
-        <div className="icon-header">
+        <div className="icon-header" aria-hidden="true">
           <div className="icon-glow"></div>
           <div className="icons">
             {/* Sword Icon */}

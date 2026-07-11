@@ -1,0 +1,79 @@
+.chart-text-summary {
+  margin: 0.75rem 0;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid #ffd966;
+  background: rgba(255, 217, 102, 0.08);
+  color: #f8fafc;
+  line-height: 1.6;
+}
+
+.chart-data-table {
+  margin: 0.75rem 0 1rem;
+  color: #f8fafc;
+
+  summary {
+    width: fit-content;
+    cursor: pointer;
+    color: #ffd966;
+    font-weight: 700;
+  }
+}
+
+.chart-table-scroll {
+  margin-top: 0.65rem;
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  &:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 2px;
+  }
+
+  table {
+    width: 100%;
+    min-width: 620px;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+  }
+
+  caption {
+    padding: 0.65rem;
+    font-weight: 700;
+    text-align: left;
+  }
+
+  th,
+  td {
+    padding: 0.5rem 0.65rem;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: #171325;
+    text-align: left;
+  }
+
+  button {
+    border: 1px solid currentColor;
+    padding: 0.25rem 0.45rem;
+    background: transparent;
+    color: #fff;
+    font: inherit;
+    cursor: pointer;
+
+    &[aria-pressed='true'] {
+      outline: 3px double #ffd966;
+      color: #ffd966;
+    }
+
+    &:focus-visible {
+      outline: 3px solid #fff;
+      outline-offset: 2px;
+    }
+  }
+}

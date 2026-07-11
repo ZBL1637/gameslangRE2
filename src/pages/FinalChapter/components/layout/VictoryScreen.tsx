@@ -26,19 +26,10 @@ const VictoryScreen: React.FC<VictoryScreenProps> = ({ gameState, ending, onRest
     if (phase !== 'summary') return;
 
     window.requestAnimationFrame(() => {
+      summaryRef.current?.focus({ preventScroll: true });
       summaryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }, [phase]);
-
-  useEffect(() => {
-    if (phase !== 'summary') return;
-
-    const timer = window.setTimeout(() => {
-      navigate('/world-map', { state: { fromChapter: 6 } });
-    }, 12000);
-
-    return () => window.clearTimeout(timer);
-  }, [navigate, phase]);
 
   const returnToWorldMap = () => {
     navigate('/world-map', { state: { fromChapter: 6 } });
@@ -58,11 +49,17 @@ const VictoryScreen: React.FC<VictoryScreenProps> = ({ gameState, ending, onRest
     }
   };
 
+  const handleAdvanceKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    handleClick();
+  };
+
   const renderContent = () => {
     switch (phase) {
       case 'boss_defeat':
         return (
-          <div className="boss-defeat-screen" onClick={handleClick}>
+          <div className="boss-defeat-screen" role="button" tabIndex={0} aria-label="继续胜利演出" onClick={handleClick} onKeyDown={handleAdvanceKeyDown}>
             <div className="defeat-animation">
               <div className="boss-dissolving">
                 <div className="dissolve-particles">
@@ -91,7 +88,7 @@ const VictoryScreen: React.FC<VictoryScreenProps> = ({ gameState, ending, onRest
 
       case 'narration':
         return (
-          <div className="narration-screen" onClick={handleClick}>
+          <div className="narration-screen" role="button" tabIndex={0} aria-label="继续胜利演出" onClick={handleClick} onKeyDown={handleAdvanceKeyDown}>
             <div className="clearing-storm">
               <div className="stars">
                 {[...Array(100)].map((_, i) => (
@@ -116,7 +113,7 @@ const VictoryScreen: React.FC<VictoryScreenProps> = ({ gameState, ending, onRest
 
       case 'ending':
         return (
-          <div className="ending-screen" onClick={handleClick}>
+          <div className="ending-screen" role="button" tabIndex={0} aria-label="继续胜利演出" onClick={handleClick} onKeyDown={handleAdvanceKeyDown}>
             <div className="ending-content">
               <div className="ending-icon">✨</div>
               <div className="ending-text">
@@ -131,14 +128,20 @@ const VictoryScreen: React.FC<VictoryScreenProps> = ({ gameState, ending, onRest
 
       case 'summary':
         return (
-          <div className="summary-screen" ref={summaryRef}>
+          <div
+            className="summary-screen"
+            ref={summaryRef}
+            role="region"
+            aria-labelledby="victory-summary-title"
+            tabIndex={-1}
+          >
             <div className="summary-card">
               <div className="victory-badge">
                 <span className="badge-icon">🏆</span>
                 <span className="badge-text">{ending ? `${ending.rank} · ${ending.title}` : '游戏通关'}</span>
               </div>
               
-              <h2>战斗总结</h2>
+              <h2 id="victory-summary-title">战斗总结</h2>
               {ending && (
                 <div className="ending-summary-card">
                   <strong>最终评分：{ending.score}</strong>

@@ -9,6 +9,13 @@ import {
   CategorySentimentData
 } from './types';
 
+export const CHAPTER4_DATA_NOTE = {
+  label: '游戏化示意，不代表真实统计',
+  scope: '图表直接读取本章代码中的静态预设值，仅用于四个数据节点的读图练习；技能回合与效果数值属于游戏规则。',
+  limitations: '仓库未提供原始样本、采集时间、样本范围、情感标注方法或计算脚本，因此无法核验这些百分比的现实代表性。',
+  pending: '待确认：原始数据集、采集日期、分类与情感编码规则、各游戏样本量及计算过程。',
+} as const;
+
 // NPC对话脚本
 export const SCRIPT = {
   // 章节信息
@@ -22,11 +29,11 @@ export const SCRIPT = {
   // NPC对话
   ch4_npc_name: '数据织者 [ADMIN]',
   ch4_npc_title: '系统核心守护程序',
-  ch4_npc_greeting: '访问请求已通过。欢迎来到核心数据库，探索者。这里汇聚了亿万玩家的思维碎片，而黑话是解码这些碎片的唯一密钥。',
+  ch4_npc_greeting: '访问请求已通过。欢迎来到核心数据库，探索者。这里汇聚了项目内的游戏黑话样例，而分类与情感标签是解读这些样例的练习线索。',
   ch4_npc_task: '系统检测到四个加密的数据节点。你需要完成解谜协议，重构数据完整性。准备好接入了吗？',
   ch4_npc_node1_intro: '【节点一：光谱协议】检测到不同游戏维度的术语频率异常。分析其分类指纹，找出主导波段。',
-  ch4_npc_node2_intro: '【节点二：情感核心】情感极性扫描启动。哪些游戏的黑话主要承载正面情绪？',
-  ch4_npc_node3_intro: '【节点三：分类矩阵】警告：部分术语类别含有高浓度的负面情绪。定位这些高风险区域。',
+  ch4_npc_node2_intro: '【节点二：情感核心】情感标签扫描启动。在本章示意模型中，哪款游戏的正面标签占比最高？',
+  ch4_npc_node3_intro: '【节点三：分类矩阵】比较各术语类别的负面标签占比，定位本章预设值中的高点。',
   ch4_npc_node4_intro: '【节点四：指纹链接】多维数据对比。寻找不同游戏生态之间的通用语法与独特标识。',
   ch4_npc_complete: '数据完整性校验通过。同步率 100%。你已获得系统最高权限。正在下载战斗模组...',
   
@@ -39,7 +46,7 @@ export const SCRIPT = {
   
   // 结尾叙述
   ch4_outro_narration_1: '数据流重组完毕。核心逻辑已优化。',
-  ch4_outro_narration_2: '你已经掌握了数据的真实形态。这股力量将成为你对抗最终混乱的重要武器。'
+  ch4_outro_narration_2: '你已经完成本章预设数据的读图练习。这份解读经验将成为你对抗最终混乱的重要武器。'
 };
 
 // 四个数据节点
@@ -61,7 +68,7 @@ export const DATA_NODES: DataNode[] = [
         { label: '原神', value: 'genshin' }
       ],
       correctIndex: 1,
-      explanation: '数据解析：文明6的"行为类"术语占比高达79.6%。系统分析显示，作为策略游戏，其核心交互逻辑高度依赖玩家的操作指令。'
+      explanation: '本章示意数据：文明6的"行为类"术语占比为79.6%。该数值仅用于本章读图练习。'
     }
   },
   {
@@ -81,18 +88,18 @@ export const DATA_NODES: DataNode[] = [
         { label: '绝地求生', value: 'pubg' }
       ],
       correctIndex: 1,
-      explanation: '数据解析：原神的正面情感占比达到67.63%。分析表明，其二次元属性与角色养成系统极大地激发了用户的正面情感反馈。'
+      explanation: '本章示意数据：原神的正面情感占比为67.63%。该数值仅用于本章读图练习。'
     }
   },
   {
     id: 'node_3',
     name: '分类矩阵：负熵指数',
-    description: '定位高风险的负面情绪术语类别',
+    description: '比较示意数据中的负面情感标签',
     icon: '🎭',
     color: '#5A003D',
     completed: false,
     question: {
-      question: '警告：哪类术语的"负面情感"浓度最高？',
+      question: '本章示意数据中，哪类术语的"负面情感"标签占比最高？',
       hint: '解密提示：追踪雷达图中深紫色区域的峰值',
       options: [
         { label: '交流/指挥类', value: 'communication' },
@@ -101,7 +108,7 @@ export const DATA_NODES: DataNode[] = [
         { label: '经济交易类', value: 'economy' }
       ],
       correctIndex: 1,
-      explanation: '数据解析："机制类"术语的负面情感占比约为30.5%。这通常关联于系统判定、失败惩罚等高压游戏体验（如"被秒"、"暴毙"）。'
+      explanation: '本章示意数据："机制类"术语的负面情感占比约为30.5%。该数值仅用于本章读图练习。'
     }
   },
   {
@@ -121,7 +128,7 @@ export const DATA_NODES: DataNode[] = [
         { label: '最终幻想14', value: 'ff14' }
       ],
       correctIndex: 1,
-      explanation: '数据解析：三角洲行动的通用语占比高达30.8%。作为FPS新星，它大量集成了射击游戏界的标准底层协议（如"架枪"、"拉枪"）。'
+      explanation: '本章示意数据：三角洲行动的跨游戏通用语占比为30.8%。该数值仅用于本章读图练习。'
     }
   }
 ];

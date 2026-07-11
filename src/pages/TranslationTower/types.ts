@@ -133,7 +133,8 @@ export interface BossSlot {
     id: string;
     text: string;
     tags: ('foreignization' | 'domestication' | 'neutral')[];
-    stats: { clarity: number; culture: number };
+    stats: { clarity: number; culture: number; comms: number };
+    issue?: string;
   }[];
 }
 

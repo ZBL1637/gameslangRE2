@@ -3,6 +3,7 @@ import { ChapterReward, getChapterGrade } from '@/data/chapterProgress';
 import { ACHIEVEMENTS, Achievement } from '@/data/achievements';
 import { Button } from '@/components/Button/Button';
 import { Icon } from '@/components/Icon/Icon';
+import { useModalDialog } from '@/hooks/useModalDialog';
 import './ChapterRewardOverlay.scss';
 
 interface ChapterRewardOverlayProps {
@@ -12,6 +13,7 @@ interface ChapterRewardOverlayProps {
 }
 
 export const ChapterRewardOverlay: React.FC<ChapterRewardOverlayProps> = ({ reward, onContinue, continueLabel }) => {
+  const dialogRef = useModalDialog<HTMLDivElement>({ active: Boolean(reward) });
   if (!reward) return null;
   const grade = getChapterGrade(reward.score, reward.chapterId);
   const achievements = reward.achievements
@@ -19,10 +21,17 @@ export const ChapterRewardOverlay: React.FC<ChapterRewardOverlayProps> = ({ rewa
     .filter((item): item is Achievement => Boolean(item));
 
   return (
-    <div className="chapter-reward-overlay" role="dialog" aria-modal="true" aria-label="章节结算">
+    <div
+      className="chapter-reward-overlay"
+      ref={dialogRef}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="chapter-reward-title"
+      tabIndex={-1}
+    >
       <div className="chapter-reward-card">
         <div className="reward-kicker">{reward.isNewCompletion ? '章节完成' : '章节已完成'}</div>
-        <h2>{reward.chapterTitle}</h2>
+        <h2 id="chapter-reward-title">{reward.chapterTitle}</h2>
         <div className={`reward-score grade-${grade.toLowerCase()}`}>
           <span className="score-grade">{grade}</span>
           <span>数据新闻评分：{reward.score}</span>

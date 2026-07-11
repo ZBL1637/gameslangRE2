@@ -1,5 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { X, ArrowRight, ArrowLeft, Check, FlaskConical } from 'lucide-react';
+import { useModalDialog } from '@/hooks/useModalDialog';
 import { DNA_QUESTIONS, GENRES, SCRIPT } from '../../data';
 import { DNAResult, GameGenre, QuizGameConfig, QuizQuestion } from '../../types';
 import './DNATest.scss';
@@ -19,6 +20,16 @@ export const DNATest: React.FC<DNATestProps> = ({ onComplete, onClose }) => {
     keyword: ''
   });
   const [quizConfig, setQuizConfig] = useState<QuizGameConfig | null>(null);
+  const requestClose = useCallback(() => setShowExitConfirm(true), []);
+  const cancelClose = useCallback(() => setShowExitConfirm(false), []);
+  const testDialogRef = useModalDialog<HTMLDivElement>({
+    active: !showExitConfirm,
+    onClose: requestClose,
+  });
+  const exitDialogRef = useModalDialog<HTMLDivElement>({
+    active: showExitConfirm,
+    onClose: cancelClose,
+  });
 
   // 抽题列表（优先使用 quiz 配置抽题，否则回退至内置）
   const axisMap: Record<string, GameGenre> = {
@@ -218,9 +229,16 @@ export const DNATest: React.FC<DNATestProps> = ({ onComplete, onClose }) => {
 
   return (
     <div className="dna-test-overlay">
-      <div className="dna-test-modal">
+      <div
+        className="dna-test-modal"
+        ref={testDialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="dna-test-title"
+        tabIndex={-1}
+      >
         {/* 关闭按钮 */}
-        <button className="close-btn" onClick={() => setShowExitConfirm(true)}>
+        <button className="close-btn" aria-label="退出 DNA 测试" onClick={requestClose}>
           <X size={24} />
         </button>
 
@@ -242,7 +260,7 @@ export const DNATest: React.FC<DNATestProps> = ({ onComplete, onClose }) => {
             <div className="dna-icon">
               <FlaskConical size={28} />
             </div>
-            <h2>黑话DNA测试</h2>
+            <h2 id="dna-test-title">黑话DNA测试</h2>
             <p className="system-hint">系统：我们将从你的“开黑常用语”中提取 8 段 DNA 片段。</p>
             <p>{SCRIPT.ch3_dna_intro}</p>
             <p className="hint">8 题 · 约 30 秒 · 不记录个人信息（仅生成本次报告）</p>
@@ -256,7 +274,7 @@ export const DNATest: React.FC<DNATestProps> = ({ onComplete, onClose }) => {
         {/* 问题卡片 */}
         {!isIntro && currentQuestion && (
           <div className="question-card">
-            <h3 className="question-title">{currentQuestion.title}</h3>
+            <h3 id="dna-test-title" className="question-title">{currentQuestion.title}</h3>
             {currentQuestion.subtitle && (
               <p className="question-subtitle">{currentQuestion.subtitle}</p>
             )}
@@ -327,12 +345,19 @@ export const DNATest: React.FC<DNATestProps> = ({ onComplete, onClose }) => {
         {/* 退出确认弹窗 */}
         {showExitConfirm && (
           <div className="exit-confirm">
-            <div className="confirm-card">
-              <h4>确认退出鉴定？</h4>
+            <div
+              className="confirm-card"
+              ref={exitDialogRef}
+              role="alertdialog"
+              aria-modal="true"
+              aria-labelledby="dna-exit-title"
+              tabIndex={-1}
+            >
+              <h4 id="dna-exit-title">确认退出鉴定？</h4>
               <p>退出将不会保存本次进度。</p>
               <div className="actions">
                 <button className="btn-outline" onClick={onClose}>退出鉴定</button>
-                <button className="btn-primary" onClick={() => setShowExitConfirm(false)}>继续鉴定</button>
+                <button className="btn-primary" onClick={cancelClose}>继续鉴定</button>
               </div>
             </div>
           </div>

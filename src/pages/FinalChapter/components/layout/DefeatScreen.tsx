@@ -35,11 +35,17 @@ const DefeatScreen: React.FC<DefeatScreenProps> = ({ gameState, ending, onRestar
     }
   };
 
+  const handleAdvanceKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    handleClick();
+  };
+
   const renderContent = () => {
     switch (phase) {
       case 'boss_triumph':
         return (
-          <div className="boss-triumph-screen" onClick={handleClick}>
+          <div className="boss-triumph-screen" role="button" tabIndex={0} aria-label="继续失败演出" onClick={handleClick} onKeyDown={handleAdvanceKeyDown}>
             <div className="triumph-animation">
               <div className="boss-empowered">
                 <div className="power-surge">
@@ -64,7 +70,7 @@ const DefeatScreen: React.FC<DefeatScreenProps> = ({ gameState, ending, onRestar
 
       case 'narration':
         return (
-          <div className="narration-screen" onClick={handleClick}>
+          <div className="narration-screen" role="button" tabIndex={0} aria-label="继续失败演出" onClick={handleClick} onKeyDown={handleAdvanceKeyDown}>
             <div className="collapsing-world">
               <div className="glitch-effect">
                 {[...Array(10)].map((_, i) => (
@@ -88,7 +94,7 @@ const DefeatScreen: React.FC<DefeatScreenProps> = ({ gameState, ending, onRestar
 
       case 'ending':
         return (
-          <div className="ending-screen" onClick={handleClick}>
+          <div className="ending-screen" role="button" tabIndex={0} aria-label="继续失败演出" onClick={handleClick} onKeyDown={handleAdvanceKeyDown}>
             <div className="ending-content">
               <div className="ending-icon">💔</div>
               <div className="ending-text">

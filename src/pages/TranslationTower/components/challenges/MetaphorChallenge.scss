@@ -112,9 +112,17 @@
     .card {
       background: rgba($background-medium, 0.9);
       border: 2px solid rgba($text-secondary, 0.3);
+      color: inherit;
+      font: inherit;
+      text-align: left;
       padding: 1rem 1.5rem;
       border-radius: 0.5rem;
       width: 100%;
+
+      &:focus-visible {
+        outline: 3px solid #fff;
+        outline-offset: 3px;
+      }
       max-width: 280px;
       cursor: grab;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

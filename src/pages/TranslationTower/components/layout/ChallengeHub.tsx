@@ -39,9 +39,12 @@ export const ChallengeHub: React.FC<ChallengeHubProps> = ({
             const isReversed = challenges.length - 1 - index;
             
             return (
-              <div
+              <button
+                type="button"
                 key={challenge.id}
                 className={`challenge-level level-${isReversed + 1} ${status}`}
+                disabled={status === 'locked'}
+                aria-label={`${challenge.name}，${status === 'completed' ? '已完成，可重新挑战' : status === 'available' ? '可开始挑战' : '未解锁'}`}
                 onClick={() => status !== 'locked' && onStartChallenge(challenge.id)}
               >
                 <div className="level-connector">
@@ -68,16 +71,16 @@ export const ChallengeHub: React.FC<ChallengeHubProps> = ({
                       <span className="status-badge completed">已完成</span>
                     )}
                     {status === 'available' && (
-                      <button className="start-btn">
+                      <span className="start-btn">
                         开始挑战 →
-                      </button>
+                      </span>
                     )}
                     {status === 'locked' && (
                       <span className="status-badge locked">未解锁</span>
                     )}
                   </div>
                 </div>
-              </div>
+              </button>
             );
           })}
         </div>

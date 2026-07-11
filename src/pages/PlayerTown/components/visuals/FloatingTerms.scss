@@ -50,6 +50,8 @@ $metal-border: #2A2F45;
     --tone: #B56CFF;
     --tone-rgb: 181, 108, 255;
     background: $glass-bg;
+    appearance: none;
+    font: inherit;
     backdrop-filter: blur(8px);
     border: 2px solid $metal-border;
     clip-path: polygon(
@@ -68,9 +70,6 @@ $metal-border: #2A2F45;
     z-index: 1001;
     transform: translate(-50%, -50%);
     transform-origin: center;
-    animation: termOrbit var(--term-duration, 10s) ease-in-out infinite,
-      termPulse 4.8s ease-in-out infinite;
-    animation-delay: var(--term-delay, 0s);
     transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease, opacity 0.18s ease;
     box-shadow:
       0 0 0 1px rgba(var(--tone-rgb), 0.14) inset,
@@ -109,6 +108,7 @@ $metal-border: #2A2F45;
     }
 
     &:hover {
+      animation-play-state: paused;
       transform: translate(-50%, -50%) translateY(-2px) scale(1.03) !important;
       border-color: rgba(var(--tone-rgb), 0.55);
       box-shadow:
@@ -121,6 +121,14 @@ $metal-border: #2A2F45;
         opacity: 1;
         transform: translateY(-50%) translateX(0);
       }
+    }
+
+    &:focus-visible {
+      animation-play-state: paused;
+      outline: 3px solid #ffffff;
+      outline-offset: 3px;
+      box-shadow: 0 0 0 5px rgba(var(--tone-rgb), 0.65);
+      z-index: 1120;
     }
 
     &.explored {

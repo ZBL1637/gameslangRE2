@@ -37,6 +37,12 @@ export const OutroSection: React.FC<OutroSectionProps> = ({
     setPhase('calculating');
   };
 
+  const handleNarrationKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    handleNarrationClick();
+  };
+
   // 数字滚动动画
   useEffect(() => {
     if (phase === 'calculating') {
@@ -69,7 +75,14 @@ export const OutroSection: React.FC<OutroSectionProps> = ({
     <section className="outro-section">
       {/* 叙述阶段 */}
       {phase === 'narration' && (
-        <div className="narration-screen animate-fade-in" onClick={handleNarrationClick}>
+        <div
+          className="narration-screen animate-fade-in"
+          role="button"
+          tabIndex={0}
+          aria-label="生成通天塔契约"
+          onClick={handleNarrationClick}
+          onKeyDown={handleNarrationKeyDown}
+        >
           <div className="narration-box">
             <p className="narration-text">{narrationText}</p>
           </div>

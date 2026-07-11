@@ -117,7 +117,7 @@ export const DATA_FRAGMENTS: Record<string, DataFragment> = {
     id: 'fragment_sentiment',
     chapterId: 4,
     title: '情感碎片',
-    description: '黑话不仅传递信息，也携带玩家的正负情绪与压力来源。'
+    description: '在本章示意模型中，黑话被标注为中性、正面或负面，用于比较分类差异。'
   },
   fragment_translation: {
     id: 'fragment_translation',
@@ -221,18 +221,18 @@ export const CHAPTER_NEWS_CONFIG: Record<number, ChapterNewsConfig> = {
   4: {
     chapterId: 4,
     title: '数据洪流之都',
-    coreQuestion: '黑话数据能揭示不同游戏社群的情绪结构吗？',
-    sourceNote: '来源：项目内游戏术语分类占比、情感分布和跨游戏通用语数据。',
+    coreQuestion: '在本章示意模型中，如何比较不同游戏的术语分类与情感标签？',
+    sourceNote: '数据说明：项目内静态预设值，缺少原始样本、采集时间、标注规则和计算脚本。',
     evidencePrompt: '破解四个数据节点，用图表回答分类、情感和通用语问题。',
-    revealText: '机制类词更容易聚集负面情绪，强社群游戏则更容易产生身份与情感表达。',
-    predictionPrompt: '先判断：黑话数据最能揭示社群的哪一层结构？',
+    revealText: '本章静态数据把词类占比、情感标签和跨游戏通用语并列展示，用作读图线索。',
+    predictionPrompt: '先判断：本章的术语分类与情感标签最适合比较什么？',
     predictionOptions: [
-      { id: 'emotion_pressure', label: '情绪压力和社群关系', rationale: '情感分布和分类占比能显示压力来源与关系结构。', isCorrect: true },
+      { id: 'emotion_pressure', label: '预设值中的分类与情感差异', rationale: '可以描述本章预设值的差异，不能识别现实压力来源或因果关系。', isCorrect: true },
       { id: 'sales', label: '游戏销量排名', rationale: '术语数据不能直接等同销量。' },
-      { id: 'graphics_style', label: '美术风格偏好', rationale: '文本数据更擅长揭示沟通与情绪。' }
+      { id: 'graphics_style', label: '美术风格偏好', rationale: '本章静态标签没有提供美术偏好证据。' }
     ],
-    chartTakeaway: '节点图表把“词类占比、情绪分布、跨游戏通用语”放在一起，能看到不同社群的压力点。',
-    impactText: '反转：玩家抱怨并不只是负能量，它常常指向机制摩擦、付费压力和协作成本。',
+    chartTakeaway: '节点图表可以比较静态预设中的分布差异，不能据此推断社群成因。',
+    impactText: '观察提示：抱怨词可能与机制摩擦、付费压力或协作成本同时出现；本章数据不足以判定成因。',
     rewardSkillId: 'weakness',
     rewardSkillName: '弱点分析',
     fragmentIds: ['fragment_sentiment'],

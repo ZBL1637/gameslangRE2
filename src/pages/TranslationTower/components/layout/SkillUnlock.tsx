@@ -37,6 +37,12 @@ export const SkillUnlock: React.FC<SkillUnlockProps> = ({
     }
   };
 
+  const handleDialogueKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    handleDialogueClick();
+  };
+
   // 揭示动画后显示详情
   useEffect(() => {
     if (phase === 'reveal') {
@@ -67,7 +73,14 @@ export const SkillUnlock: React.FC<SkillUnlockProps> = ({
       <div className="skill-unlock-container">
         {/* 对话阶段 */}
         {phase === 'dialogue' && (
-          <div className="dialogue-phase" onClick={handleDialogueClick}>
+          <div
+            className="dialogue-phase"
+            role="button"
+            tabIndex={0}
+            aria-label="继续技能对话"
+            onClick={handleDialogueClick}
+            onKeyDown={handleDialogueKeyDown}
+          >
             <div className="npc-dialogue">
               <div className="npc-avatar">🧙‍♂️</div>
               <div className="dialogue-box">

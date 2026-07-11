@@ -55,6 +55,11 @@ $pixel-border: #333344;
   padding: 2rem;
   text-align: center;
   cursor: pointer;
+
+  &:focus-visible {
+    outline: 3px solid $pixel-accent-cyan;
+    outline-offset: -6px;
+  }
 }
 
 .defeat-animation,
