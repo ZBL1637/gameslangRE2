@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { SENTIMENT_DATA, CHART_COLORS } from '../../data';
+import { AccessibleChartTable } from './AccessibleChartTable';
 import './SentimentDistributionChart.scss';
 
 declare global {
@@ -68,21 +69,25 @@ export const SentimentDistributionChart: React.FC = () => {
         { 
           name: '中性', 
           value: gameData.neutral, 
-          itemStyle: { color: CHART_COLORS.neutral } 
+          itemStyle: { color: CHART_COLORS.neutral, decal: { symbol: 'rect', dashArrayY: [2, 3] } }
         },
         { 
           name: '正面', 
           value: gameData.positive, 
-          itemStyle: { color: CHART_COLORS.positive } 
+          itemStyle: { color: CHART_COLORS.positive, decal: { symbol: 'triangle', dashArrayY: [4, 3] } }
         },
         { 
           name: '负面', 
           value: gameData.negative, 
-          itemStyle: { color: CHART_COLORS.negative } 
+          itemStyle: { color: CHART_COLORS.negative, decal: { symbol: 'diamond', dashArrayY: [1, 2] } }
         }
       ];
 
       const option = {
+        aria: {
+          enabled: true,
+          description: `${gameData.game}的本章示意情感标签占比，完整数值见图后数据表。`,
+        },
         title: {
           text: gameData.game,
           left: 'center',
@@ -118,7 +123,7 @@ export const SentimentDistributionChart: React.FC = () => {
           label: {
             show: true,
             position: 'outside',
-            formatter: '{d}%',
+            formatter: '{b}: {d}%',
             fontSize: 12,
             color: '#ffffff'
           },
@@ -155,18 +160,32 @@ export const SentimentDistributionChart: React.FC = () => {
 
   return (
     <div className="sentiment-distribution-chart" ref={containerRef}>
+      <p className="chart-text-summary">
+        文本摘要：本章示意数据中，原神的正面情感标签预设占比最高，为67.6%。
+      </p>
+      <AccessibleChartTable
+        title="游戏情感标签分布"
+        columns={['中性', '正面', '负面']}
+        rows={SENTIMENT_DATA.map(game => ({
+          id: game.game,
+          label: game.game,
+          values: [game.neutral, game.positive, game.negative].map(value => `${value.toFixed(1)}%`),
+        }))}
+        selectedId={selectedGame}
+        onSelect={setSelectedGame}
+      />
       {/* 图例 */}
       <div className="chart-legend">
         <div className="legend-item">
-          <span className="legend-color" style={{ background: CHART_COLORS.neutral }}></span>
+          <span className="legend-color" style={{ background: CHART_COLORS.neutral }} aria-hidden="true">●</span>
           <span>中性</span>
         </div>
         <div className="legend-item">
-          <span className="legend-color" style={{ background: CHART_COLORS.positive }}></span>
+          <span className="legend-color" style={{ background: CHART_COLORS.positive }} aria-hidden="true">▲</span>
           <span>正面</span>
         </div>
         <div className="legend-item">
-          <span className="legend-color" style={{ background: CHART_COLORS.negative }}></span>
+          <span className="legend-color" style={{ background: CHART_COLORS.negative }} aria-hidden="true">◆</span>
           <span>负面</span>
         </div>
       </div>

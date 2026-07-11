@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { TERM_DISTRIBUTION_DATA, TERM_CATEGORIES, CHART_COLORS } from '../../data';
+import { AccessibleChartTable } from './AccessibleChartTable';
 import './TermDistributionChart.scss';
 
 // 注意：此组件使用ECharts库，需要在项目中安装：npm install echarts
@@ -10,6 +11,8 @@ declare global {
     echarts: any;
   }
 }
+
+const TERM_PATTERN_SYMBOLS = ['rect', 'circle', 'triangle', 'diamond', 'pin', 'arrow'];
 
 export const TermDistributionChart: React.FC = () => {
   const chartRef = useRef<HTMLDivElement>(null);
@@ -62,7 +65,12 @@ export const TermDistributionChart: React.FC = () => {
       stack: 'total',
       data: TERM_DISTRIBUTION_DATA.map(d => d.categories[category] || 0),
       itemStyle: {
-        color: CHART_COLORS.categories[index % CHART_COLORS.categories.length]
+        color: CHART_COLORS.categories[index % CHART_COLORS.categories.length],
+        decal: {
+          symbol: TERM_PATTERN_SYMBOLS[index % TERM_PATTERN_SYMBOLS.length],
+          dashArrayX: [1, 0],
+          dashArrayY: [3 + (index % 3), 3],
+        },
       },
       emphasis: {
         focus: 'series'
@@ -70,6 +78,10 @@ export const TermDistributionChart: React.FC = () => {
     }));
 
     const option = {
+      aria: {
+        enabled: true,
+        description: '本章示意的十四款游戏术语分类占比堆叠柱状图，完整数值见图后数据表。',
+      },
       title: {
         text: '游戏术语分类分布',
         left: 'center',
@@ -180,6 +192,20 @@ export const TermDistributionChart: React.FC = () => {
   return (
     <div className="term-distribution-chart">
       <div ref={chartRef} className="chart-canvas"></div>
+      <p className="chart-text-summary">
+        文本摘要：本章示意数据中，文明6的“行为类”预设占比最高，为79.6%。
+      </p>
+      <AccessibleChartTable
+        title="游戏术语分类分布"
+        columns={TERM_CATEGORIES}
+        rows={TERM_DISTRIBUTION_DATA.map(game => ({
+          id: game.game,
+          label: game.game,
+          values: TERM_CATEGORIES.map(category => `${((game.categories[category] || 0) * 100).toFixed(1)}%`),
+        }))}
+        selectedId={selectedGame}
+        onSelect={setSelectedGame}
+      />
       
       {selectedGame && (
         <div className="game-detail">
@@ -192,7 +218,7 @@ export const TermDistributionChart: React.FC = () => {
         <p>
           <strong>图表说明：</strong>
           此堆叠柱状图展示了14款游戏的术语分类分布。
-          每种颜色代表一种术语类别，柱子高度表示该类别在游戏术语中的占比。
+          每种颜色和纹理共同代表一种术语类别，柱子高度表示该类别在游戏术语中的占比。
         </p>
       </div>
     </div>
