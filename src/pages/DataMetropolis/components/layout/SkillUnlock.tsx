@@ -85,8 +85,8 @@ export const SkillUnlock: React.FC<SkillUnlockProps> = ({ onUnlock }) => {
 
                 <div className="skill-lore">
                   <p>
-                    "数据不会说谎，但需要有人去解读。
-                    你已经掌握了从数据中发现敌人弱点的能力。"
+                    "数据需要结合来源、口径与语境才能解释。
+                    你已经完成了从本章示意数据中定位数值差异的练习。"
                   </p>
                 </div>
 
