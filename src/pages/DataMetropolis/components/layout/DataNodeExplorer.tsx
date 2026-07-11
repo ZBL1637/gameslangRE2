@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { X, Check, AlertCircle, HelpCircle } from 'lucide-react';
 import { useModalDialog } from '@/hooks/useModalDialog';
 import { DataNode } from '../../types';
-import { SCRIPT } from '../../data';
+import { CHAPTER4_DATA_NOTE, SCRIPT } from '../../data';
 import './DataNodeExplorer.scss';
 
 const TermDistributionChart = React.lazy(() =>
@@ -123,6 +123,13 @@ export const DataNodeExplorer: React.FC<DataNodeExplorerProps> = ({
             <p>{node.description}</p>
           </div>
         </div>
+
+        <aside className="data-provenance-note" aria-label="第四章数据说明">
+          <strong>{CHAPTER4_DATA_NOTE.label}</strong>
+          <p>{CHAPTER4_DATA_NOTE.scope}</p>
+          <p>{CHAPTER4_DATA_NOTE.limitations}</p>
+          <p>{CHAPTER4_DATA_NOTE.pending}</p>
+        </aside>
 
         {/* 介绍阶段 */}
         {step === 'intro' && (
