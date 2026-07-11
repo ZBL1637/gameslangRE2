@@ -49,11 +49,17 @@ const VictoryScreen: React.FC<VictoryScreenProps> = ({ gameState, ending, onRest
     }
   };
 
+  const handleAdvanceKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    handleClick();
+  };
+
   const renderContent = () => {
     switch (phase) {
       case 'boss_defeat':
         return (
-          <div className="boss-defeat-screen" onClick={handleClick}>
+          <div className="boss-defeat-screen" role="button" tabIndex={0} aria-label="继续胜利演出" onClick={handleClick} onKeyDown={handleAdvanceKeyDown}>
             <div className="defeat-animation">
               <div className="boss-dissolving">
                 <div className="dissolve-particles">
@@ -82,7 +88,7 @@ const VictoryScreen: React.FC<VictoryScreenProps> = ({ gameState, ending, onRest
 
       case 'narration':
         return (
-          <div className="narration-screen" onClick={handleClick}>
+          <div className="narration-screen" role="button" tabIndex={0} aria-label="继续胜利演出" onClick={handleClick} onKeyDown={handleAdvanceKeyDown}>
             <div className="clearing-storm">
               <div className="stars">
                 {[...Array(100)].map((_, i) => (
@@ -107,7 +113,7 @@ const VictoryScreen: React.FC<VictoryScreenProps> = ({ gameState, ending, onRest
 
       case 'ending':
         return (
-          <div className="ending-screen" onClick={handleClick}>
+          <div className="ending-screen" role="button" tabIndex={0} aria-label="继续胜利演出" onClick={handleClick} onKeyDown={handleAdvanceKeyDown}>
             <div className="ending-content">
               <div className="ending-icon">✨</div>
               <div className="ending-text">

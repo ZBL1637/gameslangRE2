@@ -12,6 +12,11 @@
   cursor: pointer;
   user-select: none;
 
+  &:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 4px;
+  }
+
   .pixel-dialog-border {
     background: rgba(10, 10, 20, 0.9);
     border: 2px solid #00f3ff; // 赛博青

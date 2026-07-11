@@ -236,9 +236,20 @@ $bg-panel: rgba(44, 24, 16, 0.95);
 
       .npc-wrapper {
         position: relative;
+        border: 0;
+        padding: 0;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        text-align: inherit;
         cursor: pointer;
         pointer-events: auto;
         transition: all 0.3s ease;
+
+        &:focus-visible {
+          outline: 3px solid #fff;
+          outline-offset: 8px;
+        }
 
         &.dna-npc {
           margin-bottom: 32px;

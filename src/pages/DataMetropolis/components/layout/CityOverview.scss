@@ -222,9 +222,22 @@ $pixel-border: #6b5b95;
 // 节点卡片 - 像素风格
 .node-card {
   position: relative;
+  width: 100%;
+  color: inherit;
+  font: inherit;
+  text-align: left;
   padding: 32px;
   background: rgba($pixel-bg-panel, 0.95);
   border: 3px solid $pixel-border;
+
+  &:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 4px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
   box-shadow: 
     0 0 0 1px $pixel-bg-dark,
     0 0 20px rgba($pixel-accent-pink, 0.2),

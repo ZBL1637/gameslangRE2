@@ -57,8 +57,21 @@ export const PixelDialogBox: React.FC<PixelDialogBoxProps> = ({
     }
   };
 
+  const handleInteractKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    handleInteract();
+  };
+
   return (
-    <div className={`pixel-dialog-box`} onClick={handleInteract}>
+    <div
+      className="pixel-dialog-box"
+      role="button"
+      tabIndex={0}
+      aria-label={isTyping ? '显示完整对话' : '继续对话'}
+      onClick={handleInteract}
+      onKeyDown={handleInteractKeyDown}
+    >
       <div className="pixel-dialog-border">
         <div className="pixel-dialog-content">
           <div className="pixel-dialog-body">

@@ -7,6 +7,15 @@ $pixel-bg-dark: #0a0a12;
 $pixel-text: #FFFFFF;
 $pixel-border: #333344;
 
+.boss-triumph-screen,
+.narration-screen,
+.ending-screen {
+  &:focus-visible {
+    outline: 3px solid $pixel-accent-cyan;
+    outline-offset: -6px;
+  }
+}
+
 @keyframes defeatPulse {
   0%, 100% { opacity: 0.8; }
   50% { opacity: 0.4; }

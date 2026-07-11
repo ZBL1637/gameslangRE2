@@ -139,9 +139,11 @@ export const MetaphorChallenge: React.FC<MetaphorChallengeProps> = ({
                 const targetId = getConnectedTarget(source.id);
                 const isConnected = !!targetId;
                 return (
-                  <div
+                  <button
+                    type="button"
                     key={source.id}
                     className={`card source-card ${isConnected ? 'connected' : ''} ${draggedSourceId === source.id ? 'selected' : ''}`}
+                    aria-pressed={draggedSourceId === source.id}
                     draggable={!isConnected} // 连接后也可以拖拽修改？或者锁定？通常可以修改
                     onDragStart={(e) => handleDragStart(e, source.id)}
                     onClick={() => handleSourceClick(source.id)}
@@ -149,7 +151,7 @@ export const MetaphorChallenge: React.FC<MetaphorChallengeProps> = ({
                     <span className="card-icon">🏮</span>
                     <span className="card-text">{source.text}</span>
                     {isConnected && <div className="link-dot right" />}
-                  </div>
+                  </button>
                 );
               })}
             </div>
@@ -173,9 +175,11 @@ export const MetaphorChallenge: React.FC<MetaphorChallengeProps> = ({
                 const connectedSourceText = sourceId ? sources.find(s => s.id === sourceId)?.text : '';
 
                 return (
-                  <div
+                  <button
+                    type="button"
                     key={target.id}
                     className={`card target-card ${isConnected ? 'connected' : ''} ${draggedSourceId ? 'ready' : ''}`}
+                    aria-pressed={isConnected}
                     onClick={() => handleTargetClick(target.id)}
                     onDragOver={handleDragOver}
                     onDrop={(e) => handleDrop(e, target.id)}
@@ -185,7 +189,7 @@ export const MetaphorChallenge: React.FC<MetaphorChallengeProps> = ({
                     {isConnected && (
                       <span className="linked-badge">{connectedSourceText}</span>
                     )}
-                  </div>
+                  </button>
                 );
               })}
             </div>

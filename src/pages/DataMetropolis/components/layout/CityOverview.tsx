@@ -129,9 +129,12 @@ export const CityOverview: React.FC<CityOverviewProps> = ({
             const nodeIcon = nodeIconMap[node.id];
 
             return (
-              <div
+              <button
+                type="button"
                 key={node.id}
                 className={`node-card ${node.completed ? 'completed' : ''} ${isAvailable ? 'available' : 'locked'} ${isHovered ? 'hovered' : ''}`}
+                disabled={!isAvailable}
+                aria-label={`${node.name}，${node.completed ? '已完成，可再次探索' : isAvailable ? '可进入探索' : '未解锁'}`}
                 onMouseEnter={() => setHoveredNode(node.id)}
                 onMouseLeave={() => setHoveredNode(null)}
                 onClick={() => isAvailable && onNodeSelect(node.id)}
@@ -163,18 +166,13 @@ export const CityOverview: React.FC<CityOverviewProps> = ({
                   {node.completed ? (
                     <span className="status completed">已完成</span>
                   ) : isAvailable ? (
-                    <button
-                      type="button"
+                    <span
                       className="enter-btn"
                       style={{ background: `linear-gradient(135deg, ${node.color}, ${node.color}cc)` }}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        onNodeSelect(node.id);
-                      }}
                     >
                       进入探索
                       <ChevronRight size={16} />
-                    </button>
+                    </span>
                   ) : (
                     <span className="status locked">未解锁</span>
                   )}
@@ -184,7 +182,7 @@ export const CityOverview: React.FC<CityOverviewProps> = ({
                 {index < nodes.length - 1 && (
                   <div className={`connector ${nodes[index].completed ? 'active' : ''}`}></div>
                 )}
-              </div>
+              </button>
             );
           })}
         </div>

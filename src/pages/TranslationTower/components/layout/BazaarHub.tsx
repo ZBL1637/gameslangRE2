@@ -74,14 +74,16 @@ export const BazaarHub: React.FC<BazaarHubProps> = ({
         const termData = terms.find(t => t.term === termKey);
         if (termData) {
           return (
-            <span 
+            <button
+              type="button"
               key={i} 
               className="slang-highlight" 
               onClick={() => onAddPhrase(termData.term, termData.definition)}
+              aria-label={`收录词条：${termKey}`}
               title="点击收录到词典"
             >
               {termKey}
-            </span>
+            </button>
           );
         }
       }
@@ -110,9 +112,12 @@ export const BazaarHub: React.FC<BazaarHubProps> = ({
             const status = getFloorStatus(item.id);
             const isLocked = status === '未解锁';
             return (
-              <div 
+              <button
+                type="button"
                 key={item.id}
                 className={`menu-item ${state.currentFloor === item.id ? 'active' : ''} ${isLocked ? 'locked' : ''}`}
+                disabled={isLocked}
+                aria-current={state.currentFloor === item.id ? 'page' : undefined}
                 onClick={() => !isLocked && onNavigate(item.id)}
               >
                 <div className="item-icon-box">{item.icon}</div>
@@ -121,7 +126,7 @@ export const BazaarHub: React.FC<BazaarHubProps> = ({
                   <span className="item-status">{status}</span>
                 </div>
                 {state.currentFloor === item.id && <div className="active-indicator">▶</div>}
-              </div>
+              </button>
             );
           })}
         </div>
@@ -141,20 +146,27 @@ export const BazaarHub: React.FC<BazaarHubProps> = ({
 
             return (
               <div key={card.id} className={`request-card ${isSolved ? 'solved' : ''} ${isActive ? 'active' : ''}`}>
-                <div className="card-header" onClick={() => handleCardClick(card.id)}>
+                <button
+                  type="button"
+                  className="card-header"
+                  onClick={() => handleCardClick(card.id)}
+                  aria-expanded={isActive}
+                  aria-controls={`request-${card.id}`}
+                  disabled={isSolved}
+                >
                   <span className="status-icon">{isSolved ? '✅' : '❓'}</span>
                   <span className="card-title">{card.title}</span>
                   {!isSolved && <span className="expand-hint">{isActive ? '收起' : '查看详情'}</span>}
-                </div>
+                </button>
                 
                 {isActive && !isSolved && (
-                  <div className="card-body animate-slide-down">
+                  <div id={`request-${card.id}`} className="card-body animate-slide-down">
                     <p className="request-text">"{card.request}"</p>
                     <div className="options-list">
                       {card.options.map((opt, idx) => (
-                        <div key={opt.id} className="option-item" onClick={() => handleOptionSelect(card, idx)}>
+                        <button type="button" key={opt.id} className="option-item" onClick={() => handleOptionSelect(card, idx)}>
                           <span className="option-text">{opt.text}</span>
-                        </div>
+                        </button>
                       ))}
                     </div>
                   </div>

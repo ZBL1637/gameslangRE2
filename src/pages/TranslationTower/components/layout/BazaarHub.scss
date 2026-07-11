@@ -35,14 +35,23 @@
       gap: 10px;
 
       .menu-item {
+        width: 100%;
         display: flex;
         align-items: center;
         padding: 10px;
         background: rgba(0, 0, 0, 0.3);
         border: 1px solid transparent;
+        color: inherit;
+        font: inherit;
+        text-align: left;
         cursor: pointer;
         transition: all 0.2s;
         position: relative;
+
+        &:focus-visible {
+          outline: 3px solid #fff;
+          outline-offset: 2px;
+        }
 
         &:hover:not(.locked) {
           background: rgba($primary-color, 0.2);
@@ -122,10 +131,21 @@
         }
 
         .card-header {
+          width: 100%;
           padding: 15px;
           display: flex;
           align-items: center;
           cursor: pointer;
+          border: 0;
+          background: transparent;
+          color: inherit;
+          font: inherit;
+          text-align: left;
+
+          &:focus-visible {
+            outline: 3px solid $accent-color;
+            outline-offset: -3px;
+          }
           
           .status-icon { margin-right: 10px; font-size: 18px; }
           .card-title { flex: 1; font-weight: bold; }
@@ -151,13 +171,23 @@
             gap: 8px;
 
             .option-item {
+              width: 100%;
               padding: 10px;
               background: rgba(255, 255, 255, 0.1);
+              border: 0;
+              color: inherit;
+              font: inherit;
+              text-align: left;
               cursor: pointer;
               transition: background 0.2s;
 
               &:hover {
                 background: rgba($primary-color, 0.3);
+              }
+
+              &:focus-visible {
+                outline: 3px solid $accent-color;
+                outline-offset: 2px;
               }
 
               .option-text { font-size: 14px; }
@@ -200,10 +230,19 @@
 
           .slang-highlight {
             color: $accent-color;
+            border: 0;
+            padding: 0;
+            background: transparent;
+            font: inherit;
             cursor: pointer;
             text-decoration: underline;
             text-decoration-style: dotted;
             transition: all 0.2s;
+
+            &:focus-visible {
+              outline: 2px solid #fff;
+              outline-offset: 2px;
+            }
             padding: 0 2px;
 
             &:hover {

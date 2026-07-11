@@ -43,7 +43,8 @@ export const TownMap: React.FC<TownMapProps> = ({
         {/* NPC区域 */}
         <div className="npc-zone">
           {/* DNA测试NPC - 炼金术士 */}
-          <div 
+          <button
+            type="button"
             className={`npc-wrapper dna-npc ${dnaCompleted ? 'completed' : 'active'}`}
             onClick={onEnterDNATest}
             onMouseEnter={() => setHoveredNpc('dna')}
@@ -65,25 +66,17 @@ export const TownMap: React.FC<TownMapProps> = ({
                   ? '你的DNA测试已完成！去档案馆探索更多吧~' 
                   : '来测试一下你的游戏DNA吧！我能分析出你的玩家类型~'
                 }</p>
-                {!dnaCompleted && (
-                  <button
-                    className="interact-btn"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      onEnterDNATest();
-                    }}
-                  >
-                    开始测试
-                  </button>
-                )}
+                {!dnaCompleted && <span className="interact-btn">开始测试</span>}
               </div>
               <div className="bubble-arrow"></div>
             </div>
-          </div>
+          </button>
 
           {/* AI查询NPC - 智者图书管理员 */}
-          <div 
+          <button
+            type="button"
             className={`npc-wrapper ai-npc ${archiveUnlocked ? 'active' : 'locked'}`}
+            aria-disabled={!archiveUnlocked}
             onClick={() => {
               if (archiveUnlocked) {
                 onEnterArchive();
@@ -118,21 +111,11 @@ export const TownMap: React.FC<TownMapProps> = ({
                   ? '欢迎来到真言档案馆！我可以解答任何游戏黑话的奥秘。' 
                   : '完成DNA测试后，我才能为你开启档案馆的大门...'
                 }</p>
-                {archiveUnlocked && (
-                  <button
-                    className="interact-btn"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      onEnterArchive();
-                    }}
-                  >
-                    进入档案馆
-                  </button>
-                )}
+                {archiveUnlocked && <span className="interact-btn">进入档案馆</span>}
               </div>
               <div className="bubble-arrow"></div>
             </div>
-          </div>
+          </button>
         </div>
 
         {/* 装饰性NPC群众 */}

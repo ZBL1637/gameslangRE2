@@ -15,6 +15,11 @@ $ch5-secondary: #06b6d4; // Cyan
   font-family: 'Microsoft YaHei', sans-serif; // 保持原有字体偏好，或改为像素字体
   cursor: pointer;
   user-select: none;
+
+  &:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 4px;
+  }
   max-height: 38vh;
   overflow: visible;
 
