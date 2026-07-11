@@ -2,6 +2,7 @@
 import { X, Send } from 'lucide-react';
 import { FLOATING_TERMS, SCRIPT } from '../../data';
 import { queryDeepSeek, AiQueryResult } from '@/services/aiQuery';
+import { useModalDialog } from '@/hooks/useModalDialog';
 import npcAiLibrarian from '@/assets/images/npc_ai_librarian.webp';
 import './AIQueryPanel.scss';
 
@@ -43,20 +44,12 @@ export const AIQueryPanel: React.FC<AIQueryPanelProps> = ({
   const [isTyping, setIsTyping] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useModalDialog<HTMLDivElement>({ active: true, onClose });
 
   // 自动滚动到底部
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
-
-  // Esc 键关闭
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
 
   // 处理查询
   const handleQuery = async (term: string) => {
@@ -199,7 +192,15 @@ export const AIQueryPanel: React.FC<AIQueryPanelProps> = ({
 
   return (
     <div className="ai-query-overlay" onClick={onClose}>
-      <div className="rpg-dialog-container" onClick={e => e.stopPropagation()}>
+      <div
+        className="rpg-dialog-container"
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="ai-query-title"
+        tabIndex={-1}
+        onClick={e => e.stopPropagation()}
+      >
         
         {/* 左侧 NPC 形象 */}
         <div className="npc-portrait">
@@ -213,7 +214,7 @@ export const AIQueryPanel: React.FC<AIQueryPanelProps> = ({
         {/* 右侧对话区域 */}
         <div className="dialog-panel">
           <div className="panel-header">
-            <h3>真言档案馆</h3>
+            <h3 id="ai-query-title">真言档案馆</h3>
             <button className="close-btn" aria-label="关闭" onClick={onClose}>
               <X size={20} />
             </button>

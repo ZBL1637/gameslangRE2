@@ -1,5 +1,6 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { X, Check, AlertCircle, HelpCircle } from 'lucide-react';
+import { useModalDialog } from '@/hooks/useModalDialog';
 import { DataNode } from '../../types';
 import { SCRIPT } from '../../data';
 import './DataNodeExplorer.scss';
@@ -34,11 +35,11 @@ export const DataNodeExplorer: React.FC<DataNodeExplorerProps> = ({
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [showHint, setShowHint] = useState(false);
-  const modalRef = useRef<HTMLDivElement | null>(null);
+  const modalRef = useModalDialog<HTMLDivElement>({ active: true, onClose });
 
   useEffect(() => {
     modalRef.current?.scrollTo({ top: 0, behavior: 'auto' });
-  }, [node.id, step]);
+  }, [modalRef, node.id, step]);
 
   // 获取NPC介绍文本
   const getNpcIntro = () => {
@@ -101,9 +102,16 @@ export const DataNodeExplorer: React.FC<DataNodeExplorerProps> = ({
 
   return (
     <div className="data-node-explorer-overlay">
-      <div className="explorer-modal" ref={modalRef}>
+      <div
+        className="explorer-modal"
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="data-node-title"
+        tabIndex={-1}
+      >
         {/* 关闭按钮 */}
-        <button type="button" className="close-btn" onClick={onClose}>
+        <button type="button" className="close-btn" aria-label="关闭数据节点" onClick={onClose}>
           <X size={20} />
         </button>
 
@@ -111,7 +119,7 @@ export const DataNodeExplorer: React.FC<DataNodeExplorerProps> = ({
         <div className="node-header" style={{ borderColor: node.color }}>
           <span className="node-icon">{node.icon}</span>
           <div className="node-title">
-            <h2>{node.name}</h2>
+            <h2 id="data-node-title">{node.name}</h2>
             <p>{node.description}</p>
           </div>
         </div>

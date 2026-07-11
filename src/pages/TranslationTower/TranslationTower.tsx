@@ -8,6 +8,7 @@ import { usePlayer } from '@/context/PlayerContext';
 import { Button } from '@/components/Button/Button';
 import { ChapterCompass } from '@/components/ChapterCompass/ChapterCompass';
 import { ChapterRewardOverlay } from '@/components/ChapterRewardOverlay/ChapterRewardOverlay';
+import { useModalDialog } from '@/hooks/useModalDialog';
 import type { ChapterReward } from '@/data/chapterProgress';
 import { 
   Chapter5GlobalState, 
@@ -220,6 +221,10 @@ export const TranslationTower: React.FC = () => {
     setGameState(prev => ({ ...prev, comms: 50, currentFloor: FloorType.F0_BAZAAR }));
     setPhase('game');
   };
+  const failureDialogRef = useModalDialog<HTMLDivElement>({
+    active: Boolean(failureMessage),
+    onClose: handleRecoverFromFailure,
+  });
 
   const handleRestartChapter = () => {
     restartChapter(5);
@@ -381,9 +386,16 @@ export const TranslationTower: React.FC = () => {
       )}
 
       {failureMessage && (
-        <div className="translation-failure-panel" role="dialog" aria-modal="true">
+        <div
+          className="translation-failure-panel"
+          ref={failureDialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="translation-failure-title"
+          tabIndex={-1}
+        >
           <div className="failure-card">
-            <h2>沟通断裂</h2>
+            <h2 id="translation-failure-title">沟通断裂</h2>
             <p>{failureMessage}</p>
             <button onClick={handleRecoverFromFailure}>返回集市重试</button>
           </div>

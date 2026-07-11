@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { X } from 'lucide-react';
 import { FloatingTerm } from '../../types';
 import rawWordsData from '@/data/words_sort_data.json';
+import { useModalDialog } from '@/hooks/useModalDialog';
 import {
   buildFramePositions,
   type PercentRect,
@@ -185,6 +186,10 @@ export const FloatingTerms: React.FC<FloatingTermsProps> = ({
     }
     setSelectedTerm(null);
   }, [selectedTerm, onTermClick]);
+  const detailDialogRef = useModalDialog<HTMLDivElement>({
+    active: Boolean(selectedTerm),
+    onClose: handleCloseDetail,
+  });
 
   /**
    * 获取霓虹主题色，用于详情弹窗的分类边框提示。
@@ -248,13 +253,21 @@ export const FloatingTerms: React.FC<FloatingTermsProps> = ({
       {/* 词汇详情弹窗 */}
       {selectedTerm && (
         <div className="term-detail-overlay" onClick={handleCloseDetail}>
-          <div className="term-detail-card" onClick={e => e.stopPropagation()}>
-            <button className="close-btn" onClick={handleCloseDetail}>
+          <div
+            className="term-detail-card"
+            ref={detailDialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="term-detail-title"
+            tabIndex={-1}
+            onClick={e => e.stopPropagation()}
+          >
+            <button className="close-btn" aria-label="关闭词条详情" onClick={handleCloseDetail}>
               <X size={20} />
             </button>
 
             <div className="term-header">
-              <h3 className="term-name">{selectedTerm.term}</h3>
+              <h3 id="term-detail-title" className="term-name">{selectedTerm.term}</h3>
               <span 
                 className="term-category"
                 style={{ borderColor: getToneColor(getTermTone(selectedTerm)) }}

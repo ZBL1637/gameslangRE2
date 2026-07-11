@@ -2,9 +2,10 @@
 // SkillPanel - 技能面板组件
 // ============================================================================
 
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { PlayerSkill, BossSkillId } from '../../types';
 import { BASIC_ATTACK } from '../../data';
+import { useModalDialog } from '@/hooks/useModalDialog';
 import './SkillPanel.scss';
 
 interface SkillPanelProps {
@@ -28,6 +29,11 @@ const SkillPanel: React.FC<SkillPanelProps> = ({
   const [showSkillInfo, setShowSkillInfo] = useState(false);
 
   const canAct = isPlayerTurn && !isAnimating;
+  const closeSkillInfo = useCallback(() => setShowSkillInfo(false), []);
+  const skillDialogRef = useModalDialog<HTMLDivElement>({
+    active: showSkillInfo && Boolean(selectedSkill),
+    onClose: closeSkillInfo,
+  });
 
   const handleSkillClick = (skill: PlayerSkill) => {
     if (!canAct) return;
@@ -112,13 +118,20 @@ const SkillPanel: React.FC<SkillPanelProps> = ({
       {/* 技能详情弹窗 */}
       {showSkillInfo && selectedSkill && (
         <div className="skill-info-modal">
-          <div className="modal-content">
-            <button className="close-btn" onClick={() => setShowSkillInfo(false)}>×</button>
+          <div
+            className="modal-content"
+            ref={skillDialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="skill-info-title"
+            tabIndex={-1}
+          >
+            <button className="close-btn" aria-label="关闭技能详情" onClick={closeSkillInfo}>×</button>
             
             <div className="skill-header">
               <span className="skill-icon-large">{selectedSkill.icon}</span>
               <div className="skill-titles">
-                <h3>{selectedSkill.name}</h3>
+                <h3 id="skill-info-title">{selectedSkill.name}</h3>
                 <span className="skill-english">{selectedSkill.englishName}</span>
               </div>
             </div>
